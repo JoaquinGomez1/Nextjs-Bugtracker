@@ -18,23 +18,6 @@ import { Button } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import Link from "next/link";
 
-function createData(name, issues, members, actions, url) {
-  return { name, issues, members, actions, url };
-}
-
-const rows = [
-  createData("React App", 5, 3, 67, "/projects/cra"),
-  createData("Angular App", 9, 25, 51, "/projects/caa"),
-  createData("Nextjs App", 20, 16, 24, "/projects/cna"),
-  createData("Vue App", 4, 16, 24, "/projects/cva"),
-  createData("Vue App", 4, 16, 24, "/projects/cva"),
-  createData("Vue App", 4, 16, 24, "/projects/cva"),
-  createData("Vue App", 4, 16, 24, "/projects/cva"),
-  createData("Vue App", 4, 16, 24, "/projects/cva"),
-  createData("Vue App", 4, 16, 24, "/projects/cva"),
-  createData("Vue App", 4, 16, 24, "/projects/cva"),
-];
-
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -193,7 +176,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EnhancedTable() {
+export default function EnhancedTable({ rows }) {
   const classes = useStyles();
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("name");
@@ -260,7 +243,7 @@ export default function EnhancedTable() {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const labelId = `enhanced-table-checkbox-${index}`;
-
+                  console.log(row);
                   return (
                     <Link href={row.url}>
                       <TableRow
@@ -274,7 +257,9 @@ export default function EnhancedTable() {
                           {row.name}
                         </TableCell>
                         <TableCell align="right">{row.issues}</TableCell>
-                        <TableCell align="right">{row.members}</TableCell>
+                        <TableCell align="right">
+                          {row.members.length}
+                        </TableCell>
                         <TableCell align="right">{row.actions}</TableCell>
                       </TableRow>
                     </Link>

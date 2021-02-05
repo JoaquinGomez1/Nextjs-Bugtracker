@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   Container,
   Paper,
@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import { makeStyles } from "@material-ui/core/styles";
+import { ProjectsContext } from "../../context/projects";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function NewProject() {
+  const { projects, setProjects } = useContext(ProjectsContext);
   const classes = useStyles();
   const [members, setMembers] = useState([]);
   const [fieldsValue, setFieldsValue] = useState({
@@ -82,6 +84,26 @@ export default function NewProject() {
         member: { id: fieldsValue.member.id, name: value },
       });
     } else setFieldsValue({ ...fieldsValue, [name]: value });
+  };
+
+  const handleSubmit = () => {
+    const thereIsOneUndefinedValue = Object.values(fieldsValue).some(
+      (value) => !value
+    );
+    const thereAreMembers = members.length >= 1;
+
+    if (!thereIsOneUndefinedValue && thereAreMembers) {
+      const object = {
+        author: "undefined for now",
+        name: fieldsValue.projectName,
+        issues: 0,
+        members,
+        actions: 2,
+        description: fieldsValue.projectDescription,
+        url: "/projects/Change_this_for_a_valid_url_path",
+      };
+      setProjects([...projects, object]);
+    }
   };
 
   useEffect(() => {
@@ -153,6 +175,7 @@ export default function NewProject() {
             fullWidth
             variant="contained"
             color="secondary"
+            onClick={handleSubmit}
           >
             Add project
           </Button>

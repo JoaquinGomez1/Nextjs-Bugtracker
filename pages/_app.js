@@ -5,6 +5,7 @@ import MuiTheme from "../theme";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Head from "next/head";
+import ProjectsContext from "../context/projects";
 
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
@@ -17,12 +18,14 @@ function MyApp({ Component, pageProps }) {
   return (
     <>
       <ThemeProvider theme={MuiTheme}>
-        <Head>
-          <title>Bugtracker</title>
-        </Head>
-        <CssBaseline />
-        <Navbar />
-        <Component {...pageProps} />
+        <ProjectsContext>
+          <Head>
+            <title>Bugtracker</title>
+          </Head>
+          <CssBaseline />
+          <Navbar />
+          <Component {...pageProps} />
+        </ProjectsContext>
       </ThemeProvider>
     </>
   );
