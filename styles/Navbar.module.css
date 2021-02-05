@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  width: 100vw;
+  box-shadow: 2px 3px 4px rgba(0, 0, 0, 0.2);
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+}
+
+.liContainer {
+  display: flex;
+  justify-content: space-between;
+  min-width: 30%;
+  list-style: none;
+  padding: 0 15px;
+}
