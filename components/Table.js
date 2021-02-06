@@ -245,12 +245,11 @@ export default function EnhancedTable({ rows }) {
                   const labelId = `enhanced-table-checkbox-${index}`;
                   console.log(row);
                   return (
-                    <Link href={row.url}>
+                    <Link key={index} href={row.url}>
                       <TableRow
                         hover
                         onClick={(event) => handleClick(event, row.url)}
                         tabIndex={-1}
-                        key={index}
                         className={classes.row}
                       >
                         <TableCell component="th" id={labelId} scope="row">
