@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { lighten, makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -14,7 +14,7 @@ import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import FilterListIcon from "@material-ui/icons/FilterList";
-import { Button } from "@material-ui/core";
+import { Button, CircularProgress } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import Link from "next/link";
 
@@ -174,9 +174,13 @@ const useStyles = makeStyles((theme) => ({
       cursor: "pointer",
     },
   },
+  progress: {
+    width: "50px",
+    margin: "0 auto",
+  },
 }));
 
-export default function EnhancedTable({ rows }) {
+export default function EnhancedTable({ rows, isLoading }) {
   const classes = useStyles();
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("name");
@@ -184,6 +188,11 @@ export default function EnhancedTable({ rows }) {
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [stillLoading, setStillLoading] = useState(isLoading);
+
+  useEffect(() => {
+    setStillLoading(isLoading);
+  }, [isLoading]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -238,32 +247,46 @@ export default function EnhancedTable({ rows }) {
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
             />
-            <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const labelId = `enhanced-table-checkbox-${index}`;
-                  console.log(row);
-                  return (
-                    <Link key={index} href={row.url}>
-                      <TableRow
-                        hover
-                        onClick={(event) => handleClick(event, row.url)}
-                        tabIndex={-1}
-                        className={classes.row}
-                      >
-                        <TableCell component="th" id={labelId} scope="row">
-                          {row.name}
-                        </TableCell>
-                        <TableCell align="right">{row.issues}</TableCell>
-                        <TableCell align="right">
-                          {row.members.length}
-                        </TableCell>
-                        <TableCell align="right">{row.actions}</TableCell>
-                      </TableRow>
-                    </Link>
-                  );
-                })}
+            <TableBody style={{ position: "relative" }}>
+              {stillLoading ? (
+                <CircularProgress
+                  size={50}
+                  style={{
+                    position: "absolute",
+                    left: "50%",
+                    marginTop: "30px",
+                  }}
+                  className={classes.progress}
+                />
+              ) : (
+                stableSort(rows, getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    const labelId = `enhanced-table-checkbox-${index}`;
+                    return (
+                      <Link key={index} href={row.url}>
+                        <TableRow
+                          hover
+                          onClick={(event) => handleClick(event, row.url)}
+                          tabIndex={-1}
+                          className={classes.row}
+                        >
+                          <TableCell component="th" id={labelId} scope="row">
+                            {row.name || row.project_name}
+                          </TableCell>
+                          <TableCell align="right">{row.issues || 0}</TableCell>
+                          <TableCell align="right">
+                            {row.members || 0}
+                          </TableCell>
+                          <TableCell align="right">
+                            {row.actions || 0}
+                          </TableCell>
+                        </TableRow>
+                      </Link>
+                    );
+                  })
+              )}
+
               {emptyRows > 0 && (
                 <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
                   <TableCell colSpan={6} />

@@ -1,11 +1,13 @@
 import Project from "../../../controllers/projects";
 
-export default function (req, res) {
+export default async function (req, res) {
   if (req.method === "POST") {
-    new Project(req, res).view();
+    const response = await new Project(req).view();
+    return res.json(response.rows);
   }
 
   if (req.method === "PUT") {
-    new Project(req, res).addProject();
+    const response = await new Project(req).addProject();
+    return res.json(response.rows);
   }
 }
