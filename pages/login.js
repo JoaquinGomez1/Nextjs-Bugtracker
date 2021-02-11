@@ -4,6 +4,8 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { useState } from "react";
 import Link from "next/link";
 import MeetingRoomIcon from "@material-ui/icons/MeetingRoom";
+import headers from "../headers";
+import fetch from "isomorphic-unfetch";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -51,6 +53,16 @@ export default function Login() {
     setUserData({ ...userdata, [name]: value });
   };
 
+  const handleSubmit = async () => {
+    const reqHeaders = headers;
+    reqHeaders.method = "POST";
+    reqHeaders.body = JSON.stringify(userdata);
+    const URL = process.env.BACKEND_URL + "/user/login";
+    const req = await fetch(URL, reqHeaders);
+    const res = await req.json();
+    console.log(res);
+  };
+
   return (
     <div className={styles.container}>
       <Paper className={classes.paper}>
@@ -85,7 +97,7 @@ export default function Login() {
             required
           />
         </form>
-        <Button variant="contained" color="primary">
+        <Button variant="contained" color="primary" onClick={handleSubmit}>
           Log in
         </Button>
         <Typography variant="subtitle2" className={classes.bottomText}>

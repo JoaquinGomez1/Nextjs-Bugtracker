@@ -38,7 +38,7 @@ const mockData = {
 const commentSchema = {
   author: "User",
   date: new Date(),
-  role: "contributor / owner / manager",
+  role: "contributor / owner ",
 };
 
 const useStyles = makeStyles((theme) => ({

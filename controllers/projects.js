@@ -6,13 +6,12 @@ export default class Projects {
   }
 
   // Returns all projects of a particular user
-  async view() {
+  async view(id) {
     // Create a query for the database
     const query =
       "SELECT Projects.id,project_name,project_owner,username, user_role FROM Projects JOIN Users ON project_owner = Users.id WHERE Users.id = $1";
-    const values = [this.req.body.user_id];
 
-    const result = await client.query(query, values);
+    const result = await client.query(query, [id]);
     return result;
   }
 
@@ -27,12 +26,14 @@ export default class Projects {
   }
 
   async addProject() {
+    // TODO: Insert member's Id into array of project_members
     // takes an object with name, description and owner (user id) as parameter
-    const { name, description, owner } = this.req.body;
+    const { name, description, owner, members } = this.req.body;
     const query =
-      "INSERT INTO Projects(project_name, project_description, project_owner) VALUES($1, $2, $3)";
+      "INSERT INTO Projects(project_name, project_description, project_owner, project_members) VALUES($1, $2, $3, ARRAY $4)";
+
     const values = [name, description, parseInt(owner)];
 
-    return await client.query(query, values);
+    const projectResult = await client.query(query, values);
   }
 }

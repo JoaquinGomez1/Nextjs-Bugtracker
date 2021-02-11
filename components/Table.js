@@ -264,7 +264,7 @@ export default function EnhancedTable({ rows, isLoading }) {
                   .map((row, index) => {
                     const labelId = `enhanced-table-checkbox-${index}`;
                     return (
-                      <Link key={index} href={row.url}>
+                      <Link key={index} href={"/projects/" + row.id}>
                         <TableRow
                           hover
                           onClick={(event) => handleClick(event, row.url)}

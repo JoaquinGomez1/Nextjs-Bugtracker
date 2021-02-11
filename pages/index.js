@@ -1,43 +1,40 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { Container, Typography } from "@material-ui/core";
 import Table from "../components/Table";
 import { ProjectsContext } from "../context/projects";
-import { UserContext } from "../context/user";
+import fetch from "isomorphic-unfetch";
+import headers from "../headers";
 
-export default function Index({ response }) {
+export default function Index({ resultProjects }) {
   const { projects, setProjects } = useContext(ProjectsContext);
-  const { currentUser } = useContext(UserContext);
-  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const reqHeaders = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user_id: currentUser.id }),
-    };
-
-    fetch("http://localhost:3000/api/projects", reqHeaders)
-      .then((response) => response.json())
-      .then((json) => {
-        json.forEach((object) => {
-          object.url = "/projects/" + `${object.id}`;
-        });
-
-        if (json && Array.isArray(json)) {
-          setProjects(json);
-          setIsLoading(false);
-        }
-      });
-  }, []);
-
-  if (response) setProjects(response);
+  if (resultProjects) setProjects(resultProjects);
 
   return (
     <Container maxWidth="lg">
       <Typography variant="h2" color="secondary">
         Welcome
       </Typography>
-      <Table isLoading={isLoading} rows={projects} />
+      <Table rows={projects} />
     </Container>
   );
 }
+
+Index.getInitialProps = async (ctx) => {
+  if (ctx.req) {
+    // Server side rendering
+    const cookie = ctx.req.headers.cookie; // append cookie in server side rendering
+    const URL = process.env.BACKEND_URL + "/projects";
+    const req = await fetch(URL, { ...headers, headers: { cookie: cookie } });
+    const res = await req.json();
+
+    return { resultProjects: res };
+  } else {
+    // Client side rendering
+    const URL = process.env.BACKEND_URL + "/projects";
+    const req = await fetch(URL);
+    const res = await req.json();
+
+    return { resultProjects: res };
+  }
+};
