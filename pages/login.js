@@ -1,4 +1,11 @@
-import { Paper, Button, TextField, Typography } from "@material-ui/core";
+import { useContext } from "react";
+import {
+  Paper,
+  Button,
+  TextField,
+  Typography,
+  CircularProgress,
+} from "@material-ui/core";
 import styles from "../styles/Login.module.css";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { useState } from "react";
@@ -6,6 +13,8 @@ import Link from "next/link";
 import MeetingRoomIcon from "@material-ui/icons/MeetingRoom";
 import headers from "../headers";
 import fetch from "isomorphic-unfetch";
+import { useRouter } from "next/router";
+import { UserContext } from "../context/user";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -44,9 +53,12 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Login() {
   const [userdata, setUserData] = useState({ username: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false);
+  const { setCurrentUser } = useContext(UserContext);
   const classes = useStyles();
   const theme = useTheme();
   const isLightMode = theme.palette.type === "light" ? true : false;
+  const router = useRouter();
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -54,13 +66,19 @@ export default function Login() {
   };
 
   const handleSubmit = async () => {
+    setIsLoading(true);
     const reqHeaders = headers;
     reqHeaders.method = "POST";
     reqHeaders.body = JSON.stringify(userdata);
     const URL = process.env.BACKEND_URL + "/user/login";
     const req = await fetch(URL, reqHeaders);
     const res = await req.json();
-    console.log(res);
+    setIsLoading(false);
+
+    if (req.status === 200) {
+      setCurrentUser(res);
+      router.push("/");
+    }
   };
 
   return (
@@ -97,8 +115,13 @@ export default function Login() {
             required
           />
         </form>
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
-          Log in
+        <Button
+          variant="contained"
+          disabled={isLoading}
+          color="primary"
+          onClick={handleSubmit}
+        >
+          {!isLoading ? "Log in" : <CircularProgress />}
         </Button>
         <Typography variant="subtitle2" className={classes.bottomText}>
           You don't have an account yet?

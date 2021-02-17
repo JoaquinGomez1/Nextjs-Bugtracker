@@ -1,7 +1,6 @@
 import User from "../../../controllers/user";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
-import verifyJWT from "../../../middlewares/verifyJWT";
 
 export default async (req, res) => {
   if (req.method === "POST") {
@@ -21,12 +20,5 @@ export default async (req, res) => {
     };
     res.setHeader("Set-Cookie", cookie.serialize("auth", token, cookieOptions));
     res.json({ message: "Auth granted", data: result[0] });
-  }
-
-  // Returns user information if the user is logged in
-  if (req.method === "GET") {
-    verifyJWT(req, res, (user) => {
-      res.json(user);
-    });
   }
 };

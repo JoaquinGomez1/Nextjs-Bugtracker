@@ -188,7 +188,7 @@ export default function EnhancedTable({ rows, isLoading }) {
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [stillLoading, setStillLoading] = useState(isLoading);
+  const [stillLoading, setStillLoading] = useState(rows.length <= 0);
 
   useEffect(() => {
     setStillLoading(isLoading);
@@ -221,8 +221,6 @@ export default function EnhancedTable({ rows, isLoading }) {
     setRowsPerPage(parseInt(event.target.value));
     setPage(0);
   };
-
-  const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);

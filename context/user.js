@@ -1,13 +1,17 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
+import useFetch from "../hooks/useFetch";
 
 export const UserContext = createContext();
 
 export default function UserProvider(props) {
-  const [currentUser, setCurrentUser] = useState({
-    username: "Joaquin",
-    id: 1,
-    role: "admin",
-  });
+  const { data } = useFetch(process.env.BACKEND_URL + "/user");
+  const [currentUser, setCurrentUser] = useState(data || {});
+
+  useEffect(() => {
+    if (data) {
+      setCurrentUser(data);
+    }
+  }, [data]);
 
   return (
     <UserContext.Provider {...props} value={{ currentUser, setCurrentUser }} />

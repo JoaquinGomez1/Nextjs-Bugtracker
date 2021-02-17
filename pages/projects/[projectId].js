@@ -4,7 +4,6 @@ import {
   Typography,
   Divider,
   Box,
-  Grid,
   Button,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -31,7 +30,7 @@ const mockData = {
       status: "pending",
     },
   ],
-  author: "Tefi",
+  author: "Joaquin",
   members: [{ id: Math.random(), name: "Juan" }],
 };
 
@@ -91,7 +90,7 @@ export default function ProjectPage() {
           <Typography variant="h3" color="secondary">
             {mockData.title}
           </Typography>
-          <Grid alignItems="center">
+          <Box alignItems="center">
             <Typography variant="h4" className={classes.author}>
               <PersonIcon />
               {mockData.author}
@@ -99,7 +98,7 @@ export default function ProjectPage() {
             <Button>
               <KeyboardArrowDownIcon /> View members
             </Button>
-          </Grid>
+          </Box>
         </Box>
         <Typography variant="h5" className={classes.subtitle}>
           Issues:{" "}

@@ -1,7 +1,9 @@
+import { useContext } from "react";
 import { AppBar, Toolbar, Container } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import BugReportIcon from "@material-ui/icons/BugReport";
 import Link from "next/link";
+import { UserContext } from "../context/user";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,10 +38,13 @@ const useStyles = makeStyles((theme) => ({
 const linkList = [
   { text: "Login", url: "/login", auth: false },
   { text: "Register", url: "/register", auth: false },
+  { text: "Account", url: "/user", auth: true },
 ];
 
 export default function Navbar() {
   const classes = useStyles();
+  const { currentUser } = useContext(UserContext);
+  const userLoggedIn = Object.keys(currentUser).length >= 1;
   return (
     <AppBar position="static">
       <Container maxWidth="lg">
@@ -53,13 +58,23 @@ export default function Navbar() {
             </h2>
           </Link>
           <ul className={classes.liContainer}>
-            {linkList.map(({ text, url }) => (
-              <li key={url} className={classes.liContainer}>
-                <Link href={url}>
-                  <a> {text} </a>
-                </Link>
-              </li>
-            ))}
+            {linkList.map(({ text, url, auth }) =>
+              userLoggedIn
+                ? auth === true && (
+                    <li key={url} className={classes.liContainer}>
+                      <Link href={url}>
+                        <a> {text} </a>
+                      </Link>
+                    </li>
+                  )
+                : auth === false && (
+                    <li key={url} className={classes.liContainer}>
+                      <Link href={url}>
+                        <a> {text} </a>
+                      </Link>
+                    </li>
+                  )
+            )}
           </ul>
         </Toolbar>
       </Container>
