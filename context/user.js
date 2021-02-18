@@ -9,7 +9,9 @@ export default function UserProvider(props) {
 
   useEffect(() => {
     if (data) {
-      setCurrentUser(data);
+      if (data.username || !data.message) {
+        setCurrentUser(data);
+      }
     }
   }, [data]);
 

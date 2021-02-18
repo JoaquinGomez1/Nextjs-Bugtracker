@@ -44,7 +44,7 @@ const linkList = [
 export default function Navbar() {
   const classes = useStyles();
   const { currentUser } = useContext(UserContext);
-  const userLoggedIn = Object.keys(currentUser).length >= 1;
+  const userLoggedIn = currentUser && Object.keys(currentUser).length >= 1;
   return (
     <AppBar position="static">
       <Container maxWidth="lg">
