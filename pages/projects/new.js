@@ -38,13 +38,14 @@ export default function NewProject() {
   };
 
   const handleSubmit = async () => {
+    console.log("handle submit");
     const URL = process.env.BACKEND_URL + "/projects";
     const thereAreNoUndefinedValues = Object.values(fieldsValue).some(
       (value) => !value
     );
     const thereAreMembers = members.length >= 1;
 
-    if (thereAreNoUndefinedValues && thereAreMembers) {
+    if (!thereAreNoUndefinedValues && thereAreMembers) {
       const data = {
         owner: currentUser.id,
         name: fieldsValue.projectName,
@@ -58,6 +59,7 @@ export default function NewProject() {
 
       const req = await fetch(URL, reqHeaders);
       const res = await req.json();
+
       if (req.status === 200) setProjects([...projects, { res }]);
     }
   };

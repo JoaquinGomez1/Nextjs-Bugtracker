@@ -2,8 +2,10 @@ import { useContext } from "react";
 import { Container, Typography } from "@material-ui/core";
 import Table from "../components/Table";
 import { ProjectsContext } from "../context/projects";
-import authenticatedRequest from "../libs/authRequest";
 import { UserContext } from "../context/user";
+
+import authenticatedRequest from "../libs/authRequest";
+import protectedRequest from "../libs/protectedRequest";
 
 export default function Index({ resultProjects }) {
   const { projects, setProjects } = useContext(ProjectsContext);
@@ -25,18 +27,10 @@ export default function Index({ resultProjects }) {
 }
 
 export async function getServerSideProps(ctx) {
-  const result = await authenticatedRequest(ctx, "/user");
-
-  if (!result || result.message) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
+  const result = await protectedRequest(ctx, "/login");
 
   const resultProjects = await authenticatedRequest(ctx, "/projects");
 
+  if (!result.auth) return result;
   return { props: { resultProjects } };
 }

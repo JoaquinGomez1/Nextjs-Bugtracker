@@ -1,9 +1,46 @@
-import { Container } from "@material-ui/core";
+import { useContext, useEffect } from "react";
+import { Container, Button } from "@material-ui/core";
+import headers from "../../headers";
+import { UserContext } from "../../context/user";
+import { useRouter } from "next/router";
+
+import protectedRequest from "../../libs/protectedRequest";
 
 export default function Index() {
+  const { currentUser, setCurrentUser } = useContext(UserContext);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!currentUser || Object.keys(currentUser).length <= 0) {
+      router.push("/login");
+    }
+  }, [currentUser]);
+
+  const handleLogout = async () => {
+    const reqHeaders = headers;
+    reqHeaders.method = "DELETE";
+
+    const req = await fetch(
+      process.env.BACKEND_URL + "/user/logout",
+      reqHeaders
+    );
+
+    if (req.status === 200) setCurrentUser({});
+  };
+
   return (
     <Container maxWidth="lg">
       <h2>Current User</h2>
+      <Button variant="contained" color="primary" onClick={handleLogout}>
+        Log Out
+      </Button>
     </Container>
   );
+}
+
+export async function getServerSideProps(ctx) {
+  const result = await protectedRequest(ctx, "/login");
+
+  if (!result.auth) return result;
+  return { props: { result } };
 }

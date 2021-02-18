@@ -9,13 +9,13 @@ export default async function (req, res) {
       if (!response || response.rows.length <= 0)
         return res.status(400).json({ message: "No result" });
 
-      return res.json(response.rows);
+      return res.status(200).json(response.rows);
     });
   }
 
   // Add a project to a user
   if (req.method === "PUT") {
     const response = await new Project(req).addProject();
-    return res.json(response.rows);
+    return res.status(200).json(response.rows);
   }
 }

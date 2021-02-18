@@ -28,12 +28,13 @@ export default class Projects {
   async addProject() {
     // TODO: Insert member's Id into array of project_members
     // takes an object with name, description and owner (user id) as parameter
-    const { name, description, owner, members } = this.req.body;
+    const { name, description, owner } = this.req.body;
     const query =
-      "INSERT INTO Projects(project_name, project_description, project_owner, project_members) VALUES($1, $2, $3, ARRAY $4)";
+      "INSERT INTO Projects(project_name, project_description, project_owner) VALUES($1, $2, $3)";
 
     const values = [name, description, parseInt(owner)];
 
     const projectResult = await client.query(query, values);
+    return projectResult;
   }
 }

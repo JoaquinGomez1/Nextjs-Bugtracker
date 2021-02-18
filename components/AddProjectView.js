@@ -133,7 +133,8 @@ export default function AddProjectView({ actions }) {
             Add project
           </Button>
         </Container>
-        {/* <pre>{JSON.stringify(fieldsValue, null, 4)}</pre> */}
+        <pre>{JSON.stringify(fieldsValue, null, 4)}</pre>
+        <pre>{JSON.stringify(members, null, 4)}</pre>
       </Paper>
     </Container>
   );

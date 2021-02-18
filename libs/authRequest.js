@@ -3,7 +3,6 @@ import fetch from "isomorphic-unfetch";
 
 // handles initial data fetch both in the client side as well as SSR
 export default async function authRequest(ctx, url) {
-  console.log(url);
   if (ctx.req) {
     // Server side rendering
     const cookie = ctx.req.headers.cookie; // append cookie on SSR
