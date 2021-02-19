@@ -16,7 +16,9 @@ import Tooltip from "@material-ui/core/Tooltip";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import { Button, CircularProgress } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+import DeleteIcon from "@material-ui/icons/Delete";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -180,8 +182,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EnhancedTable({ rows, isLoading }) {
+export default function EnhancedTable({ rows, handleDeleteProject }) {
   const classes = useStyles();
+
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("name");
   const [selected, setSelected] = useState([]);
@@ -190,9 +193,7 @@ export default function EnhancedTable({ rows, isLoading }) {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [stillLoading, setStillLoading] = useState(rows.length <= 0);
 
-  useEffect(() => {
-    setStillLoading(isLoading);
-  }, [isLoading]);
+  const router = useRouter();
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -207,10 +208,6 @@ export default function EnhancedTable({ rows, isLoading }) {
       return;
     }
     setSelected([]);
-  };
-
-  const handleClick = (event, url) => {
-    console.log(url);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -262,25 +259,23 @@ export default function EnhancedTable({ rows, isLoading }) {
                   .map((row, index) => {
                     const labelId = `enhanced-table-checkbox-${index}`;
                     return (
-                      <Link key={index} href={"/projects/" + row.id}>
-                        <TableRow
-                          hover
-                          onClick={(event) => handleClick(event, row.url)}
-                          tabIndex={-1}
-                          className={classes.row}
-                        >
-                          <TableCell component="th" id={labelId} scope="row">
-                            {row.name || row.project_name}
-                          </TableCell>
-                          <TableCell align="right">{row.issues || 0}</TableCell>
-                          <TableCell align="right">
-                            {row.members || 0}
-                          </TableCell>
-                          <TableCell align="right">
-                            {row.actions || 0}
-                          </TableCell>
-                        </TableRow>
-                      </Link>
+                      <TableRow hover tabIndex={-1} className={classes.row}>
+                        <TableCell component="th" id={labelId} scope="row">
+                          {row.name || row.project_name}
+                        </TableCell>
+                        <TableCell align="right">{row.issues || 0}</TableCell>
+                        <TableCell align="right">
+                          {row.project_members?.length || 0}
+                        </TableCell>
+                        <TableCell align="right">
+                          <Button
+                            color="primary"
+                            onClick={() => handleDeleteProject(row.id, index)}
+                          >
+                            <DeleteIcon />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
                     );
                   })
               )}

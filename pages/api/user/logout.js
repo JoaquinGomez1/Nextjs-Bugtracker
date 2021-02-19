@@ -3,7 +3,7 @@ import { serialize } from "cookie";
 
 export default async (req, res) => {
   // Log a user out
-  if (req.method === "DELETE") {
+  if (req.method === "GET") {
     verifyJWT(req, res, (user) => {
       if (user) {
         res.setHeader(

@@ -9,10 +9,30 @@ export default class Projects {
   async view(id) {
     // Create a query for the database
     const query =
-      "SELECT Projects.id,project_name,project_owner,username, user_role FROM Projects JOIN Users ON project_owner = Users.id WHERE Users.id = $1";
-
+      "SELECT Projects.id, project_name, project_owner, project_members, username, user_role FROM Projects JOIN Users ON project_owner = Users.id WHERE Users.id = $1";
     const result = await client.query(query, [id]);
     return result;
+  }
+
+  async viewById() {
+    const id = this.req.query?.id;
+    const query = `
+      (
+        SELECT Projects.id, project_name,project_description, project_owner, project_members, username AS project_owner_name 
+      FROM Projects 
+      LEFT JOIN Users 
+      ON Users.id = project_owner
+      WHERE Projects.id = $1
+      
+      )
+    
+      `;
+    const result = await client.query(query, [id]);
+    return result?.rows;
+  }
+
+  async getMembers() {
+    const idsArray = this.req.body?.members;
   }
 
   // Returns all issues of a specific project
@@ -25,16 +45,34 @@ export default class Projects {
     return result;
   }
 
+  // Adds one project to the projects table
   async addProject() {
-    // TODO: Insert member's Id into array of project_members
-    // takes an object with name, description and owner (user id) as parameter
-    const { name, description, owner } = this.req.body;
-    const query =
-      "INSERT INTO Projects(project_name, project_description, project_owner) VALUES($1, $2, $3)";
+    // takes an object with name, description, owner and members Int[] (user id) as parameter
+    const { name, description, owner, members } = this.req.body;
 
-    const values = [name, description, parseInt(owner)];
+    const greatestMemberIDQuery =
+      "SELECT id FROM Users ORDER BY id DESC LIMIT 1";
+    const greatestMemberID = await client.query(greatestMemberIDQuery);
+
+    // Remove members that do not exist in the database yet
+    const filteredMembers = [
+      ...new Set(members.filter((id) => id <= greatestMemberID?.rows[0]?.id)),
+    ];
+
+    const query =
+      "INSERT INTO Projects(project_name, project_description, project_owner, project_members) VALUES($1, $2, $3, $4)";
+
+    const values = [name, description, owner, filteredMembers];
 
     const projectResult = await client.query(query, values);
     return projectResult;
+  }
+
+  // Deletes one project from the table
+  async delete() {
+    const { id } = this.req.body;
+    const query = "DELETE FROM Projects WHERE Projects.id = $1";
+    const result = await client.query(query, [id]);
+    return result;
   }
 }

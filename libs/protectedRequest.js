@@ -1,7 +1,7 @@
-import authenticatedRequest from "../libs/authRequest";
+import requestWithCredentials from "../libs/authRequest";
 
 export default async function protectedRequest(ctx, redirectUrl) {
-  const result = await authenticatedRequest(ctx, "/user");
+  const result = await requestWithCredentials(ctx, "/user");
 
   if (!result || result.message) {
     return {

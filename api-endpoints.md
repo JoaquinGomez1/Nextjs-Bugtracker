@@ -2,6 +2,11 @@
 
 |             Route | method |       parameters       | returns |
 | ----------------: | :----: | :--------------------: | ------: |
-|        /projects/ |  POST  |        user_id         |   Array |
-|        /projects/ |  PUT   | name,description,owner |   Array |
+|         /projects |  GET   |        user_id         |   Array |
+|         /projects |  PUT   | name,description,owner |   Array |
 | /projects/issues/ |  POST  |       project_id       |   Array |
+| /projects/delete/ | DELETE |       project_id       |   Array |
+|                   |        |                        |         |
+|             /user |  GET   |           -            |  Object |
+|       /user/login |  GET   |           -            |  Object |
+|      /user/logout |  GET   |           -            |  Object |

@@ -1,5 +1,4 @@
 import { makeStyles } from "@material-ui/core/styles";
-import AddIcon from "@material-ui/icons/Add";
 import {
   Container,
   Paper,
@@ -7,7 +6,10 @@ import {
   TextField,
   Button,
   Divider,
+  Box,
 } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
+import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,9 +48,22 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: "nowrap",
     textOverflow: "ellipsis",
   },
+  memberBox: {
+    padding: " 4px",
+    borderRadius: "4px",
+    margin: "4px 0 ",
+
+    "&:hover": {
+      backgroundColor: "rgba(0,0,0,.2)",
+      cursor: "pointer",
+    },
+  },
 
   submitButton: {
     padding: `10px 0 `,
+  },
+  deleteIcon: {
+    "&:hover": { color: theme.palette.primary.light },
   },
 }));
 
@@ -60,6 +75,7 @@ export default function AddProjectView({ actions }) {
     disableButton,
     handleSubmit,
     members,
+    removeMemberFromList,
   } = actions;
   const classes = useStyles();
 
@@ -95,11 +111,12 @@ export default function AddProjectView({ actions }) {
             <div className={classes.addMembersArea + " " + classes.texfield}>
               <TextField
                 variant="outlined"
+                type="number"
                 name="member"
                 fullWidth
                 autoComplete="false"
                 placeholder="Project Member Id"
-                value={fieldsValue.member.name}
+                value={fieldsValue.member}
               />
               <Button
                 variant="outlined"
@@ -115,8 +132,21 @@ export default function AddProjectView({ actions }) {
             <Paper elevation={2} className={classes.membersList}>
               <Typography variant="h5"> Member's List</Typography>
               <Divider />
-              {members.map((member) => (
-                <Typography variant="h6"> {member.name} </Typography>
+              {members.map((member, index) => (
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  className={classes.memberBox}
+                  key={member}
+                >
+                  <Typography variant="h6"> {member} </Typography>
+                  <HighlightOffIcon
+                    className={classes.deleteIcon}
+                    color="primary"
+                    onClick={() => removeMemberFromList(index)}
+                  />
+                </Box>
               ))}
             </Paper>
           </div>

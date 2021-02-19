@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Container, Typography } from "@material-ui/core";
 import Table from "../components/Table";
 import { ProjectsContext } from "../context/projects";
@@ -7,13 +7,37 @@ import { UserContext } from "../context/user";
 import authenticatedRequest from "../libs/authRequest";
 import protectedRequest from "../libs/protectedRequest";
 
+import headers from "../headers";
+
 export default function Index({ resultProjects }) {
   const { projects, setProjects } = useContext(ProjectsContext);
   const { currentUser } = useContext(UserContext);
   const thereIsNoUserLoggedIn =
     currentUser && Object.keys(currentUser).length <= 0;
 
-  if (resultProjects) setProjects(resultProjects);
+  useEffect(() => {
+    if (resultProjects) setProjects(resultProjects);
+  }, []);
+
+  const handleDeleteProject = async (id, index) => {
+    console.log("CLicked", id, index);
+    const reqHeaders = headers;
+    reqHeaders.method = "DELETE";
+    reqHeaders.body = JSON.stringify({ id });
+
+    const req = await fetch(
+      process.env.BACKEND_URL + "/projects/delete",
+      reqHeaders
+    );
+
+    if (req.status === 200) {
+      console.log("deleting from frontend");
+      const projectsCopy = [...projects];
+      projectsCopy.splice(index, 1);
+      setProjects(projectsCopy);
+      console.log("Should be deleted ...");
+    }
+  };
 
   return (
     <Container maxWidth="lg">
@@ -21,7 +45,9 @@ export default function Index({ resultProjects }) {
         Welcome
       </Typography>
 
-      {!thereIsNoUserLoggedIn && <Table rows={projects} />}
+      {!thereIsNoUserLoggedIn && (
+        <Table handleDeleteProject={handleDeleteProject} rows={projects} />
+      )}
     </Container>
   );
 }

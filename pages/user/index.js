@@ -1,6 +1,5 @@
 import { useContext, useEffect } from "react";
-import { Container, Button } from "@material-ui/core";
-import headers from "../../headers";
+import { Container, Button, Typography } from "@material-ui/core";
 import { UserContext } from "../../context/user";
 import { useRouter } from "next/router";
 
@@ -17,20 +16,15 @@ export default function Index() {
   }, [currentUser]);
 
   const handleLogout = async () => {
-    const reqHeaders = headers;
-    reqHeaders.method = "DELETE";
-
-    const req = await fetch(
-      process.env.BACKEND_URL + "/user/logout",
-      reqHeaders
-    );
+    const req = await fetch(process.env.BACKEND_URL + "/user/logout");
 
     if (req.status === 200) setCurrentUser({});
   };
 
   return (
     <Container maxWidth="lg">
-      <h2>Current User</h2>
+      <Typography variant="h3">Current User</Typography>
+      <h3>{currentUser?.username}</h3>
       <Button variant="contained" color="primary" onClick={handleLogout}>
         Log Out
       </Button>
