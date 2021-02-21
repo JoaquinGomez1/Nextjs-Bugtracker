@@ -6,8 +6,8 @@ export default async function (req, res) {
   if (req.method === "GET") {
     verifyJWT(req, res, async ({ id }) => {
       const response = await new Project(req).view(id);
-      if (!response || response.rows.length <= 0)
-        return res.status(400).json({ message: "No result" });
+      if (!response)
+        return res.status(500).json({ message: "Something went wrong" });
 
       return res.status(200).json(response.rows);
     });

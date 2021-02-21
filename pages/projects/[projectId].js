@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Container,
   Paper,
@@ -8,37 +9,13 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import PersonIcon from "@material-ui/icons/Person";
+import AddIcon from "@material-ui/icons/Add";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
+import NewIssueModal from "../../components/NewIssueModal";
 
-const mockData = {
-  title: "My Project",
-  issues: [
-    {
-      id: Math.random(),
-      title: "Issue #1",
-      author: "Juancito",
-      date: new Date(),
-      comments: [],
-      status: "pending",
-    },
-    {
-      id: Math.random(),
-      title: "Issue #2",
-      author: "Pedrito",
-      date: new Date(),
-      comments: [],
-      status: "pending",
-    },
-  ],
-  author: "Joaquin",
-  members: [{ id: Math.random(), name: "Juan" }],
-};
+import headers from "../../headers";
 
-const commentSchema = {
-  author: "User",
-  date: new Date(),
-  role: "contributor / owner ",
-};
+import authenticatedRequest from "../../libs/authRequest";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -75,8 +52,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ProjectPage() {
+export default function ProjectPage({ projectData, projectIssues }) {
+  const [project] = useState(projectData);
   const classes = useStyles();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [issues, setIssues] = useState([]);
+
+  const handleModalOpen = () => setModalOpen(true);
+  const handleModalClose = () => setModalOpen(false);
+  const handleSubmit = async (data) => {
+    setIssues([...issues, data]);
+    setModalOpen(false);
+
+    const reqHeaders = headers;
+    reqHeaders.method = "PUT";
+    reqHeaders.body = JSON.stringify({ ...data, projectId: project["id"] });
+    const req = await fetch(
+      process.env.BACKEND_URL + "/projects/issues/new",
+      reqHeaders
+    );
+    if (req.status === 200) return console.log("added");
+  };
 
   return (
     <Container maxWidth="lg">
@@ -88,38 +84,77 @@ export default function ProjectPage() {
           justifyContent="space-between"
         >
           <Typography variant="h3" color="secondary">
-            {mockData.title}
+            {project.project_name}
           </Typography>
           <Box alignItems="center">
             <Typography variant="h4" className={classes.author}>
               <PersonIcon />
-              {mockData.author}
+              {project.project_owner_name}
             </Typography>
             <Button>
               <KeyboardArrowDownIcon /> View members
             </Button>
           </Box>
         </Box>
-        <Typography variant="h5" className={classes.subtitle}>
-          Issues:{" "}
-        </Typography>
+        <Box>
+          <Typography variant="h6">Description: </Typography>
+          <Typography variant="body1">{project.project_description}</Typography>
+        </Box>
+        <Box
+          display="flex"
+          className={classes.subtitle}
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Typography variant="h5">Issues:</Typography>
+          <Button onClick={handleModalOpen}>
+            <AddIcon color="secondary" />
+            Add Issue
+          </Button>
+        </Box>
         <Divider className={classes.subtitle} />
-
+        <NewIssueModal
+          open={modalOpen}
+          onClose={handleModalClose}
+          onSubmit={handleSubmit}
+        />
         <div className={classes.table}>
-          {mockData.issues.map((issue) => (
-            <div key={issue.id} className={classes.row}>
-              <div>
-                <Typography variant="h6">{issue.title}</Typography>
-                <Typography variant="subtitle2" className={classes.author}>
-                  <PersonIcon />
-                  {issue.author}
-                </Typography>
+          {issues?.length <= 0 ? (
+            <Typography style={{ textAlign: "center" }} variant="h6">
+              There are no Issues!
+            </Typography>
+          ) : (
+            issues.map((issue) => (
+              <div key={issue.id} className={classes.row}>
+                <div>
+                  <Typography variant="h6">{issue.title}</Typography>
+                  <Typography variant="subtitle2" className={classes.author}>
+                    <PersonIcon />
+                    {issue.author}
+                  </Typography>
+                </div>
+                <p>{new Date().toISOString()}</p>
               </div>
-              <p>{issue.date.toISOString()}</p>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </Paper>
     </Container>
   );
+}
+
+export async function getServerSideProps(ctx) {
+  const projectData = await authenticatedRequest(
+    ctx,
+    `/projects/${ctx.query.projectId}`
+  );
+  // if there is a message it means something went wrong
+  if (projectData.message)
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  return { props: { projectData } };
 }

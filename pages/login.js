@@ -76,7 +76,7 @@ export default function Login() {
     setIsLoading(false);
 
     if (req.status === 200) {
-      setCurrentUser(res);
+      setCurrentUser(res?.data);
       router.push("/");
     }
   };

@@ -20,7 +20,6 @@ export default function Index({ resultProjects }) {
   }, []);
 
   const handleDeleteProject = async (id, index) => {
-    console.log("CLicked", id, index);
     const reqHeaders = headers;
     reqHeaders.method = "DELETE";
     reqHeaders.body = JSON.stringify({ id });
@@ -31,11 +30,9 @@ export default function Index({ resultProjects }) {
     );
 
     if (req.status === 200) {
-      console.log("deleting from frontend");
       const projectsCopy = [...projects];
       projectsCopy.splice(index, 1);
       setProjects(projectsCopy);
-      console.log("Should be deleted ...");
     }
   };
 

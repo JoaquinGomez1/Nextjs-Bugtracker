@@ -17,22 +17,33 @@ export default class Projects {
   async viewById() {
     const id = this.req.query?.id;
     const query = `
-      (
-        SELECT Projects.id, project_name,project_description, project_owner, project_members, username AS project_owner_name 
+      SELECT Projects.id, project_name,project_description, project_owner, project_members, username AS project_owner_name 
       FROM Projects 
       LEFT JOIN Users 
       ON Users.id = project_owner
       WHERE Projects.id = $1
-      
-      )
-    
       `;
-    const result = await client.query(query, [id]);
-    return result?.rows;
+
+    const queryResult = await client.query(query, [id]);
+    const members = await this.getMembers(id);
+    const project = queryResult.rows[0];
+    project.project_members = members ? members : undefined;
+
+    return project;
   }
 
-  async getMembers() {
-    const idsArray = this.req.body?.members;
+  // Returns a list of members of a particular project
+  async getMembers(id) {
+    const query = `
+      SELECT user_id, username, Users.user_role FROM Project_Users
+      LEFT JOIN Users
+      ON Users.id = user_id
+      WHERE Project_Users.project_id = $1
+    `;
+    const values = [id];
+    const result = await client.query(query, values);
+
+    return result?.rows;
   }
 
   // Returns all issues of a specific project
@@ -59,12 +70,32 @@ export default class Projects {
       ...new Set(members.filter((id) => id <= greatestMemberID?.rows[0]?.id)),
     ];
 
-    const query =
-      "INSERT INTO Projects(project_name, project_description, project_owner, project_members) VALUES($1, $2, $3, $4)";
-
+    const query = `
+    INSERT INTO 
+    Projects(project_name, project_description, project_owner, project_members)
+    VALUES($1, $2, $3, $4);
+    `;
     const values = [name, description, owner, filteredMembers];
-
     const projectResult = await client.query(query, values);
+
+    const insertIntoJoiningTable = `
+      INSERT INTO Project_Users(project_id, user_id)
+      SELECT Projects.id as project_id, Users.id as user_id 
+      FROM Users 
+      LEFT JOIN Projects 
+      ON Users.id = ANY (Projects.project_members)
+      WHERE projects.id = (
+          SELECT id from PROJECTS 
+          ORDER BY id DESC 
+          LIMIT 1
+    );
+    `;
+    try {
+      client.query(insertIntoJoiningTable);
+    } catch (err) {
+      console.log(err);
+    }
+
     return projectResult;
   }
 
@@ -74,5 +105,23 @@ export default class Projects {
     const query = "DELETE FROM Projects WHERE Projects.id = $1";
     const result = await client.query(query, [id]);
     return result;
+  }
+
+  //
+  async createNewIssue(data) {
+    const { title, description, severity, author, projectId } = data;
+    const query = `
+      INSERT INTO Issues(issue_name, issue_description, issue_severity, issue_author, issue_project)
+      VALUES ($1, $2,$3,$4,$5)
+    `;
+    const values = [title, description, severity, author, projectId];
+
+    try {
+      const result = await client.query(query, values);
+      if (result.rows) return true;
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
   }
 }

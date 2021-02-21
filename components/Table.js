@@ -214,6 +214,11 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
     setPage(newPage);
   };
 
+  const handleReRoute = ({ target }, id) => {
+    if (target.type !== "button" && target.type !== "span")
+      router.push(`/projects/${id}`);
+  };
+
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value));
     setPage(0);
@@ -244,22 +249,30 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
             />
             <TableBody style={{ position: "relative" }}>
               {stillLoading ? (
-                <CircularProgress
-                  size={50}
+                <Typography
                   style={{
                     position: "absolute",
                     left: "50%",
                     marginTop: "30px",
                   }}
                   className={classes.progress}
-                />
+                  variant="subtitle1"
+                >
+                  It appears that there are no projects to show
+                </Typography>
               ) : (
                 stableSort(rows, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
                     const labelId = `enhanced-table-checkbox-${index}`;
                     return (
-                      <TableRow hover tabIndex={-1} className={classes.row}>
+                      <TableRow
+                        onClick={(e) => handleReRoute(e, row.id)}
+                        hover
+                        tabIndex={-1}
+                        className={classes.row}
+                        key={row.id}
+                      >
                         <TableCell component="th" id={labelId} scope="row">
                           {row.name || row.project_name}
                         </TableCell>
