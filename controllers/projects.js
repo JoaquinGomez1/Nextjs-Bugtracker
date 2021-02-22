@@ -26,10 +26,19 @@ export default class Projects {
 
     const queryResult = await client.query(query, [id]);
     const members = await this.getMembers(id);
+    const issues = await this.getIssues(id);
     const project = queryResult.rows[0];
     project.project_members = members ? members : undefined;
+    project.project_issues = issues;
 
+    console.log(project);
     return project;
+  }
+
+  async getIssues(id) {
+    const query = `SELECT * FROM Issues WHERE issue_project = $1`;
+    const queryResult = await client.query(query, [id]);
+    return queryResult?.rows;
   }
 
   // Returns a list of members of a particular project

@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Container,
@@ -54,6 +54,11 @@ export default function NewIssueModal({ open, onClose, onSubmit }) {
     const { name, value } = target;
     setData({ ...data, [name]: value });
   };
+
+  // Set the author of the new issue once the user object loads
+  useEffect(() => {
+    setData({ ...data, author: currentUser.id });
+  }, [currentUser]);
 
   return (
     <Modal open={open} onClose={onClose}>

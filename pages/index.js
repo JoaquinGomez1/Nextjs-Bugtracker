@@ -17,7 +17,7 @@ export default function Index({ resultProjects }) {
 
   useEffect(() => {
     if (resultProjects) setProjects(resultProjects);
-  }, []);
+  }, [resultProjects]);
 
   const handleDeleteProject = async (id, index) => {
     const reqHeaders = headers;

@@ -184,16 +184,19 @@ const useStyles = makeStyles((theme) => ({
 
 export default function EnhancedTable({ rows, handleDeleteProject }) {
   const classes = useStyles();
-
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("name");
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
-  const [dense, setDense] = useState(false);
+  const [dense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [stillLoading, setStillLoading] = useState(rows.length <= 0);
+  const [noRows, setNoRows] = useState(rows.length <= 0);
 
   const router = useRouter();
+
+  useEffect(() => {
+    setNoRows(rows.length <= 0);
+  }, [rows]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -224,6 +227,8 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
     setPage(0);
   };
 
+  if (noRows) console.log(rows);
+
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
@@ -248,7 +253,7 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
               rowCount={rows.length}
             />
             <TableBody style={{ position: "relative" }}>
-              {stillLoading ? (
+              {noRows ? (
                 <Typography
                   style={{
                     position: "absolute",

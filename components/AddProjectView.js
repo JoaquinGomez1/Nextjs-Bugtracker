@@ -139,7 +139,7 @@ export default function AddProjectView({ actions }) {
                   justifyContent="space-between"
                   alignItems="center"
                   className={classes.memberBox}
-                  key={member}
+                  key={Math.random()}
                 >
                   <Typography variant="h6"> {member} </Typography>
                   <HighlightOffIcon

@@ -21,7 +21,7 @@ export default function NewProject() {
   const handleAddMember = () => {
     const isMemberNameEmpty = fieldsValue.member ? false : true;
     if (!isMemberNameEmpty) {
-      setMembers([...members, fieldsValue.member]);
+      setMembers([...new Set(members), fieldsValue.member]); // Prevent duplicates
       setFieldsValue({
         ...fieldsValue,
         member: "",

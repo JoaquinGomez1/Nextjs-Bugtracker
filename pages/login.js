@@ -57,7 +57,6 @@ export default function Login() {
   const { setCurrentUser } = useContext(UserContext);
   const classes = useStyles();
   const theme = useTheme();
-  const isLightMode = theme.palette.type === "light" ? true : false;
   const router = useRouter();
 
   const handleFormChange = (e) => {
@@ -84,11 +83,7 @@ export default function Login() {
   return (
     <div className={styles.container}>
       <Paper className={classes.paper}>
-        <Typography
-          variant="h6"
-          className={classes.headline}
-          color={isLightMode ? "black" : "white"}
-        >
+        <Typography variant="h6" className={classes.headline}>
           <div className={classes.icon}>
             <MeetingRoomIcon />
           </div>

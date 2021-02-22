@@ -12,6 +12,7 @@ import PersonIcon from "@material-ui/icons/Person";
 import AddIcon from "@material-ui/icons/Add";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import NewIssueModal from "../../components/NewIssueModal";
+import Issue from "../../components/Issue";
 
 import headers from "../../headers";
 
@@ -22,20 +23,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(4),
     marginTop: theme.spacing(4),
   },
-  row: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: theme.spacing(2),
-    "&:nth-child(even)": {
-      backgroundColor: "rgba(0,0,0,.1)",
-    },
-    "&:hover": {
-      transition: ".3s all ease-in-out",
-      backgroundColor: "rgba(0,0,0,.2)",
-      cursor: "pointer",
-    },
-  },
   title: {
     padding: "10px",
     marginBottom: theme.spacing(4),
@@ -43,26 +30,19 @@ const useStyles = makeStyles((theme) => ({
   subtitle: {
     marginBottom: theme.spacing(2),
   },
-  author: {
-    display: "flex",
-    alignItems: "center",
-    "& > svg": {
-      margin: "0 8px",
-    },
-  },
 }));
 
-export default function ProjectPage({ projectData, projectIssues }) {
+export default function ProjectPage({ projectData }) {
   const [project] = useState(projectData);
+  const [issues, setIssues] = useState(projectData.project_issues);
   const classes = useStyles();
   const [modalOpen, setModalOpen] = useState(false);
-  const [issues, setIssues] = useState([]);
 
   const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
   const handleSubmit = async (data) => {
-    setIssues([...issues, data]);
     setModalOpen(false);
+    setIssues([...issues, data]);
 
     const reqHeaders = headers;
     reqHeaders.method = "PUT";
@@ -124,18 +104,7 @@ export default function ProjectPage({ projectData, projectIssues }) {
               There are no Issues!
             </Typography>
           ) : (
-            issues.map((issue) => (
-              <div key={issue.id} className={classes.row}>
-                <div>
-                  <Typography variant="h6">{issue.title}</Typography>
-                  <Typography variant="subtitle2" className={classes.author}>
-                    <PersonIcon />
-                    {issue.author}
-                  </Typography>
-                </div>
-                <p>{new Date().toISOString()}</p>
-              </div>
-            ))
+            issues?.map((issue) => <Issue issue={issue} key={issue.id} />)
           )}
         </div>
       </Paper>
