@@ -218,7 +218,7 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
   };
 
   const handleReRoute = ({ target }, id) => {
-    if (target.type !== "button" && target.type !== "span")
+    if (target.type !== "button" || target.type !== "span")
       router.push(`/projects/${id}`);
   };
 

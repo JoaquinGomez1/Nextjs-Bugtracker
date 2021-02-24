@@ -18,7 +18,10 @@ export default function Index() {
   const handleLogout = async () => {
     const req = await fetch(process.env.BACKEND_URL + "/user/logout");
 
-    if (req.status === 200) setCurrentUser({});
+    if (req.status === 200) {
+      setCurrentUser({});
+      router.push("/login");
+    }
   };
 
   return (

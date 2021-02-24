@@ -54,7 +54,7 @@ export default function Issue({ issue }) {
             className={classes.chip}
             size="small"
             label={issue_severity || ""}
-            style={{ backgroundColor: bgColor }}
+            style={{ backgroundColor: bgColor, color: "white" }}
           />
         </Box>
         <Typography variant="subtitle2" className={classes.author}>

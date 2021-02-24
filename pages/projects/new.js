@@ -13,7 +13,7 @@ export default function NewProject() {
   const [fieldsValue, setFieldsValue] = useState({
     projectName: "",
     projectDescription: "",
-    member: { id: Math.random(), name: "" },
+    member: "",
   });
   const [disableButton, setDisableButton] = useState(true);
   const router = useRouter();
