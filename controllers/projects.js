@@ -29,10 +29,12 @@ export default class Projects {
     const members = await this.getMembers(id);
     const issues = await this.getIssues(id);
     const project = queryResult.rows[0];
+
+    if (!project) return [];
+
     project.project_members = members ? members : undefined;
     project.project_issues = issues;
 
-    console.log(project);
     return project;
   }
 
@@ -110,11 +112,19 @@ export default class Projects {
   }
 
   // Deletes one project from the table
+  // First we delete tables with foreign keys pointing towards the project
+  // And only then we delete given project
   async delete() {
     const { id } = this.req.body;
-    const query = "DELETE FROM Projects WHERE Projects.id = $1";
-    const result = await client.query(query, [id]);
-    return result;
+    const queryDeleteProjects = "DELETE FROM Projects WHERE Projects.id = $1";
+    const queryDeleteIssues = "DELETE FROM Issues WHERE issue_project = $1";
+    const queryDeleteUsers = "DELETE FROM Project_Users WHERE project_id = $1";
+
+    await client.query(queryDeleteIssues, [id]);
+    await client.query(queryDeleteUsers, [id]);
+    const resultProjects = await client.query(queryDeleteProjects, [id]);
+
+    return resultProjects;
   }
 
   //

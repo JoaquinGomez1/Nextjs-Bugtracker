@@ -218,7 +218,10 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
   };
 
   const handleReRoute = ({ target }, id) => {
-    if (target.type !== "button" || target.type !== "span")
+    // Only redirect if the element that was clicked
+    //is not one of the given conditions
+    const conditions = ["button", "span", "path"];
+    if (!conditions.includes(target?.tagName?.toLowerCase()))
       router.push(`/projects/${id}`);
   };
 
@@ -288,6 +291,7 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
                         <TableCell align="right">
                           <Button
                             color="primary"
+                            style={{ zIndex: 9999 }}
                             onClick={() => handleDeleteProject(row.id, index)}
                           >
                             <DeleteIcon />
