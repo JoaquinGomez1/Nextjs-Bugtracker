@@ -1,4 +1,5 @@
 import client from "../postgresql-client";
+import verifyJWT from "../middlewares/verifyJWT";
 
 export default class Projects {
   constructor(req) {
@@ -118,7 +119,11 @@ export default class Projects {
 
   //
   async createNewIssue(data) {
-    const { title, description, severity, author, projectId } = data;
+    let { title, description, severity, author, projectId } = data;
+    if (!author) {
+      const currentUserId = verifyJWT((user) => user.id);
+      author = currentUserId;
+    }
     const query = `
       INSERT INTO Issues(issue_name, issue_description, issue_severity, issue_author, issue_project)
       VALUES ($1, $2,$3,$4,$5)

@@ -17,6 +17,7 @@ import Issue from "../../components/Issue";
 import headers from "../../headers";
 
 import authenticatedRequest from "../../libs/authRequest";
+import UpdateMembersModal from "../../components/UpdateMembersModal";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,9 +38,11 @@ export default function ProjectPage({ projectData }) {
   const [issues, setIssues] = useState(projectData.project_issues);
   const classes = useStyles();
   const [modalOpen, setModalOpen] = useState(false);
+  const [viewMembersModal, setviewMembersModal] = useState(false);
 
   const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
+
   const handleSubmit = async (data) => {
     setModalOpen(false);
     setIssues([...issues, data]);
@@ -71,9 +74,11 @@ export default function ProjectPage({ projectData }) {
               <PersonIcon />
               {project.project_owner_name}
             </Typography>
-            <Button>
-              <KeyboardArrowDownIcon /> View members
-            </Button>
+            <Box display="grid" alignItems="center">
+              <Button onClick={() => setviewMembersModal(true)}>
+                <KeyboardArrowDownIcon /> View members
+              </Button>
+            </Box>
           </Box>
         </Box>
         <Box>
@@ -97,6 +102,12 @@ export default function ProjectPage({ projectData }) {
           open={modalOpen}
           onClose={handleModalClose}
           onSubmit={handleSubmit}
+        />
+        <UpdateMembersModal
+          modalOpen={viewMembersModal}
+          onClose={() => setviewMembersModal(false)}
+          members={project.project_members}
+          projectOwner={project.project_owner}
         />
         <div className={classes.table}>
           {issues?.length <= 0 ? (
