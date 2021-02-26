@@ -27,4 +27,35 @@ export default class User {
       return { status: "failed", message: "Password does not match" };
     else return userFound;
   }
+
+  async register() {
+    if (!this.req || !this.req.body)
+      return { message: "No body", status: "failed" };
+    const user = this.req.body;
+    const thereAreEmptyFields = Object(user).keys().length <= 0;
+
+    if (thereAreEmptyFields) return { status: "failed", message: "Empty body" };
+    if (user.password !== user.confirmPassword)
+      return { status: "failed", message: "Passwords do not match" };
+
+    const userNameExistsQuery = "SELECT * FROM Users WHERE username = $1";
+    const userNameExistResult = await client.query(userNameExistsQuery, [
+      user.username,
+    ]);
+    const userNameDoesExist = userNameExistResult?.rows?.length >= 0;
+
+    if (userNameDoesExist)
+      return { status: "failed", message: "Username already exists" };
+
+    const registerQuery =
+      "INSERT INTO Users(username, user_password, user_name) VALUES($1,$2,$3)";
+    const registerQueryValues = [user.username, user.password, user.user_name];
+
+    try {
+      client.query(registerQuery, registerQueryValues);
+      return { status: "success", message: "User registered succesfully" };
+    } catch (err) {
+      console.log(err);
+    }
+  }
 }
