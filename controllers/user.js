@@ -21,7 +21,13 @@ export default class User {
     if (!userFound || userFound.length <= 0)
       return { message: "User not found", status: "failed" };
 
-    const thereIsAMatch = password === userFound[0].user_password;
+    const userFoundPassword = userFound[0].user_password;
+    const encryptedPasswordMatches = await bcrypt.compare(
+      password,
+      userFoundPassword
+    );
+    const thereIsAMatch =
+      password === userFoundPassword || encryptedPasswordMatches;
 
     if (!thereIsAMatch)
       return { status: "failed", message: "Password does not match" };
@@ -47,9 +53,15 @@ export default class User {
     if (userNameDoesExist)
       return { status: "failed", message: "Username already exists" };
 
+    const encryptedPassword = await bcrypt.hash(user.password, 10);
+
     const registerQuery =
       "INSERT INTO Users(username, user_password, user_name) VALUES($1,$2,$3)";
-    const registerQueryValues = [user.username, user.password, user.user_name];
+    const registerQueryValues = [
+      user.username,
+      encryptedPassword,
+      user.user_name,
+    ];
 
     try {
       client.query(registerQuery, registerQueryValues);
