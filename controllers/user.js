@@ -6,7 +6,8 @@ export default class User {
     this.req = req;
   }
 
-  async login() {
+  async login(data) {
+    if (data) this.req.body = data;
     if (!this.req || !this.req.body)
       return { message: "No body", status: "failed" };
     const { username, password } = this.req.body;
@@ -38,7 +39,7 @@ export default class User {
     if (!this.req || !this.req.body)
       return { message: "No body", status: "failed" };
     const user = this.req.body;
-    const thereAreEmptyFields = Object(user).keys().length <= 0;
+    const thereAreEmptyFields = Object.values(user).some((field) => !field);
 
     if (thereAreEmptyFields) return { status: "failed", message: "Empty body" };
     if (user.password !== user.confirmPassword)
@@ -48,7 +49,7 @@ export default class User {
     const userNameExistResult = await client.query(userNameExistsQuery, [
       user.username,
     ]);
-    const userNameDoesExist = userNameExistResult?.rows?.length >= 0;
+    const userNameDoesExist = userNameExistResult?.rows?.length >= 1;
 
     if (userNameDoesExist)
       return { status: "failed", message: "Username already exists" };
@@ -56,7 +57,7 @@ export default class User {
     const encryptedPassword = await bcrypt.hash(user.password, 10);
 
     const registerQuery =
-      "INSERT INTO Users(username, user_password, user_name) VALUES($1,$2,$3)";
+      "INSERT INTO Users(username, user_password, user_name, user_role) VALUES($1,$2,$3, 'member')";
     const registerQueryValues = [
       user.username,
       encryptedPassword,
@@ -65,7 +66,11 @@ export default class User {
 
     try {
       client.query(registerQuery, registerQueryValues);
-      return { status: "success", message: "User registered succesfully" };
+      return {
+        status: "success",
+        message: "User registered succesfully",
+        data: user,
+      };
     } catch (err) {
       console.log(err);
     }

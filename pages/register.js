@@ -1,9 +1,14 @@
-import { Paper, Button, TextField, Typography } from "@material-ui/core";
+import { useState, useContext, useEffect } from "react";
+import { Paper, Button, TextField, Typography, Box } from "@material-ui/core";
 import styles from "../styles/Login.module.css";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import { useState } from "react";
 import Link from "next/link";
 import MeetingRoomIcon from "@material-ui/icons/MeetingRoom";
+import headers from "../headers";
+import { useRouter } from "next/router";
+import { UserContext } from "../context/user";
+import Alert from "../components/Alert";
+import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -41,20 +46,48 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Login() {
+  const { setCurrentUser } = useContext(UserContext);
+  const [showMessage, setShowMessage] = useState(false);
+  const [responseMessage, setResponseMessage] = useState();
   const [userdata, setUserData] = useState({
     username: "",
     password: "",
     confirmPassword: "",
-    name: "",
+    user_name: "",
   });
   const classes = useStyles();
   const theme = useTheme();
   const isLightMode = theme.palette.type === "light" ? true : false;
+  const router = useRouter();
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
     setUserData({ ...userdata, [name]: value });
   };
+
+  const handleSubmit = async () => {
+    const URL = process.env.BACKEND_URL + "/user/register";
+    const reqHeaders = headers;
+    reqHeaders.method = "POST";
+    reqHeaders.body = JSON.stringify(userdata);
+
+    const req = await fetch(URL, reqHeaders);
+    const res = await req.json();
+
+    if (req.status === 200) {
+      setCurrentUser(userdata);
+      setTimeout(() => router.push("/"), 3000);
+    }
+    setResponseMessage(res);
+    setShowMessage(true);
+  };
+
+  useEffect(() => {
+    if (showMessage)
+      setTimeout(() => {
+        setShowMessage(false);
+      }, 1500);
+  }, [showMessage]);
 
   return (
     <div className={styles.container}>
@@ -85,7 +118,7 @@ export default function Login() {
             placeholder="Name"
             variant="outlined"
             type="text"
-            name="name"
+            name="user_name"
             value={userdata.name}
             required
           />
@@ -108,7 +141,7 @@ export default function Login() {
             required
           />
         </form>
-        <Button variant="contained" color="primary">
+        <Button variant="contained" color="primary" onClick={handleSubmit}>
           Sign Up
         </Button>
         <Typography variant="subtitle2" className={classes.bottomText}>
@@ -124,6 +157,18 @@ export default function Login() {
             </Typography>
           </Link>
         </Typography>
+
+        {showMessage && (
+          // <Box style={{ position: "relative" }}>
+          <Alert success={responseMessage?.status === "success"}>
+            {responseMessage.message}
+            <HighlightOffIcon
+              style={{ cursor: "pointer" }}
+              onClick={() => setShowMessage(false)}
+            />
+          </Alert>
+          // </Box>
+        )}
       </Paper>
     </div>
   );
