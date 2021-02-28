@@ -15,6 +15,8 @@ import NewIssueModal from "../../components/NewIssueModal";
 import Issue from "../../components/Issue";
 
 import headers from "../../headers";
+import { motion, AnimatePresence } from "framer-motion";
+import { fadeIn as animations } from "../../libs/animations";
 
 import authenticatedRequest from "../../libs/authRequest";
 import UpdateMembersModal from "../../components/UpdateMembersModal";
@@ -58,68 +60,81 @@ export default function ProjectPage({ projectData }) {
   };
 
   return (
-    <Container maxWidth="lg">
-      <Paper className={classes.root}>
-        <Box
-          display="flex"
-          alignItems="center"
-          className={classes.title}
-          justifyContent="space-between"
+    <AnimatePresence>
+      <Container maxWidth="lg">
+        <motion.div
+          key="page"
+          variants={animations}
+          style={{ transformOrigin: "top" }}
+          initial="hidden"
+          animate="show"
+          exit="exit"
         >
-          <Typography variant="h3" color="secondary">
-            {project.project_name}
-          </Typography>
-          <Box alignItems="center">
-            <Typography variant="h4" className={classes.author}>
-              <PersonIcon />
-              {project.project_owner_name}
-            </Typography>
-            <Box display="grid" alignItems="center">
-              <Button onClick={() => setviewMembersModal(true)}>
-                <KeyboardArrowDownIcon /> View members
+          <Paper className={classes.root}>
+            <Box
+              display="flex"
+              alignItems="center"
+              className={classes.title}
+              justifyContent="space-between"
+            >
+              <Typography variant="h3" color="secondary">
+                {project.project_name}
+              </Typography>
+              <Box alignItems="center">
+                <Typography variant="h4" className={classes.author}>
+                  <PersonIcon />
+                  {project.project_owner_name}
+                </Typography>
+                <Box display="grid" alignItems="center">
+                  <Button onClick={() => setviewMembersModal(true)}>
+                    <KeyboardArrowDownIcon /> View members
+                  </Button>
+                </Box>
+              </Box>
+            </Box>
+            <Box>
+              <Typography variant="h6">Description: </Typography>
+              <Typography variant="body1">
+                {project.project_description}
+              </Typography>
+            </Box>
+            <Box
+              display="flex"
+              className={classes.subtitle}
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography variant="h5">Issues:</Typography>
+              <Button onClick={handleModalOpen}>
+                <AddIcon color="secondary" />
+                Add Issue
               </Button>
             </Box>
-          </Box>
-        </Box>
-        <Box>
-          <Typography variant="h6">Description: </Typography>
-          <Typography variant="body1">{project.project_description}</Typography>
-        </Box>
-        <Box
-          display="flex"
-          className={classes.subtitle}
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Typography variant="h5">Issues:</Typography>
-          <Button onClick={handleModalOpen}>
-            <AddIcon color="secondary" />
-            Add Issue
-          </Button>
-        </Box>
-        <Divider className={classes.subtitle} />
-        <NewIssueModal
-          open={modalOpen}
-          onClose={handleModalClose}
-          onSubmit={handleSubmit}
-        />
-        <UpdateMembersModal
-          modalOpen={viewMembersModal}
-          onClose={() => setviewMembersModal(false)}
-          members={project.project_members}
-          projectOwner={project.project_owner}
-        />
-        <div className={classes.table}>
-          {issues?.length <= 0 ? (
-            <Typography style={{ textAlign: "center" }} variant="h6">
-              There are no Issues!
-            </Typography>
-          ) : (
-            issues?.map((issue) => <Issue issue={issue} key={issue.id} />)
-          )}
-        </div>
-      </Paper>
-    </Container>
+            <Divider className={classes.subtitle} />
+            <NewIssueModal
+              open={modalOpen}
+              onClose={handleModalClose}
+              onSubmit={handleSubmit}
+            />
+            <UpdateMembersModal
+              modalOpen={viewMembersModal}
+              onClose={() => setviewMembersModal(false)}
+              members={project.project_members}
+              projectOwner={project.project_owner}
+            />
+            <div className={classes.table}>
+              {issues?.length <= 0 ? (
+                <Typography style={{ textAlign: "center" }} variant="h6">
+                  There are no Issues!
+                </Typography>
+              ) : (
+                issues?.map((issue) => <Issue issue={issue} key={issue.id} />)
+              )}
+            </div>
+          </Paper>
+        </motion.div>
+      </Container>
+    </AnimatePresence>
   );
 }
 

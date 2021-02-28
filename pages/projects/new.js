@@ -5,6 +5,8 @@ import fetch from "isomorphic-unfetch";
 import AddProjectView from "../../components/AddProjectView";
 import headers from "../../headers";
 import { useRouter } from "next/router";
+import { motion } from "framer-motion";
+import { fadeIn } from "../../libs/animations";
 
 export default function NewProject() {
   const { projects, setProjects } = useContext(ProjectsContext);
@@ -90,5 +92,14 @@ export default function NewProject() {
     fieldsValue,
   };
 
-  return <AddProjectView actions={methods} />;
+  return (
+    <motion.div
+      variants={fadeIn}
+      style={{ transformOrigin: "top" }}
+      animate="show"
+      initial="hidden"
+    >
+      <AddProjectView actions={methods} />
+    </motion.div>
+  );
 }

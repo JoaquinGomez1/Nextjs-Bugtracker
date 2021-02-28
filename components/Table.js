@@ -14,11 +14,16 @@ import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import FilterListIcon from "@material-ui/icons/FilterList";
-import { Button, CircularProgress } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Link from "next/link";
 import { useRouter } from "next/router";
+
+import { fadeIn, growFromLeft } from "../libs/animations";
+import { AnimatePresence, motion } from "framer-motion";
+
+const FramerTableRow = motion(TableRow);
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -34,16 +39,6 @@ function getComparator(order, orderBy) {
   return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
 }
 
 const headCells = [
@@ -236,90 +231,119 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
-          <Table
-            className={classes.table}
-            aria-labelledby="tableTitle"
-            size={dense ? "small" : "medium"}
-            aria-label="enhanced table"
-          >
-            <EnhancedTableHead
-              classes={classes}
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody style={{ position: "relative" }}>
-              {noRows ? (
-                <Typography
-                  style={{
-                    position: "absolute",
-                    left: "50%",
-                    marginTop: "30px",
-                  }}
-                  className={classes.progress}
-                  variant="subtitle1"
-                >
-                  It appears that there are no projects to show
-                </Typography>
-              ) : (
-                stableSort(rows, getComparator(order, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, index) => {
-                    const labelId = `enhanced-table-checkbox-${index}`;
-                    return (
-                      <TableRow
-                        onClick={(e) => handleReRoute(e, row.id)}
-                        hover
-                        tabIndex={-1}
-                        className={classes.row}
-                        key={row.id}
-                      >
-                        <TableCell component="th" id={labelId} scope="row">
-                          {row.name || row.project_name}
-                        </TableCell>
-                        <TableCell align="right">{row.issues || 0}</TableCell>
-                        <TableCell align="right">
-                          {row.project_members?.length || 0}
-                        </TableCell>
-                        <TableCell align="right">
-                          <Button
-                            color="primary"
-                            style={{ zIndex: 9999 }}
-                            onClick={() => handleDeleteProject(row.id, index)}
+    <motion.div
+      variants={fadeIn}
+      initial="hidden"
+      animate="show"
+      style={{
+        position: "relative",
+        transformOrigin: "top",
+        overflow: "hidden",
+      }}
+    >
+      <div className={classes.root}>
+        <Paper className={classes.paper}>
+          <EnhancedTableToolbar numSelected={selected.length} />
+          <TableContainer>
+            <Table
+              className={classes.table}
+              aria-labelledby="tableTitle"
+              size={dense ? "small" : "medium"}
+              aria-label="enhanced table"
+            >
+              <EnhancedTableHead
+                classes={classes}
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={handleSelectAllClick}
+                onRequestSort={handleRequestSort}
+                rowCount={rows.length}
+              />
+              <TableBody style={{ position: "relative" }}>
+                {noRows ? (
+                  <Typography
+                    style={{
+                      position: "absolute",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      marginTop: "30px",
+                      width: "15rem",
+                      textAlign: "center",
+                    }}
+                    className={classes.progress}
+                    variant="subtitle1"
+                  >
+                    It appears that there are no projects to show
+                  </Typography>
+                ) : (
+                  <AnimatePresence>
+                    {rows
+                      .slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
+                      .map((row, index) => {
+                        const labelId = `enhanced-table-checkbox-${index}`;
+                        return (
+                          <FramerTableRow
+                            variants={growFromLeft}
+                            initial="hidden"
+                            animate="show"
+                            exit="exit"
+                            custom={index}
+                            onClick={(e) => handleReRoute(e, row.id)}
+                            hover
+                            tabIndex={-1}
+                            className={classes.row}
+                            key={row.id}
+                            style={{ transformOrigin: "left" }}
                           >
-                            <DeleteIcon />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
-              )}
+                            <TableCell component="th" id={labelId} scope="row">
+                              {row.name || row.project_name}
+                            </TableCell>
+                            <TableCell align="right">
+                              {row.issues || 0}
+                            </TableCell>
+                            <TableCell align="right">
+                              {row.project_members?.length || 0}
+                            </TableCell>
+                            <TableCell align="right">
+                              <Button
+                                color="primary"
+                                style={{ zIndex: 9999 }}
+                                onClick={() =>
+                                  handleDeleteProject(row.id, index)
+                                }
+                              >
+                                <DeleteIcon />
+                              </Button>
+                            </TableCell>
+                          </FramerTableRow>
+                        );
+                      })}
+                  </AnimatePresence>
+                )}
 
-              {emptyRows > 0 && (
-                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      </Paper>
-    </div>
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+        </Paper>
+      </div>
+    </motion.div>
   );
 }

@@ -23,7 +23,6 @@ export default function Alert({ success, children }) {
     boxShadow: "4px 6px 4px rgba(0,0,0,.2)",
     backgroundColor,
     color: "#fff",
-    transition: "all .5s ease-in-out",
   };
 
   return <Box style={boxStyle}>{children}</Box>;
