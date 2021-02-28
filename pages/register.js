@@ -9,6 +9,10 @@ import { useRouter } from "next/router";
 import { UserContext } from "../context/user";
 import Alert from "../components/Alert";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
+import { AnimatePresence, motion } from "framer-motion";
+import { growY } from "../libs/animations";
+
+const FramerPaper = motion(Paper);
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -20,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "3px 3px 4px rgba(0,0,0,.1)",
   },
   paper: {
+    overflow: "hidden",
     maxWidth: "400px",
     display: "grid",
     boxShadow: "3px 3px 5px rgba(0,0,0,.2)",
@@ -82,6 +87,10 @@ export default function Login() {
     setShowMessage(true);
   };
 
+  const handleKeyPress = ({ key }) => {
+    if (key === "Enter") handleSubmit();
+  };
+
   useEffect(() => {
     if (showMessage)
       setTimeout(() => {
@@ -91,85 +100,102 @@ export default function Login() {
 
   return (
     <div className={styles.container}>
-      <Paper className={classes.paper}>
-        <Typography
-          variant="h6"
-          className={classes.headline}
-          color={isLightMode ? "black" : "white"}
+      <AnimatePresence>
+        <FramerPaper
+          variants={growY}
+          animate="show"
+          initial="hidden"
+          exit="exit"
+          className={classes.paper}
         >
-          <div className={classes.icon}>
-            <MeetingRoomIcon />
-          </div>
-          <br />
-          Sign up and start organizing your projects
-        </Typography>
-        <form onChange={handleFormChange} className={classes.form}>
-          <TextField
-            fullWidth
-            placeholder="Username"
-            variant="outlined"
-            type="text"
-            name="username"
-            value={userdata.username}
-            required
-          />
-          <TextField
-            fullWidth
-            placeholder="Name"
-            variant="outlined"
-            type="text"
-            name="user_name"
-            value={userdata.name}
-            required
-          />
-          <TextField
-            fullWidth
-            placeholder="Password"
-            variant="outlined"
-            type="password"
-            name="password"
-            value={userdata.password}
-            required
-          />
-          <TextField
-            fullWidth
-            placeholder="Confirm Password"
-            variant="outlined"
-            type="password"
-            name="confirmPassword"
-            value={userdata.confirmPassword}
-            required
-          />
-        </form>
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
-          Sign Up
-        </Button>
-        <Typography variant="subtitle2" className={classes.bottomText}>
-          Already have an account?
-          <br />
-          <Link href="/login">
-            <Typography
-              variant="inherit"
-              color="primary"
-              className={classes.link}
-            >
-              Sign in
-            </Typography>
-          </Link>
-        </Typography>
-
-        {showMessage && (
-          // <Box style={{ position: "relative" }}>
-          <Alert success={responseMessage?.status === "success"}>
-            {responseMessage.message}
-            <HighlightOffIcon
-              style={{ cursor: "pointer" }}
-              onClick={() => setShowMessage(false)}
+          <Typography
+            variant="h6"
+            className={classes.headline}
+            color={isLightMode ? "black" : "white"}
+          >
+            <div className={classes.icon}>
+              <MeetingRoomIcon />
+            </div>
+            <br />
+            Sign up and start organizing your projects
+          </Typography>
+          <form onChange={handleFormChange} className={classes.form}>
+            <TextField
+              fullWidth
+              placeholder="Username"
+              variant="outlined"
+              type="text"
+              name="username"
+              value={userdata.username}
+              onKeyPress={handleKeyPress}
+              required
             />
-          </Alert>
-          // </Box>
-        )}
-      </Paper>
+            <TextField
+              fullWidth
+              placeholder="Name"
+              variant="outlined"
+              type="text"
+              name="user_name"
+              value={userdata.name}
+              onKeyPress={handleKeyPress}
+              required
+            />
+            <TextField
+              fullWidth
+              placeholder="Password"
+              variant="outlined"
+              type="password"
+              name="password"
+              value={userdata.password}
+              onKeyPress={handleKeyPress}
+              required
+            />
+            <TextField
+              fullWidth
+              placeholder="Confirm Password"
+              variant="outlined"
+              type="password"
+              name="confirmPassword"
+              value={userdata.confirmPassword}
+              onKeyPress={handleKeyPress}
+              required
+            />
+          </form>
+          <Button
+            variant="contained"
+            color="primary"
+            onKeyPress={handleKeyPress}
+            onClick={handleSubmit}
+          >
+            Sign Up
+          </Button>
+          <Typography variant="subtitle2" className={classes.bottomText}>
+            Already have an account?
+            <br />
+            <Link href="/login">
+              <Typography
+                variant="inherit"
+                color="primary"
+                className={classes.link}
+              >
+                Sign in
+              </Typography>
+            </Link>
+          </Typography>
+
+          {showMessage && (
+            // <Box style={{ position: "relative" }}>
+            <Alert success={responseMessage?.status === "success"}>
+              {responseMessage.message}
+              <HighlightOffIcon
+                style={{ cursor: "pointer" }}
+                onClick={() => setShowMessage(false)}
+              />
+            </Alert>
+            // </Box>
+          )}
+        </FramerPaper>
+      </AnimatePresence>
     </div>
   );
 }

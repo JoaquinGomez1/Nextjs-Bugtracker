@@ -1,6 +1,9 @@
 import { Container, Modal, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
+import { motion, AnimatePresence } from "framer-motion";
+import { fadeIn } from "../libs/animations";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     position: "relative",
@@ -22,16 +25,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const MotionContainer = motion(Container);
+
 // Custom modal styling for this app
 export default function BaseModal({ children, open, onClose }) {
   const classes = useStyles();
   return (
-    <Container className={classes.root}>
-      <Modal open={open} onClose={onClose}>
-        <Container maxWidth="md" className={classes.container}>
-          <Paper className={classes.paper}>{children}</Paper>
-        </Container>
-      </Modal>
-    </Container>
+    <AnimatePresence>
+      <Container className={classes.root}>
+        <Modal open={open} onClose={onClose}>
+          <MotionContainer
+            variants={fadeIn}
+            initial="hidden"
+            animate="show"
+            exit="exit"
+            maxWidth="md"
+            className={classes.container}
+          >
+            <Paper className={classes.paper}>{children}</Paper>
+          </MotionContainer>
+        </Modal>
+      </Container>
+    </AnimatePresence>
   );
 }

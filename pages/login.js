@@ -15,6 +15,10 @@ import headers from "../headers";
 import fetch from "isomorphic-unfetch";
 import { useRouter } from "next/router";
 import { UserContext } from "../context/user";
+import { AnimatePresence, motion } from "framer-motion";
+import { growY } from "../libs/animations";
+
+const FramerPaper = motion(Paper);
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -26,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "3px 3px 4px rgba(0,0,0,.1)",
   },
   paper: {
+    overflow: "hidden",
     maxWidth: "400px",
     display: "grid",
     boxShadow: "3px 3px 5px rgba(0,0,0,.2)",
@@ -79,58 +84,74 @@ export default function Login() {
     }
   };
 
+  const handleKeyPress = ({ key }) => {
+    console.log(key);
+    if (key === "Enter") handleSubmit();
+  };
+
   return (
     <div className={styles.container}>
-      <Paper className={classes.paper}>
-        <Typography variant="h6" className={classes.headline}>
-          <div className={classes.icon}>
-            <MeetingRoomIcon />
-          </div>
-          <br />
-          Log in and manage your projects
-        </Typography>
-        <form onChange={handleFormChange} className={classes.form}>
-          <TextField
-            fullWidth
-            placeholder="Username"
-            variant="outlined"
-            type="text"
-            name="username"
-            value={userdata.username}
-            required
-          />
-          <TextField
-            fullWidth
-            placeholder="Password"
-            variant="outlined"
-            type="password"
-            name="password"
-            value={userdata.password}
-            required
-          />
-        </form>
-        <Button
-          variant="contained"
-          disabled={isLoading}
-          color="primary"
-          onClick={handleSubmit}
+      <AnimatePresence>
+        <FramerPaper
+          variants={growY}
+          animate="show"
+          initial="hidden"
+          exit="exit"
+          className={classes.paper}
         >
-          {!isLoading ? "Log in" : <CircularProgress />}
-        </Button>
-        <Typography variant="subtitle2" className={classes.bottomText}>
-          You don't have an account yet?
-          <br />
-          <Link href="/register">
-            <Typography
-              variant="inherit"
-              color="primary"
-              className={classes.link}
-            >
-              Sign up
-            </Typography>
-          </Link>
-        </Typography>
-      </Paper>
+          <Typography variant="h6" className={classes.headline}>
+            <div className={classes.icon}>
+              <MeetingRoomIcon />
+            </div>
+            <br />
+            Log in and manage your projects
+          </Typography>
+          <form onChange={handleFormChange} className={classes.form}>
+            <TextField
+              fullWidth
+              placeholder="Username"
+              variant="outlined"
+              type="text"
+              name="username"
+              value={userdata.username}
+              onKeyPress={handleKeyPress}
+              required
+            />
+            <TextField
+              fullWidth
+              placeholder="Password"
+              variant="outlined"
+              type="password"
+              name="password"
+              value={userdata.password}
+              onKeyPress={handleKeyPress}
+              required
+            />
+          </form>
+          <Button
+            variant="contained"
+            disabled={isLoading}
+            color="primary"
+            onClick={handleSubmit}
+            onKeyPress={handleKeyPress}
+          >
+            {!isLoading ? "Log in" : <CircularProgress />}
+          </Button>
+          <Typography variant="subtitle2" className={classes.bottomText}>
+            You don't have an account yet?
+            <br />
+            <Link href="/register">
+              <Typography
+                variant="inherit"
+                color="primary"
+                className={classes.link}
+              >
+                Sign up
+              </Typography>
+            </Link>
+          </Typography>
+        </FramerPaper>
+      </AnimatePresence>
     </div>
   );
 }

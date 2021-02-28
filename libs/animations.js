@@ -28,3 +28,9 @@ export const scaleY = {
     transition: { duration: 0.4 },
   },
 };
+
+export const growY = {
+  hidden: { height: 0, opacity: 0 },
+  show: { height: "auto", opacity: 1, transition: { duration: 0.4 } },
+  exit: { height: 0, opacity: 0 },
+};
