@@ -7,6 +7,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Head from "next/head";
 import ProjectsContext from "../context/projects";
 import UserContext from "../context/user";
+import { AnimatePresence } from "framer-motion";
 
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
@@ -26,7 +27,9 @@ function MyApp({ Component, pageProps }) {
             </Head>
             <CssBaseline />
             <Navbar />
-            <Component {...pageProps} />
+            <AnimatePresence exitBeforeEnter>
+              <Component {...pageProps} />
+            </AnimatePresence>
           </UserContext>
         </ProjectsContext>
       </ThemeProvider>

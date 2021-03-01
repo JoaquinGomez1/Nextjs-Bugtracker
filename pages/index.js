@@ -8,6 +8,10 @@ import authenticatedRequest from "../libs/authRequest";
 import protectedRequest from "../libs/protectedRequest";
 
 import headers from "../headers";
+import { motion } from "framer-motion";
+import { fadeIn } from "../libs/animations";
+
+const MotionContainer = motion(Container);
 
 export default function Index({ resultProjects }) {
   const { projects, setProjects } = useContext(ProjectsContext);
@@ -37,7 +41,13 @@ export default function Index({ resultProjects }) {
   };
 
   return (
-    <Container maxWidth="lg">
+    <MotionContainer
+      variants={fadeIn}
+      animate="show"
+      initial="hidden"
+      exit="exit"
+      maxWidth="lg"
+    >
       <Typography variant="h2" color="secondary">
         Welcome
       </Typography>
@@ -45,7 +55,7 @@ export default function Index({ resultProjects }) {
       {!thereIsNoUserLoggedIn && (
         <Table handleDeleteProject={handleDeleteProject} rows={projects} />
       )}
-    </Container>
+    </MotionContainer>
   );
 }
 

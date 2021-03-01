@@ -8,7 +8,7 @@ export const showAndDown = {
 export const fadeIn = {
   hidden: { opacity: 0 },
   show: { opacity: 1, transition: { duration: 0.3 } },
-  exit: { opacity: 0 },
+  exit: { opacity: 0, x: 100 },
 };
 
 export const growFromLeft = {
@@ -16,7 +16,7 @@ export const growFromLeft = {
   show: (i) => ({
     x: 0,
     opacity: 1,
-    transition: { delay: 0.04 * i, duration: 0.4 },
+    transition: { delay: 0.04 * i, duration: 0.4 }, // This creates a stagger effect
   }),
   exit: { opacity: 0, x: -100, duration: 0.2 },
 };
