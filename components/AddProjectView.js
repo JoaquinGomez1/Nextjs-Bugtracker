@@ -17,6 +17,9 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     marginTop: theme.spacing(4),
   },
+  title: {
+    margin: `${theme.spacing(2)}px 0`,
+  },
   container: {
     display: "flex",
   },
@@ -49,13 +52,14 @@ const useStyles = makeStyles((theme) => ({
     textOverflow: "ellipsis",
   },
   memberBox: {
-    padding: " 4px",
+    padding: " 4px 8px",
     borderRadius: "4px",
     margin: "4px 0 ",
 
     "&:hover": {
       backgroundColor: "rgba(0,0,0,.2)",
       cursor: "pointer",
+      borderLeft: `4px solid ${theme?.palette?.primary?.main}`,
     },
   },
 
@@ -65,6 +69,7 @@ const useStyles = makeStyles((theme) => ({
   deleteIcon: {
     "&:hover": { color: theme.palette.primary.light },
   },
+  subtitle: { color: theme?.palette?.subtitles?.high },
 }));
 
 export default function AddProjectView({ actions }) {
@@ -82,7 +87,7 @@ export default function AddProjectView({ actions }) {
   return (
     <Container maxWidth="lg">
       <Paper elevation={1} className={classes.root}>
-        <Typography variant="h4" color="white">
+        <Typography variant="h4" color="white" className={classes.title}>
           <AddIcon color="secondary" /> Add Project
         </Typography>
         <Divider />
@@ -141,7 +146,10 @@ export default function AddProjectView({ actions }) {
                   className={classes.memberBox}
                   key={Math.random()}
                 >
-                  <Typography variant="h6"> {member} </Typography>
+                  <Typography variant="h6" className={classes.subtitle}>
+                    {" "}
+                    {member}{" "}
+                  </Typography>
                   <HighlightOffIcon
                     className={classes.deleteIcon}
                     color="primary"

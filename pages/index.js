@@ -48,8 +48,8 @@ export default function Index({ resultProjects }) {
       exit="exit"
       maxWidth="lg"
     >
-      <Typography variant="h2" color="secondary">
-        Welcome
+      <Typography variant="h2" style={{ margin: "24px 0" }}>
+        Welcome {currentUser.username}
       </Typography>
 
       {!thereIsNoUserLoggedIn && (

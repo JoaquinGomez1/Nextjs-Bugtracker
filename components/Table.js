@@ -167,6 +167,7 @@ const useStyles = makeStyles((theme) => ({
     width: 1,
   },
   row: {
+    color: theme.palette.text.primary,
     "&:hover": {
       cursor: "pointer",
     },

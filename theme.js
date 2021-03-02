@@ -19,6 +19,11 @@ const theme = createMuiTheme({
     black: {
       main: "black",
     },
+    subtitles: {
+      main: "rgba(255,255,255,0.5)",
+      high: "rgba(255,255,255,0.8)",
+      low: "rgba(255,255,255,0.3)",
+    },
   },
 });
 

@@ -46,7 +46,6 @@ export default function UpdateMembersModal({
   return (
     <BaseModal open={modalOpen} onClose={onClose}>
       <Typography className={classes.header} variant="h4">
-        {" "}
         View members
       </Typography>
       <Box display="grid" className={classes.gridContainer}>

@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
   author: {
     display: "flex",
     alignItems: "center",
+    color: theme.palette?.subtitles?.main,
     "& > svg": {
       margin: "0 8px",
     },
@@ -32,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
     margin: `0 ${theme.spacing(2)}px`,
     textTransform: "capitalize",
   },
+  date: { color: theme.palette?.subtitles?.high },
 }));
 
 const chipColor = {
@@ -42,27 +44,32 @@ const chipColor = {
 
 export default function Issue({ issue }) {
   const classes = useStyles();
-  const { issue_severity } = issue;
+  let { issue_severity } = issue;
+  if (issue.severity) issue_severity = issue.severity;
   const bgColor = chipColor[issue_severity];
 
   return (
     <div className={classes.row}>
       <div>
         <Box display="flex" alignItems="center">
-          <Typography variant="h6">{issue.issue_name}</Typography>
+          <Typography variant="h6">
+            {issue?.issue_name || issue?.title}
+          </Typography>
           <Chip
             className={classes.chip}
             size="small"
-            label={issue_severity || ""}
+            label={issue_severity || issue?.severity}
             style={{ backgroundColor: bgColor, color: "white" }}
           />
         </Box>
         <Typography variant="subtitle2" className={classes.author}>
           <PersonIcon />
-          {issue.issue_author}
+          {issue?.issue_author || issue?.author}
         </Typography>
       </div>
-      <p>{issue.issue_date || new Date().toISOString()}</p>
+      <p className={classes.date}>
+        {issue.issue_date || new Date().toString()}
+      </p>
     </div>
   );
 }
