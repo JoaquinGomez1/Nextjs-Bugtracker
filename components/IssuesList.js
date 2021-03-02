@@ -4,6 +4,7 @@ import AddIcon from "@material-ui/icons/Add";
 import Issue from "./Issue";
 import NewIssueModal from "./NewIssueModal";
 import headers from "../headers";
+import Link from "next/link";
 
 export default function IssuesList({ projectIssues, project }) {
   const [modalOpen, setModalOpen] = useState(false);
@@ -53,7 +54,13 @@ export default function IssuesList({ projectIssues, project }) {
             There are no Issues!
           </Typography>
         ) : (
-          issues?.map((issue) => <Issue issue={issue} key={issue.id} />)
+          issues?.map((issue) => (
+            <Link href={`/issues/${issue.id}`} key={issue.id}>
+              <a>
+                <Issue issue={issue} />
+              </a>
+            </Link>
+          ))
         )}
       </div>
     </Box>

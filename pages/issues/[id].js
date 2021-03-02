@@ -2,6 +2,9 @@ import { Container, Paper, Typography, Chip, Box } from "@material-ui/core";
 import authenticatedRequest from "../../libs/authRequest";
 import { makeStyles } from "@material-ui/core";
 
+import { motion } from "framer-motion";
+import { fadeIn } from "../../libs/animations";
+
 import green from "@material-ui/core/colors/green";
 import orange from "@material-ui/core/colors/orange";
 import pink from "@material-ui/core/colors/pink";
@@ -19,6 +22,8 @@ const chipColor = {
   high: pink[500],
 };
 
+const MotionContainer = motion(Container);
+
 export default function ViewIssue({ issueData }) {
   const {
     id,
@@ -32,7 +37,13 @@ export default function ViewIssue({ issueData }) {
   const classes = useStyles();
 
   return (
-    <Container maxWidth="lg">
+    <MotionContainer
+      variants={fadeIn}
+      initial="hidden"
+      animate="show"
+      exit="exit"
+      maxWidth="lg"
+    >
       <Paper className={classes.root}>
         <Box display="flex" alignItems="center">
           <Typography variant="h2" className={classes.title}>
@@ -54,7 +65,7 @@ export default function ViewIssue({ issueData }) {
           </Typography>
         </Box>
       </Paper>
-    </Container>
+    </MotionContainer>
   );
 }
 
