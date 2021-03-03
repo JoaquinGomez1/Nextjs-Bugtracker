@@ -1,9 +1,9 @@
 import { Container, Paper, Typography, Chip, Box } from "@material-ui/core";
 import authenticatedRequest from "../../libs/authRequest";
 import { makeStyles } from "@material-ui/core";
-
 import { motion } from "framer-motion";
 import { fadeIn } from "../../libs/animations";
+import CommentSection from "../../components/ComentSection";
 
 import green from "@material-ui/core/colors/green";
 import orange from "@material-ui/core/colors/orange";
@@ -64,6 +64,7 @@ export default function ViewIssue({ issueData }) {
             {issue_description}
           </Typography>
         </Box>
+        <CommentSection />
       </Paper>
     </MotionContainer>
   );

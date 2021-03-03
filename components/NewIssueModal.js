@@ -56,7 +56,7 @@ export default function NewIssueModal({ open, onClose, onSubmit }) {
         <Box display="flex" justifyContent="space-between">
           <TextField
             onChange={handleChange}
-            name="title"
+            name="issue_title"
             type="text"
             placeholder="Title"
             variant="outlined"
