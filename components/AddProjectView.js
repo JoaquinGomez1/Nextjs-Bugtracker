@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "right",
   },
   membersList: {
-    border: `2px solid ${theme.palette.secondary.main}`,
+    border: `2px solid ${theme.palette.primary.main}`,
     padding: theme.spacing(2),
     maxWidth: "100%",
     borderRadius: "5px",
@@ -87,8 +87,8 @@ export default function AddProjectView({ actions }) {
   return (
     <Container maxWidth="lg">
       <Paper elevation={1} className={classes.root}>
-        <Typography variant="h4" color="white" className={classes.title}>
-          <AddIcon color="secondary" /> Add Project
+        <Typography variant="h4" className={classes.title}>
+          <AddIcon color="primary" /> Add Project
         </Typography>
         <Divider />
         <div className={classes.container}>
@@ -126,7 +126,7 @@ export default function AddProjectView({ actions }) {
               />
               <Button
                 variant="outlined"
-                color="secondary"
+                color="primary"
                 onClick={handleAddMember}
                 disabled={disableButton}
               >
@@ -166,7 +166,7 @@ export default function AddProjectView({ actions }) {
             className={classes.submitButton}
             fullWidth
             variant="contained"
-            color="secondary"
+            color="primary"
             onClick={handleSubmit}
           >
             Add project

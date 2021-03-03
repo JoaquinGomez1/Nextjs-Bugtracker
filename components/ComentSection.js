@@ -10,8 +10,9 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import PersonIcon from "@material-ui/icons/Person";
 
-import { growY } from "../libs/animations";
-import { motion } from "framer-motion";
+import { growY, growFromLeft } from "../libs/animations";
+import { motion, AnimatePresence } from "framer-motion";
+import headers from "../headers";
 const MotionBox = motion(Box);
 
 const useStyles = makeStyles((theme) => ({
@@ -27,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "90px",
     border: `2px solid ${theme.palette.grey[700]}`,
     padding: theme.spacing(1),
+    color: theme.palette.grey[300],
     borderRadius: "8px",
     "&:hover": {
       borderColor: theme.palette.primary.dark,
@@ -44,15 +46,36 @@ const useStyles = makeStyles((theme) => ({
   divider: { margin: `${theme.spacing(3)}px 0` },
 }));
 
-export default function CommentSection() {
+const URL = process.env.BACKEND_URL + "/comments/new";
+
+export default function CommentSection({ comments: allComments, issueId }) {
   const classes = useStyles();
-  const [comments, setComments] = useState([{}, {}, {}, {}, {}]);
+  const [comments, setComments] = useState(allComments || []);
   const [createComment, setCreateComment] = useState(false);
   const [commentContent, setCommentContent] = useState("");
 
-  const handleChange = (evento) => {
-    setCommentContent(evento.target.value);
+  const handleChange = (event) => {
+    setCommentContent(event.target.value);
   };
+
+  const handleSubmit = async () => {
+    const reqHeaders = headers;
+    reqHeaders.method = "POST";
+    reqHeaders.body = JSON.stringify({
+      issue: issueId,
+      content: commentContent,
+    });
+    const req = await fetch(URL, reqHeaders);
+    const res = await req.json();
+
+    if (req.status === 200) {
+      setComments([{ ...res }, ...comments]);
+      setCommentContent("");
+    }
+
+    console.log(res);
+  };
+
   return (
     <Box>
       <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -71,14 +94,27 @@ export default function CommentSection() {
         handleChange={handleChange}
         createComment={createComment}
         commentContent={commentContent}
+        handleSubmit={handleSubmit}
       />
 
       {comments.length >= 1 ? (
-        <Box style={{ padding: "16px" }} className={classes.commentSectionRoot}>
-          {comments.map((comment, index) => (
-            <Comment key={index} content={comment} />
-          ))}
-        </Box>
+        <AnimatePresence>
+          <Box
+            style={{ padding: "16px" }}
+            className={classes.commentSectionRoot}
+          >
+            {comments.map((comment, index) => (
+              <Comment
+                variants={growFromLeft}
+                animate="show"
+                initial="hidden"
+                custom={index}
+                key={comment.id}
+                content={comment}
+              />
+            ))}
+          </Box>
+        </AnimatePresence>
       ) : (
         <Grid container justify="center">
           <Grid item style={{ textAlign: "center" }}>
@@ -96,25 +132,32 @@ export default function CommentSection() {
   );
 }
 
-function Comment({ content }) {
+function Comment({ content, ...rest }) {
   const classes = useStyles();
   return (
-    <Box className={classes.commentRoot}>
+    <MotionBox {...rest} className={classes.commentRoot}>
       <Box display="flex" alignItems="center" className={classes.commentAuthor}>
         <PersonIcon className={classes.personIcon} />
         <Typography variant="body1" className={classes.commentTitle}>
-          {content.author || "Author"}
+          {content.comment_author || "Author"}
         </Typography>
         <Typography variants="subtitle2" className={classes.commentDate}>
-          {"20/02/21"}
+          {new Date(content.comment_date).toDateString() || "20/02/21"}
         </Typography>
       </Box>
-      <Box className={classes.commentBox}>Comment....</Box>
-    </Box>
+      <Box className={classes.commentBox}>
+        {content.comment_content || "Comment..."}
+      </Box>
+    </MotionBox>
   );
 }
 
-function CreateComment({ handleChange, commentContent, createComment }) {
+function CreateComment({
+  handleChange,
+  commentContent,
+  createComment,
+  handleSubmit,
+}) {
   return (
     <MotionBox
       variants={growY}
@@ -132,8 +175,12 @@ function CreateComment({ handleChange, commentContent, createComment }) {
         maxWidth
         style={{ width: "100%" }}
       />
-      <Button color="primary" style={{ padding: "16px", marginLeft: "24px" }}>
-        Agregar
+      <Button
+        onClick={handleSubmit}
+        color="primary"
+        style={{ padding: "16px", marginLeft: "24px" }}
+      >
+        Add comment
       </Button>
     </MotionBox>
   );

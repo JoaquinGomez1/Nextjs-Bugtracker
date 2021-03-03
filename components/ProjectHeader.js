@@ -38,7 +38,7 @@ export default function ProjectHeader({ project }) {
 
         <Box alignItems="center">
           <Typography variant="h4" className={classes.author}>
-            <PersonIcon />
+            <PersonIcon color="secondary" style={{ marginRight: "24px" }} />
             {project.project_owner_name}
           </Typography>
 

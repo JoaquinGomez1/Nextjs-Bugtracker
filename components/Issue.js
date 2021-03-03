@@ -60,7 +60,7 @@ export default function Issue({ issue }) {
         </Typography>
       </div>
       <p className={classes.date}>
-        {issue.issue_date || new Date().toString()}
+        {new Date(issue.issue_date).toDateString() || new Date().toDateString()}
       </p>
     </div>
   );
