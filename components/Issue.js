@@ -2,9 +2,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import PersonIcon from "@material-ui/icons/Person";
 import { Typography, Chip, Box } from "@material-ui/core";
 
-import green from "@material-ui/core/colors/green";
-import orange from "@material-ui/core/colors/orange";
-import pink from "@material-ui/core/colors/pink";
+import chipColor from "../libs/severityColors";
 
 const useStyles = makeStyles((theme) => ({
   row: {
@@ -36,12 +34,6 @@ const useStyles = makeStyles((theme) => ({
   date: { color: theme.palette?.subtitles?.high },
 }));
 
-const chipColor = {
-  low: green[500],
-  medium: orange[500],
-  high: pink[500],
-};
-
 export default function Issue({ issue }) {
   const classes = useStyles();
   let { issue_severity } = issue;
@@ -53,7 +45,7 @@ export default function Issue({ issue }) {
       <div>
         <Box display="flex" alignItems="center">
           <Typography variant="h6">
-            {issue?.issue_name || issue?.title}
+            {issue.issue_name || issue.title}
           </Typography>
           <Chip
             className={classes.chip}

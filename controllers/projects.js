@@ -136,13 +136,15 @@ export default class Projects {
     }
     const query = `
       INSERT INTO Issues(issue_name, issue_description, issue_severity, issue_author, issue_project)
-      VALUES ($1, $2,$3,$4,$5)
+      VALUES ($1, $2,$3,$4,$5) 
+      RETURNING *
+
     `;
     const values = [title, description, severity, author, projectId];
 
     try {
       const result = await client.query(query, values);
-      if (result.rows) return true;
+      if (result.rows) return result.rows;
     } catch (err) {
       console.error(err);
       return false;

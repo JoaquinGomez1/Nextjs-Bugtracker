@@ -4,10 +4,7 @@ import { makeStyles } from "@material-ui/core";
 import { motion } from "framer-motion";
 import { fadeIn } from "../../libs/animations";
 import CommentSection from "../../components/ComentSection";
-
-import green from "@material-ui/core/colors/green";
-import orange from "@material-ui/core/colors/orange";
-import pink from "@material-ui/core/colors/pink";
+import chipColor from "../../libs/severityColors";
 
 const useStyles = makeStyles((theme) => ({
   root: { padding: theme.spacing(3), margin: `${theme.spacing(4)}px 0` },
@@ -15,12 +12,6 @@ const useStyles = makeStyles((theme) => ({
   descriptionSection: { margin: `${theme.spacing(4)}px 0` },
   descriptionText: { color: theme?.palette?.subtitles?.main },
 }));
-
-const chipColor = {
-  low: green[500],
-  medium: orange[500],
-  high: pink[500],
-};
 
 const MotionContainer = motion(Container);
 

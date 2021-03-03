@@ -15,7 +15,6 @@ export default function IssuesList({ projectIssues, project }) {
 
   const handleSubmit = async (data) => {
     setModalOpen(false);
-    setIssues([...issues, data]);
 
     const reqHeaders = headers;
     reqHeaders.method = "PUT";
@@ -24,7 +23,11 @@ export default function IssuesList({ projectIssues, project }) {
       process.env.BACKEND_URL + "/projects/issues/new",
       reqHeaders
     );
-    if (req.status === 200) return console.log("added");
+    const res = await req.json();
+    if (req.status === 200) {
+      setIssues([...issues, res?.issue[0]]);
+      return console.log(res);
+    }
   };
 
   return (

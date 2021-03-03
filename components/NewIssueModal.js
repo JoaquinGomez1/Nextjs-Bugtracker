@@ -56,7 +56,7 @@ export default function NewIssueModal({ open, onClose, onSubmit }) {
         <Box display="flex" justifyContent="space-between">
           <TextField
             onChange={handleChange}
-            name="issue_title"
+            name="title"
             type="text"
             placeholder="Title"
             variant="outlined"
@@ -101,7 +101,7 @@ export default function NewIssueModal({ open, onClose, onSubmit }) {
           Add Issue
         </Button>
       </Box>
-      {/* <pre>{JSON.stringify(data, null, 4)}</pre> */}
+      <pre>{JSON.stringify(data, null, 4)}</pre>
     </BaseModal>
   );
 }

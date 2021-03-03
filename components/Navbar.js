@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   title: {
+    color: theme.palette.grey[800],
     display: "flex",
     alignItems: "center",
     cursor: "pointer",
@@ -46,7 +47,7 @@ export default function Navbar() {
   const { currentUser } = useContext(UserContext);
   const userLoggedIn = currentUser && Object.keys(currentUser).length >= 1;
   return (
-    <AppBar position="static">
+    <AppBar position="sticky">
       <Container maxWidth="lg">
         <Toolbar className={classes.container}>
           <Link href="/">

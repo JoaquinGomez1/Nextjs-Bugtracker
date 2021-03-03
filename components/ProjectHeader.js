@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   },
   subtitle: {
     marginBottom: theme.spacing(2),
-    color: theme.palette?.subtitles?.main,
+    color: theme.palette?.subtitles?.high,
   },
 }));
 
