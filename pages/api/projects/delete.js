@@ -1,6 +1,7 @@
 import Project from "../../../controllers/projects";
+import withProtect from "../../../middlewares/withProtect";
 
-export default async (req, res) => {
+const handler = async (req, res) => {
   if (req.method === "DELETE") {
     try {
       const deleteProject = new Project(req).delete();
@@ -12,3 +13,5 @@ export default async (req, res) => {
     }
   }
 };
+
+export default withProtect(handler);

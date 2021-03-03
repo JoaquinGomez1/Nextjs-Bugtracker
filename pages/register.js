@@ -15,6 +15,9 @@ import { growY } from "../libs/animations";
 const FramerPaper = motion(Paper);
 
 const useStyles = makeStyles((theme) => ({
+  container: {
+    position: "relative",
+  },
   icon: {
     fontSize: "2rem",
     borderRadius: "50%",
@@ -24,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "3px 3px 4px rgba(0,0,0,.1)",
   },
   paper: {
-    overflow: "hidden",
+    overflowY: "hidden",
     maxWidth: "400px",
     display: "grid",
     boxShadow: "3px 3px 5px rgba(0,0,0,.2)",
@@ -47,6 +50,9 @@ const useStyles = makeStyles((theme) => ({
   },
   bottomText: {
     textAlign: "center",
+  },
+  alert: {
+    top: 280,
   },
 }));
 
@@ -184,15 +190,16 @@ export default function Login() {
           </Typography>
 
           {showMessage && (
-            // <Box style={{ position: "relative" }}>
-            <Alert success={responseMessage?.status === "success"}>
+            <Alert
+              style={{ top: 180 }}
+              success={responseMessage?.status === "success"}
+            >
               {responseMessage.message}
               <HighlightOffIcon
                 style={{ cursor: "pointer" }}
                 onClick={() => setShowMessage(false)}
               />
             </Alert>
-            // </Box>
           )}
         </FramerPaper>
       </AnimatePresence>

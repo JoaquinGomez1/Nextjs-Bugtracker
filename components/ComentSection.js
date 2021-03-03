@@ -16,7 +16,6 @@ import headers from "../headers";
 const MotionBox = motion(Box);
 
 const useStyles = makeStyles((theme) => ({
-  commentSectionRoot: { maxHeight: "800px", overflowY: "scroll" },
   personIcon: {
     marginRight: theme.spacing(1),
   },
@@ -59,6 +58,7 @@ export default function CommentSection({ comments: allComments, issueId }) {
   };
 
   const handleSubmit = async () => {
+    if (!commentContent) return;
     const reqHeaders = headers;
     reqHeaders.method = "POST";
     reqHeaders.body = JSON.stringify({
@@ -72,8 +72,6 @@ export default function CommentSection({ comments: allComments, issueId }) {
       setComments([{ ...res }, ...comments]);
       setCommentContent("");
     }
-
-    console.log(res);
   };
 
   return (
@@ -99,10 +97,7 @@ export default function CommentSection({ comments: allComments, issueId }) {
 
       {comments.length >= 1 ? (
         <AnimatePresence>
-          <Box
-            style={{ padding: "16px" }}
-            className={classes.commentSectionRoot}
-          >
+          <Box style={{ padding: "16px" }}>
             {comments.map((comment, index) => (
               <Comment
                 variants={growFromLeft}
@@ -179,6 +174,7 @@ function CreateComment({
         onClick={handleSubmit}
         color="primary"
         style={{ padding: "16px", marginLeft: "24px" }}
+        disabled={!commentContent}
       >
         Add comment
       </Button>

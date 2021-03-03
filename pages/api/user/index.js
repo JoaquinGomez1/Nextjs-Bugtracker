@@ -1,10 +1,10 @@
-import verifyJWT from "../../../middlewares/verifyJWT";
+import withProtect from "../../../middlewares/withProtect";
 
-export default async (req, res) => {
+const handler = async (req, res) => {
   // Returns user information if the user is logged in
   if (req.method === "GET") {
-    verifyJWT(req, res, (user) => {
-      res.json(user);
-    });
+    res.json(req.user);
   }
 };
+
+export default withProtect(handler);
