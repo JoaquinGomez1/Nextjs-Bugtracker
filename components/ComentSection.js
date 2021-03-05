@@ -140,7 +140,7 @@ function Comment({ content, ...rest }) {
   const deleteIsAllowed =
     currentUser.id === content.comment_author_id ||
     currentUser.role === "admin";
-  console.log(content);
+
   return (
     <MotionBox {...rest} className={classes.commentRoot}>
       <Box display="flex" alignItems="center" className={classes.commentAuthor}>
@@ -189,7 +189,6 @@ function CreateComment({
         placeholder="Escribe tu comentario"
         onChange={handleChange}
         value={commentContent}
-        maxWidth
         style={{ width: "100%" }}
       />
       <Button

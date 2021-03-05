@@ -278,7 +278,7 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
                     It appears that there are no projects to show
                   </Typography>
                 ) : (
-                  <AnimatePresence>
+                  <AnimatePresence exitBeforeEnter>
                     {rows
                       .slice(
                         page * rowsPerPage,

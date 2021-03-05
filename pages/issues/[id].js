@@ -45,7 +45,6 @@ export default function ViewIssue({ issueData, issueComments }) {
       initial="hidden"
       animate="show"
       exit="exit"
-      maxWidth="lg"
     >
       <Paper className={classes.root}>
         <Grid container>

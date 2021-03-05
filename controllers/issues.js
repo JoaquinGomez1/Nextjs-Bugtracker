@@ -31,6 +31,9 @@ export default class Issues {
     const values = [data.content, data.issue, user.id];
     try {
       const result = await client.query(query, values);
+
+      // Append the author user's id to allow the frontend to do authorization
+      result.rows[0].comment_author_id = user.id;
       return result?.rows[0];
     } catch (err) {
       console.log(err);

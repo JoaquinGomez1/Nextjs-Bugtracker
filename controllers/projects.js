@@ -14,7 +14,7 @@ export default class Projects {
 
     const queryUserIsMember = `
     SELECT 
-    project_id as id, user_id, user_role, project_name ,project_description, project_owner
+    project_id as id, user_id, user_role, project_name ,project_description, project_owner, project_members
     FROM Project_Users
         LEFT JOIN Projects
         ON Projects.id = Project_Users.project_id
