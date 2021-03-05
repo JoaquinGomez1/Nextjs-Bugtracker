@@ -8,7 +8,7 @@ async function handler(req, res) {
     if (!response)
       return res.status(500).json({ message: "Something went wrong" });
 
-    return res.status(200).json(response.rows);
+    return res.status(200).json(response);
   }
 
   // Add a project to a user

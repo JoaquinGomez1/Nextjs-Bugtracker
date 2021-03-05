@@ -9,9 +9,24 @@ export default class Projects {
   // Returns all projects of a particular user
   async view(id) {
     // Create a query for the database
-    const query =
+    const queryUserIsAuthor =
       "SELECT Projects.id, project_name, project_owner, project_members, username, user_role FROM Projects JOIN Users ON project_owner = Users.id WHERE Users.id = $1";
-    const result = await client.query(query, [id]);
+
+    const queryUserIsMember = `
+    SELECT 
+    project_id as id, user_id, user_role, project_name ,project_description, project_owner
+    FROM Project_Users
+        LEFT JOIN Projects
+        ON Projects.id = Project_Users.project_id
+        WHERE user_id = $1
+        `;
+
+    const projectsOwned = await client.query(queryUserIsAuthor, [id]);
+    const projectsMember = await client.query(queryUserIsMember, [
+      this.req.user.id,
+    ]);
+
+    const result = projectsMember.rows?.concat(projectsOwned.rows);
     return result;
   }
 
@@ -138,7 +153,6 @@ export default class Projects {
       INSERT INTO Issues(issue_name, issue_description, issue_severity, issue_author, issue_project)
       VALUES ($1, $2,$3,$4,$5) 
       RETURNING *
-
     `;
     const values = [title, description, severity, author, projectId];
 

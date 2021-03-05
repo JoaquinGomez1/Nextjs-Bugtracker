@@ -7,7 +7,7 @@ export default class Issues {
 
   async getIssue(id) {
     const query = `
-        SELECT Issues.id, issue_name, issue_author, issue_date, issue_project, issue_description, issue_severity, username as issue_author
+        SELECT Issues.id, issue_name, issue_author as issue_author_id, issue_date, issue_project, issue_description, issue_severity, username as issue_author
         FROM Issues
         LEFT JOIN Users
         ON Users.id = issue_author
@@ -42,7 +42,7 @@ export default class Issues {
     const issueId = this.req.query.issue;
 
     const query = `
-    SELECT comment_content, comment_issue, comment_date, comment_author, username AS comment_author, Comments.id
+    SELECT comment_content, comment_issue, comment_date, comment_author as comment_author_id, username AS comment_author, Comments.id
     FROM Comments 
     LEFT JOIN Users 
     ON Users.id = comment_author

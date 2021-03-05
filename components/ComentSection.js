@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
   Box,
   Typography,
@@ -9,10 +9,14 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import PersonIcon from "@material-ui/icons/Person";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 import { growY, growFromLeft } from "../libs/animations";
 import { motion, AnimatePresence } from "framer-motion";
 import headers from "../headers";
+import { pink } from "@material-ui/core/colors";
+import { UserContext } from "../context/user";
+
 const MotionBox = motion(Box);
 
 const useStyles = makeStyles((theme) => ({
@@ -27,11 +31,13 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "90px",
     border: `2px solid ${theme.palette.grey[700]}`,
     padding: theme.spacing(1),
-    color: theme.palette.grey[300],
     borderRadius: "8px",
     "&:hover": {
       borderColor: theme.palette.primary.dark,
     },
+  },
+  commentText: {
+    color: theme.palette.grey[400],
   },
   commentAuthor: {
     padding: theme.spacing(1),
@@ -43,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.grey[500],
   },
   divider: { margin: `${theme.spacing(3)}px 0` },
+  deleteIcon: { color: pink[600] },
 }));
 
 const URL = process.env.BACKEND_URL + "/comments/new";
@@ -129,6 +136,11 @@ export default function CommentSection({ comments: allComments, issueId }) {
 
 function Comment({ content, ...rest }) {
   const classes = useStyles();
+  const { currentUser } = useContext(UserContext);
+  const deleteIsAllowed =
+    currentUser.id === content.comment_author_id ||
+    currentUser.role === "admin";
+  console.log(content);
   return (
     <MotionBox {...rest} className={classes.commentRoot}>
       <Box display="flex" alignItems="center" className={classes.commentAuthor}>
@@ -140,8 +152,18 @@ function Comment({ content, ...rest }) {
           {new Date(content.comment_date).toDateString() || "20/02/21"}
         </Typography>
       </Box>
+
       <Box className={classes.commentBox}>
-        {content.comment_content || "Comment..."}
+        <Box display="flex">
+          <Typography style={{ width: "100%" }} className={classes.commentText}>
+            {content.comment_content || "Comment..."}
+          </Typography>
+          {deleteIsAllowed && (
+            <Button>
+              <DeleteIcon className={classes.deleteIcon} />
+            </Button>
+          )}
+        </Box>
       </Box>
     </MotionBox>
   );
