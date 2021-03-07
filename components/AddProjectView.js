@@ -7,9 +7,16 @@ import {
   Button,
   Divider,
   Box,
+  List,
+  ListItem,
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
+import PersonIcon from "@material-ui/icons/Person";
+import { motion } from "framer-motion";
+import { growY } from "../libs/animations";
+
+const MotionList = motion(List);
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,11 +33,13 @@ const useStyles = makeStyles((theme) => ({
   texfield: {
     display: "block",
     margin: "15px 0",
+    position: "relative",
   },
   addMembersArea: {
+    position: "relative",
     display: "flex",
     "& > button": {
-      margin: " 0 10px",
+      marginLeft: "16px",
     },
   },
   right: {
@@ -76,11 +85,12 @@ export default function AddProjectView({ actions }) {
   const {
     handleChange,
     fieldsValue,
-    handleAddMember,
-    disableButton,
     handleSubmit,
     members,
     removeMemberFromList,
+    possibleMembers,
+    onMemberClicked,
+    lostOfFocus,
   } = actions;
   const classes = useStyles();
 
@@ -118,48 +128,46 @@ export default function AddProjectView({ actions }) {
             <div className={classes.addMembersArea + " " + classes.texfield}>
               <TextField
                 variant="outlined"
-                type="number"
                 name="member"
                 fullWidth
                 autoComplete="false"
-                placeholder="Project Member Id"
+                placeholder="Member username"
                 value={fieldsValue.member}
-                onKeyDown={({ key }) => key === "Enter" && handleAddMember()}
                 required
+                autoComplete="off"
+                onBlur={lostOfFocus}
               />
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={handleAddMember}
-                disabled={disableButton}
-              >
-                <AddIcon /> Add
-              </Button>
+
+              <StyledList
+                items={possibleMembers}
+                onMemberClicked={onMemberClicked}
+              />
             </div>
           </form>
           <div className={classes.right + " " + classes.alignRight}>
             <Paper elevation={2} className={classes.membersList}>
               <Typography variant="h5"> Member's List</Typography>
               <Divider />
-              {members.map((member, index) => (
-                <Box
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  className={classes.memberBox}
-                  key={Math.random()}
-                >
-                  <Typography variant="h6" className={classes.subtitle}>
-                    {" "}
-                    {member}{" "}
-                  </Typography>
-                  <HighlightOffIcon
-                    className={classes.deleteIcon}
-                    color="primary"
-                    onClick={() => removeMemberFromList(index)}
-                  />
-                </Box>
-              ))}
+              {members.map((member, index) => {
+                return (
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    className={classes.memberBox}
+                    key={Math.random()}
+                  >
+                    <Typography variant="h6" className={classes.subtitle}>
+                      {member.username}
+                    </Typography>
+                    <HighlightOffIcon
+                      className={classes.deleteIcon}
+                      color="primary"
+                      onClick={() => removeMemberFromList(index)}
+                    />
+                  </Box>
+                );
+              })}
             </Paper>
           </div>
         </div>
@@ -177,5 +185,54 @@ export default function AddProjectView({ actions }) {
         </Container>
       </Paper>
     </Container>
+  );
+}
+
+const useListStyle = makeStyles((theme) => ({
+  resultList: {
+    overflowY: "hidden",
+    position: "absolute",
+    top: "100%",
+    left: 0,
+    display: "block",
+    zIndex: 40,
+    padding: theme.spacing(1),
+    backgroundColor: theme.palette.grey[700],
+    width: "100%",
+    borderBottomLeftRadius: "8px",
+    borderBottomRightRadius: "8px",
+  },
+  listItem: {
+    "&:hover": {
+      backgroundColor: "rgba(0,0,0,.3)",
+      cursor: "pointer",
+    },
+  },
+}));
+
+function StyledList({ items, onMemberClicked }) {
+  const classes = useListStyle();
+  return (
+    <MotionList
+      variants={growY}
+      animate={items.length >= 1 ? "show" : "hidden"}
+      exit="exit"
+      className={classes.resultList}
+    >
+      {items.map((item) => (
+        <ListItem
+          onClick={() => onMemberClicked(item)}
+          className={classes.listItem}
+        >
+          <Box display="flex">
+            <Box display="flex" style={{ marginRight: "16px" }}>
+              <PersonIcon />
+              <Typography>{item.id}</Typography>
+            </Box>
+            <Typography variant="body1">{item.username}</Typography>
+          </Box>
+        </ListItem>
+      ))}
+    </MotionList>
   );
 }

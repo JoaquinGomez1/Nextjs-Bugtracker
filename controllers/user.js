@@ -92,4 +92,17 @@ export default class User {
       console.log(err);
     }
   }
+
+  async getAllUsersByName(name) {
+    const query = `
+    SELECT username, id 
+    FROM Users
+    WHERE username ILIKE $1
+    LIMIT 10
+    `;
+    console.log(`${name}`);
+    const result = await client.query(query, [name + "%"]);
+
+    return result.rows;
+  }
 }

@@ -5,7 +5,6 @@ const handler = async (req, res) => {
   if (req.method === "DELETE") {
     try {
       const issueId = req.body.id;
-      console.log(issueId);
       const result = await new Issue(req).delete(issueId);
 
       if (result.status === "success") return res.json(result);

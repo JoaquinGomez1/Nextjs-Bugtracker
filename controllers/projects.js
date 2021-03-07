@@ -1,5 +1,4 @@
 import client from "../postgresql-client";
-import verifyJWT from "../middlewares/verifyJWT";
 
 export default class Projects {
   constructor(req) {
@@ -132,7 +131,8 @@ export default class Projects {
   async delete() {
     const { id } = this.req.body;
     const queryDeleteProjects = "DELETE FROM Projects WHERE Projects.id = $1";
-    const queryDeleteIssues = "DELETE FROM Issues WHERE issue_project = $1";
+    const queryDeleteIssues =
+      "DELETE FROM Issues WHERE issue_project = $1 RETURNING *";
     const queryDeleteUsers = "DELETE FROM Project_Users WHERE project_id = $1";
 
     await client.query(queryDeleteIssues, [id]);
@@ -146,8 +146,7 @@ export default class Projects {
   async createNewIssue(data) {
     let { title, description, severity, author, projectId } = data;
     if (!author) {
-      const currentUserId = verifyJWT((user) => user.id);
-      author = currentUserId;
+      author = this.req.user.id;
     }
     const query = `
       INSERT INTO Issues(issue_name, issue_description, issue_severity, issue_author, issue_project)
