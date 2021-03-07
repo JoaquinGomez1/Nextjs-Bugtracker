@@ -47,6 +47,7 @@ export default function ProjectHeader({ project }) {
               <KeyboardArrowDownIcon /> View members
             </Button>
             <UpdateMembersModal
+              projectId={project.id}
               modalOpen={viewMembersModal}
               onClose={() => setviewMembersModal(false)}
               members={project.project_members}

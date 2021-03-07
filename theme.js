@@ -21,6 +21,21 @@ const theme = createMuiTheme({
       low: "rgba(255,255,255,0.3)",
     },
   },
+  typography: {
+    fontFamily: [
+      "Nunito",
+      "-apple-system",
+      "BlinkMacSystemFont",
+      '"Segoe UI"',
+      "Roboto",
+      '"Helvetica Neue"',
+      "Arial",
+      "sans-serif",
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(","),
+  },
 });
 
 export default theme;

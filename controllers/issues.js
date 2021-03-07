@@ -53,6 +53,7 @@ export default class Issues {
     ORDER BY comment_date DESC`;
     try {
       const result = await client.query(query, [issueId]);
+      console.log(result);
       return result.rows;
     } catch (err) {
       console.log(err);
@@ -61,10 +62,14 @@ export default class Issues {
   }
 
   async deleteComment(id) {
-    const query = `DELETE FROM Comments WHERE id = $1`;
+    const query = `DELETE FROM Comments WHERE id = $1 AND (comment_author = $2 OR $3 = 'admin')`;
 
     try {
-      const result = await client.query(query, [id]);
+      const result = await client.query(query, [
+        id,
+        this.req.user.id,
+        this.req.user.user_role,
+      ]);
       if (result.fields)
         return { status: "success", message: "Comment deleted successfully" };
       else return { status: "failed", message: "Failed to delete the comment" };
@@ -73,9 +78,9 @@ export default class Issues {
     }
   }
 
-  async update(data) {
+  async updateDescription(data) {
     if (!data) return { status: "failed", message: "No data" };
-    if (!data.id) return { status: "failed", message: "No id provided" };
+    if (!data.issueId) return { status: "failed", message: "No id provided" };
 
     const thereIsOneUndefinedValue = Object.values(data).some(
       (value) => !value
@@ -83,9 +88,27 @@ export default class Issues {
     if (thereIsOneUndefinedValue)
       return { message: "Empty values are not allowed", status: "failed" };
 
-    const query = `UPDATE Issues SET $1 = $2 WHERE id = $3`;
-    const values = [data.fieldName, data.fieldValue, data.issueId];
+    const query = `UPDATE Issues SET issue_description = $1 WHERE id = $2`;
+    const values = [data.fieldValue, data.issueId];
     const result = await client.query(query, values);
-    return result.rows[0];
+    return result.rows;
+  }
+
+  async delete(id) {
+    const query = `DELETE FROM Issues WHERE id = $1 AND (issue_author = $2 OR $3 = 'admin')`;
+    const queryComments = `DELETE FROM Comments WHERE comment_issue = $1`;
+    try {
+      await client.query(queryComments, [id]);
+      const result = await client.query(query, [
+        id,
+        this.req.user.id,
+        this.req.user.user_role,
+      ]);
+      if (result.fields)
+        return { status: "success", message: "Issue deleted successfully" };
+      else return { status: "failed", message: "Failed to delete the Issue" };
+    } catch (err) {
+      console.log(err);
+    }
   }
 }

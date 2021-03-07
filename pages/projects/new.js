@@ -33,11 +33,14 @@ export default function NewProject() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     if (name === "member") {
       setFieldsValue({
         ...fieldsValue,
         member: parseInt(value),
       });
+    } else if (name === "projectName") {
+      if (value.length < 35) setFieldsValue({ ...fieldsValue, [name]: value });
     } else setFieldsValue({ ...fieldsValue, [name]: value });
   };
 

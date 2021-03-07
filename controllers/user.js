@@ -75,4 +75,21 @@ export default class User {
       console.log(err);
     }
   }
+
+  async deleteMember(projectId, userId) {
+    const query = `DELETE FROM Project_Users WHERE project_id = $1 AND user_id = $2 AND $3 = 'admin'`;
+
+    try {
+      const result = await client.query(query, [
+        projectId,
+        userId,
+        this.req.user.user_role,
+      ]);
+      if (result.fields)
+        return { status: "success", message: "Issue deleted successfully" };
+      else return { status: "failed", message: "Failed to delete the Issue" };
+    } catch (err) {
+      console.log(err);
+    }
+  }
 }

@@ -3,7 +3,7 @@ import { Box } from "@material-ui/core";
 import green from "@material-ui/core/colors/green";
 import pink from "@material-ui/core/colors/pink";
 
-export default function Alert({ success, children }) {
+export default function Alert({ success, children, ...rest }) {
   const backgroundColor = success ? green[600] : pink[600];
 
   const boxStyle = {
@@ -11,7 +11,7 @@ export default function Alert({ success, children }) {
     maxWidth: "30rem",
     width: "90vw",
     zIndex: 99,
-    top: 0,
+    top: 100,
     left: "50%",
     transform: "translateX(-50%)",
     display: "flex",
@@ -25,5 +25,9 @@ export default function Alert({ success, children }) {
     color: "#fff",
   };
 
-  return <Box style={boxStyle}>{children}</Box>;
+  return (
+    <Box {...rest} style={boxStyle}>
+      {children}
+    </Box>
+  );
 }

@@ -33,7 +33,7 @@ export default class Projects {
   async viewById() {
     const id = this.req.query?.id;
     const query = `
-      SELECT Projects.id, project_name,project_description, project_owner, project_members, username AS project_owner_name 
+      SELECT Projects.id, project_name,project_description, project_owner, username AS project_owner_name 
       FROM Projects 
       LEFT JOIN Users 
       ON Users.id = project_owner
@@ -47,7 +47,7 @@ export default class Projects {
 
     if (!project) return [];
 
-    project.project_members = members ? members : undefined;
+    project.project_members = members ? members : [];
     project.project_issues = issues;
 
     return project;

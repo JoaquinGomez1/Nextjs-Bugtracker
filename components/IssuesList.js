@@ -5,8 +5,10 @@ import Issue from "./Issue";
 import NewIssueModal from "./NewIssueModal";
 import headers from "../headers";
 import Link from "next/link";
+import { Router, useRouter } from "next/router";
 
 export default function IssuesList({ projectIssues, project }) {
+  const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
   const [issues, setIssues] = useState(projectIssues);
 
@@ -24,9 +26,10 @@ export default function IssuesList({ projectIssues, project }) {
       reqHeaders
     );
     const res = await req.json();
+
     if (req.status === 200) {
       setIssues([...issues, res?.issue[0]]);
-      return console.log(res);
+      router.push(`/issues/${res.issue[0].id}`);
     }
   };
 

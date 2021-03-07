@@ -16,6 +16,8 @@ import { useRouter } from "next/router";
 import { UserContext } from "../context/user";
 import { AnimatePresence, motion } from "framer-motion";
 import { growY } from "../libs/animations";
+import Alert from "../components/Alert";
+import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 
 import BugReportIcon from "@material-ui/icons/BugReport";
 
@@ -88,7 +90,7 @@ export default function Login() {
       setCurrentUser(res?.data);
       router.push("/");
     } else {
-      setShowMessage(res?.message);
+      setShowMessage(res);
     }
   };
 
@@ -157,12 +159,9 @@ export default function Login() {
               </Typography>
             </Link>
           </Typography>
-          {showMessage && (
-            <Alert
-              style={{ top: 180 }}
-              success={responseMessage?.status === "success"}
-            >
-              {responseMessage.message}
+          {showMessage.message && (
+            <Alert success={showMessage?.status === "success"}>
+              <Typography variant="h5">{showMessage.message}</Typography>
               <HighlightOffIcon
                 style={{ cursor: "pointer" }}
                 onClick={() => setShowMessage(false)}

@@ -142,7 +142,7 @@ function CreateComment({
         variant="outlined"
         multiline
         rows={4}
-        placeholder="Escribe tu comentario"
+        placeholder="Write down your comment here"
         onChange={handleChange}
         value={commentContent}
         style={{ width: "100%" }}

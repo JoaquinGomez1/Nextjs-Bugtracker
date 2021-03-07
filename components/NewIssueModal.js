@@ -134,7 +134,6 @@ export default function NewIssueModal({ open, onClose, onSubmit }) {
           </Alert>
         )}
       </Box>
-      <pre>{JSON.stringify(data, null, 4)}</pre>
     </BaseModal>
   );
 }
