@@ -53,10 +53,39 @@ export default class Issues {
     ORDER BY comment_date DESC`;
     try {
       const result = await client.query(query, [issueId]);
-      return result?.rows;
+      return result.rows;
     } catch (err) {
       console.log(err);
       return { status: "failed", message: "issue id not found", issueId };
     }
+  }
+
+  async deleteComment(id) {
+    const query = `DELETE FROM Comments WHERE id = $1`;
+
+    try {
+      const result = await client.query(query, [id]);
+      if (result.fields)
+        return { status: "success", message: "Comment deleted successfully" };
+      else return { status: "failed", message: "Failed to delete the comment" };
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async update(data) {
+    if (!data) return { status: "failed", message: "No data" };
+    if (!data.id) return { status: "failed", message: "No id provided" };
+
+    const thereIsOneUndefinedValue = Object.values(data).some(
+      (value) => !value
+    );
+    if (thereIsOneUndefinedValue)
+      return { message: "Empty values are not allowed", status: "failed" };
+
+    const query = `UPDATE Issues SET $1 = $2 WHERE id = $3`;
+    const values = [data.fieldName, data.fieldValue, data.issueId];
+    const result = await client.query(query, values);
+    return result.rows[0];
   }
 }

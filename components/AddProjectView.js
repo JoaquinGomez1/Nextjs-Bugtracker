@@ -101,6 +101,7 @@ export default function AddProjectView({ actions }) {
               placeholder="Project's Name"
               className={classes.texfield}
               value={fieldsValue.projectName}
+              required
             />
             <TextField
               variant="outlined"
@@ -112,6 +113,7 @@ export default function AddProjectView({ actions }) {
               multiline
               rows={4}
               value={fieldsValue.projectDescription}
+              required
             />
             <div className={classes.addMembersArea + " " + classes.texfield}>
               <TextField
@@ -123,6 +125,7 @@ export default function AddProjectView({ actions }) {
                 placeholder="Project Member Id"
                 value={fieldsValue.member}
                 onKeyDown={({ key }) => key === "Enter" && handleAddMember()}
+                required
               />
               <Button
                 variant="outlined"

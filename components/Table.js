@@ -4,10 +4,8 @@ import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
-import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
@@ -20,68 +18,12 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
+import EnhancedTableHead from "./TableHead";
+
 import { fadeIn, growFromLeft } from "../libs/animations";
 import { AnimatePresence, motion } from "framer-motion";
 
 const FramerTableRow = motion(TableRow);
-
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === "desc"
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-const headCells = [
-  {
-    id: "name",
-    numeric: false,
-    disablePadding: false,
-    label: "Project Name",
-  },
-  { id: "issues", numeric: true, disablePadding: false, label: "Issues" },
-  { id: "members", numeric: true, disablePadding: false, label: "Members" },
-  { id: "actions", numeric: true, disablePadding: false, label: "Actions" },
-];
-
-function EnhancedTableHead(props) {
-  const { order, orderBy, onRequestSort } = props;
-  const createSortHandler = (property) => (event) => {
-    onRequestSort(event, property);
-  };
-
-  return (
-    <TableHead>
-      <TableRow>
-        {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.numeric ? "right" : "left"}
-            padding={headCell.disablePadding ? "none" : "default"}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : "asc"}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-            </TableSortLabel>
-          </TableCell>
-        ))}
-      </TableRow>
-    </TableHead>
-  );
-}
 
 const useToolbarStyles = makeStyles((theme) => ({
   root: {
@@ -180,8 +122,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function EnhancedTable({ rows, handleDeleteProject }) {
   const classes = useStyles();
-  const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("name");
+  const [order] = useState("asc");
+  const [orderBy] = useState("name");
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const [dense] = useState(false);
@@ -193,12 +135,6 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
   useEffect(() => {
     setNoRows(rows.length <= 0);
   }, [rows]);
-
-  const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
-    setOrderBy(property);
-  };
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
@@ -215,7 +151,7 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
 
   const handleReRoute = ({ target }, id) => {
     // Only redirect if the element that was clicked
-    //is not one of the given conditions
+    // is not included in conditions array
     const conditions = ["button", "span", "path"];
     if (!conditions.includes(target?.tagName?.toLowerCase()))
       router.push(`/projects/${id}`);
@@ -258,7 +194,6 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
                 order={order}
                 orderBy={orderBy}
                 onSelectAllClick={handleSelectAllClick}
-                onRequestSort={handleRequestSort}
                 rowCount={rows.length}
               />
               <TableBody style={{ position: "relative" }}>

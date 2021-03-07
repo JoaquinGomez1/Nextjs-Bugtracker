@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import {
   Box,
   Typography,
@@ -8,14 +8,11 @@ import {
   Grid,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import PersonIcon from "@material-ui/icons/Person";
-import DeleteIcon from "@material-ui/icons/Delete";
 
 import { growY, growFromLeft } from "../libs/animations";
 import { motion, AnimatePresence } from "framer-motion";
 import headers from "../headers";
-import { pink } from "@material-ui/core/colors";
-import { UserContext } from "../context/user";
+import Comment from "./Comment";
 
 const MotionBox = motion(Box);
 
@@ -23,42 +20,15 @@ const useStyles = makeStyles((theme) => ({
   personIcon: {
     marginRight: theme.spacing(1),
   },
-  commentTitle: {
-    marginRight: theme.spacing(4),
-    textAlign: "center",
-  },
-  commentBox: {
-    minHeight: "90px",
-    border: `2px solid ${theme.palette.grey[700]}`,
-    padding: theme.spacing(1),
-    borderRadius: "8px",
-    "&:hover": {
-      borderColor: theme.palette.primary.dark,
-    },
-  },
-  commentText: {
-    color: theme.palette.grey[400],
-  },
-  commentAuthor: {
-    padding: theme.spacing(1),
-  },
-  commentRoot: {
-    margin: `${theme.spacing(2)}px 0`,
-  },
-  commentDate: {
-    color: theme.palette.grey[500],
-  },
   divider: { margin: `${theme.spacing(3)}px 0` },
-  deleteIcon: { color: pink[600] },
 }));
-
-const URL = process.env.BACKEND_URL + "/comments/new";
 
 export default function CommentSection({ comments: allComments, issueId }) {
   const classes = useStyles();
   const [comments, setComments] = useState(allComments || []);
   const [createComment, setCreateComment] = useState(false);
   const [commentContent, setCommentContent] = useState("");
+  const [deleteButtonDisabled, setDeleteButtonDisabled] = useState(false);
 
   const handleChange = (event) => {
     setCommentContent(event.target.value);
@@ -66,6 +36,8 @@ export default function CommentSection({ comments: allComments, issueId }) {
 
   const handleSubmit = async () => {
     if (!commentContent) return;
+    const URL = process.env.BACKEND_URL + "/comments/new";
+
     const reqHeaders = headers;
     reqHeaders.method = "POST";
     reqHeaders.body = JSON.stringify({
@@ -79,6 +51,22 @@ export default function CommentSection({ comments: allComments, issueId }) {
       setComments([{ ...res }, ...comments]);
       setCommentContent("");
     }
+  };
+
+  const handleDelete = async (id) => {
+    const URL = process.env.BACKEND_URL + "/comments/delete";
+
+    const reqHeaders = headers;
+    reqHeaders.method = "DELETE";
+    reqHeaders.body = JSON.stringify({ id: id });
+    setDeleteButtonDisabled(true);
+    const req = await fetch(URL, reqHeaders);
+
+    if (req.status === 200) {
+      // Remove comment from comments array.
+      setComments([...comments].filter((comment) => comment.id !== id));
+    }
+    setDeleteButtonDisabled(false);
   };
 
   return (
@@ -103,20 +91,23 @@ export default function CommentSection({ comments: allComments, issueId }) {
       />
 
       {comments.length >= 1 ? (
-        <AnimatePresence>
-          <Box style={{ padding: "16px" }}>
+        <Box style={{ padding: "16px" }}>
+          <AnimatePresence>
             {comments.map((comment, index) => (
               <Comment
                 variants={growFromLeft}
                 animate="show"
                 initial="hidden"
+                exit="exit"
                 custom={index}
                 key={comment.id}
                 content={comment}
+                onDelete={handleDelete}
+                buttonDisabled={deleteButtonDisabled}
               />
             ))}
-          </Box>
-        </AnimatePresence>
+          </AnimatePresence>
+        </Box>
       ) : (
         <Grid container justify="center">
           <Grid item style={{ textAlign: "center" }}>
@@ -131,41 +122,6 @@ export default function CommentSection({ comments: allComments, issueId }) {
         </Grid>
       )}
     </Box>
-  );
-}
-
-function Comment({ content, ...rest }) {
-  const classes = useStyles();
-  const { currentUser } = useContext(UserContext);
-  const deleteIsAllowed =
-    currentUser.id === content.comment_author_id ||
-    currentUser.role === "admin";
-
-  return (
-    <MotionBox {...rest} className={classes.commentRoot}>
-      <Box display="flex" alignItems="center" className={classes.commentAuthor}>
-        <PersonIcon className={classes.personIcon} />
-        <Typography variant="body1" className={classes.commentTitle}>
-          {content.comment_author || "Author"}
-        </Typography>
-        <Typography variants="subtitle2" className={classes.commentDate}>
-          {new Date(content.comment_date).toDateString() || "20/02/21"}
-        </Typography>
-      </Box>
-
-      <Box className={classes.commentBox}>
-        <Box display="flex">
-          <Typography style={{ width: "100%" }} className={classes.commentText}>
-            {content.comment_content || "Comment..."}
-          </Typography>
-          {deleteIsAllowed && (
-            <Button>
-              <DeleteIcon className={classes.deleteIcon} />
-            </Button>
-          )}
-        </Box>
-      </Box>
-    </MotionBox>
   );
 }
 

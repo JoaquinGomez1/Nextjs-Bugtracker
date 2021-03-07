@@ -10,7 +10,6 @@ import styles from "../styles/Login.module.css";
 import { makeStyles } from "@material-ui/core/styles";
 import { useState } from "react";
 import Link from "next/link";
-import MeetingRoomIcon from "@material-ui/icons/MeetingRoom";
 import headers from "../headers";
 import fetch from "isomorphic-unfetch";
 import { useRouter } from "next/router";
@@ -18,16 +17,22 @@ import { UserContext } from "../context/user";
 import { AnimatePresence, motion } from "framer-motion";
 import { growY } from "../libs/animations";
 
+import BugReportIcon from "@material-ui/icons/BugReport";
+
 const FramerPaper = motion(Paper);
 
 const useStyles = makeStyles((theme) => ({
   icon: {
     fontSize: "2rem",
     borderRadius: "50%",
-    backgroundColor: "rgba(0,0,0,.04)",
+    backgroundColor: "rgba(0,0,0,.4)",
     margin: "0 auto",
     width: "50px",
+    height: "50px",
     boxShadow: "3px 3px 4px rgba(0,0,0,.1)",
+    display: "grid",
+    justifyContent: "center",
+    alignItems: "center",
   },
   paper: {
     overflow: "hidden",
@@ -59,6 +64,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Login() {
   const [userdata, setUserData] = useState({ username: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
+  const [showMessage, setShowMessage] = useState("");
   const { setCurrentUser } = useContext(UserContext);
   const classes = useStyles();
   const router = useRouter();
@@ -81,11 +87,12 @@ export default function Login() {
     if (req.status === 200) {
       setCurrentUser(res?.data);
       router.push("/");
+    } else {
+      setShowMessage(res?.message);
     }
   };
 
   const handleKeyPress = ({ key }) => {
-    console.log(key);
     if (key === "Enter") handleSubmit();
   };
 
@@ -101,7 +108,7 @@ export default function Login() {
         >
           <Typography variant="h6" className={classes.headline}>
             <div className={classes.icon}>
-              <MeetingRoomIcon />
+              <BugReportIcon color="primary" />
             </div>
             <br />
             Log in and manage your projects
@@ -150,6 +157,18 @@ export default function Login() {
               </Typography>
             </Link>
           </Typography>
+          {showMessage && (
+            <Alert
+              style={{ top: 180 }}
+              success={responseMessage?.status === "success"}
+            >
+              {responseMessage.message}
+              <HighlightOffIcon
+                style={{ cursor: "pointer" }}
+                onClick={() => setShowMessage(false)}
+              />
+            </Alert>
+          )}
         </FramerPaper>
       </AnimatePresence>
     </div>
