@@ -53,7 +53,6 @@ export default class Issues {
     ORDER BY comment_date DESC`;
     try {
       const result = await client.query(query, [issueId]);
-      console.log(result);
       return result.rows;
     } catch (err) {
       console.log(err);

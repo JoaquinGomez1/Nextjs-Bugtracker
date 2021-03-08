@@ -57,7 +57,7 @@ export default class User {
     const encryptedPassword = await bcrypt.hash(user.password, 10);
 
     const registerQuery =
-      "INSERT INTO Users(username, user_password, user_name, user_role) VALUES($1,$2,$3, 'member')";
+      "INSERT INTO Users(username, user_password, user_name, user_role) VALUES($1,$2,$3, 'member') RETURNING *";
     const registerQueryValues = [
       user.username,
       encryptedPassword,
@@ -65,11 +65,12 @@ export default class User {
     ];
 
     try {
-      client.query(registerQuery, registerQueryValues);
+      const result = await client.query(registerQuery, registerQueryValues);
+      const rows = result.rows;
       return {
         status: "success",
         message: "User registered succesfully",
-        data: user,
+        data: rows[0],
       };
     } catch (err) {
       console.log(err);
@@ -100,7 +101,6 @@ export default class User {
     WHERE username ILIKE $1
     LIMIT 10
     `;
-    console.log(`${name}`);
     const result = await client.query(query, [name + "%"]);
 
     return result.rows;

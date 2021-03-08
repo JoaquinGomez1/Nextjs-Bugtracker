@@ -11,8 +11,6 @@ import {
 } from "@material-ui/core";
 import authenticatedRequest from "../../libs/authRequest";
 import { makeStyles } from "@material-ui/core";
-import { motion } from "framer-motion";
-import { fadeIn } from "../../libs/animations";
 import CommentSection from "../../components/ComentSection";
 import chipColor from "../../libs/severityColors";
 import pink from "@material-ui/core/colors/pink";
@@ -24,6 +22,9 @@ import EditIcon from "@material-ui/icons/Edit";
 import DoneIcon from "@material-ui/icons/Done";
 import headers from "../../headers";
 import { useRouter } from "next/router";
+
+import { motion, AnimatePresence } from "framer-motion";
+import { fadeIn, growY } from "../../libs/animations";
 
 const useStyles = makeStyles((theme) => ({
   root: { padding: theme.spacing(3), margin: `${theme.spacing(4)}px 0` },
@@ -39,7 +40,9 @@ const useStyles = makeStyles((theme) => ({
   deleteIssue: { color: pink[500] },
 }));
 
+const MotionBox = motion(Box);
 const MotionContainer = motion(Container);
+const MotionTypography = motion(Typography);
 
 const initialState = {
   editDescription: false,
@@ -94,7 +97,6 @@ export default function ViewIssue({ issueData, issueComments }) {
       issueId: id,
     });
     const req = await fetch(URL, reqHeaders);
-    const res = await req.json();
     if (req.status === 200) {
       setDescription(state.descriptionContent);
       dispatch({ type: "SUBMIT" });
@@ -158,44 +160,61 @@ export default function ViewIssue({ issueData, issueComments }) {
               <Typography variant="h4">
                 Description:{" "}
                 <IconButton
-                  color="secondary"
+                  color="primary"
                   className={classes.actionIcons}
                   onClick={() => dispatch({ type: "EDIT" })}
                 >
                   <EditIcon />
                 </IconButton>
               </Typography>
-              {state.editDescription ? (
-                <Box display="flex" alignItems="center">
-                  <TextField
-                    style={{
-                      margin: "16px 0",
-                      width: "280px",
-                    }}
-                    variant="outlined"
-                    placeholder="New issue description..."
-                    value={state.descriptionContent}
-                    onChange={(e) =>
-                      dispatch({
-                        type: "VALUE_CHANGE",
-                        payload: e.target.value,
-                      })
-                    }
-                  />
-                  <IconButton
-                    disabled={!state.descriptionContent}
-                    className={classes.actionIcons}
-                    color="primary"
-                    onClick={handleSubmit}
+              <AnimatePresence>
+                {state.editDescription ? (
+                  <MotionBox
+                    variants={growY}
+                    initial="hidden"
+                    animate="show"
+                    exit="exit"
+                    display="flex"
+                    alignItems="center"
+                    style={{ overflowY: "hidden" }}
                   >
-                    <DoneIcon />
-                  </IconButton>
-                </Box>
-              ) : (
-                <Typography variant="body1" className={classes.descriptionText}>
-                  {description}
-                </Typography>
-              )}
+                    <TextField
+                      style={{
+                        margin: "16px 0",
+                        width: "280px",
+                      }}
+                      variant="outlined"
+                      placeholder="New issue description..."
+                      value={state.descriptionContent}
+                      onChange={(e) =>
+                        dispatch({
+                          type: "VALUE_CHANGE",
+                          payload: e.target.value,
+                        })
+                      }
+                    />
+                    <IconButton
+                      disabled={!state.descriptionContent}
+                      className={classes.actionIcons}
+                      color="primary"
+                      onClick={handleSubmit}
+                    >
+                      <DoneIcon />
+                    </IconButton>
+                  </MotionBox>
+                ) : (
+                  <MotionTypography
+                    variants={fadeIn}
+                    initial="hidden"
+                    animate="show"
+                    exit="exit"
+                    variant="body1"
+                    className={classes.descriptionText}
+                  >
+                    {description}
+                  </MotionTypography>
+                )}
+              </AnimatePresence>
             </Box>
           </Grid>
 

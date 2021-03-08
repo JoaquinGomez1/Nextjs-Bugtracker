@@ -26,6 +26,7 @@ export default class Projects {
     ]);
 
     const result = projectsMember.rows?.concat(projectsOwned.rows);
+
     return result;
   }
 
@@ -45,7 +46,6 @@ export default class Projects {
     const project = queryResult.rows[0];
 
     if (!project) return [];
-
     project.project_members = members ? members : [];
     project.project_issues = issues;
 
@@ -55,7 +55,7 @@ export default class Projects {
   async getIssues(id) {
     const query = `SELECT * FROM Issues WHERE issue_project = $1`;
     const queryResult = await client.query(query, [id]);
-    return queryResult?.rows;
+    return queryResult.rows;
   }
 
   // Returns a list of members of a particular project
@@ -72,36 +72,17 @@ export default class Projects {
     return result?.rows;
   }
 
-  // Returns all issues of a specific project
-  async viewIssues() {
-    const projectId = this.req.body.project_id;
-    const query = "SELECT * FROM Issues WHERE issue_project = $1";
-    const values = [projectId];
-
-    const result = await client.query(query, values);
-    return result;
-  }
-
   // Adds one project to the projects table
   async addProject() {
     // takes an object with name, description, owner and members Int[] (user id) as parameter
     const { name, description, owner, members } = this.req.body;
-
-    const greatestMemberIDQuery =
-      "SELECT id FROM Users ORDER BY id DESC LIMIT 1";
-    const greatestMemberID = await client.query(greatestMemberIDQuery);
-
-    // Remove members that do not exist in the database yet
-    const filteredMembers = [
-      ...new Set(members.filter((id) => id <= greatestMemberID?.rows[0]?.id)),
-    ];
 
     const query = `
     INSERT INTO 
     Projects(project_name, project_description, project_owner, project_members)
     VALUES($1, $2, $3, $4);
     `;
-    const values = [name, description, owner, filteredMembers];
+    const values = [name, description, owner, members];
     const projectResult = await client.query(query, values);
 
     const insertIntoJoiningTable = `
@@ -132,7 +113,7 @@ export default class Projects {
     const { id } = this.req.body;
     const queryDeleteProjects = "DELETE FROM Projects WHERE Projects.id = $1";
     const queryDeleteIssues =
-      "DELETE FROM Issues WHERE issue_project = $1 RETURNING *";
+      "DELETE FROM Issues WHERE issue_project = $1 RETURNING id";
     const queryDeleteUsers = "DELETE FROM Project_Users WHERE project_id = $1";
 
     await client.query(queryDeleteIssues, [id]);

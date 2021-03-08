@@ -9,7 +9,6 @@ const headCells = [
     disablePadding: false,
     label: "Project Name",
   },
-  { id: "issues", numeric: true, disablePadding: false, label: "Issues" },
   { id: "members", numeric: true, disablePadding: false, label: "Members" },
   { id: "actions", numeric: true, disablePadding: false, label: "Actions" },
 ];

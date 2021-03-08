@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import { ProjectsContext } from "../../context/projects";
 import { UserContext } from "../../context/user";
 import fetch from "isomorphic-unfetch";
@@ -31,19 +31,7 @@ export default function NewProject() {
     projectDescription: "",
     member: "",
   });
-  const [disableButton, setDisableButton] = useState(true);
   const router = useRouter();
-
-  const handleAddMember = () => {
-    const isMemberNameEmpty = fieldsValue.member ? false : true;
-    if (!isMemberNameEmpty) {
-      setMembers([...new Set(members), fieldsValue.member]); // Prevent duplicates
-      setFieldsValue({
-        ...fieldsValue,
-        member: "",
-      });
-    }
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -118,13 +106,8 @@ export default function NewProject() {
     // Give the user a few miliseconds to allow him/her to click .
     setTimeout(() => {
       setPossibleMembers([]);
-    }, 400);
+    }, 200);
   };
-
-  useEffect(() => {
-    // Disable 'Add button' if there is no name written
-    fieldsValue.member ? setDisableButton(false) : setDisableButton(true);
-  }, [fieldsValue]);
 
   const methods = {
     handleSubmit,

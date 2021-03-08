@@ -14,7 +14,6 @@ import { fadeIn } from "../libs/animations";
 const MotionContainer = motion(Container);
 
 export default function Index({ resultProjects }) {
-  console.log(resultProjects);
   const { projects, setProjects } = useContext(ProjectsContext);
   const { currentUser } = useContext(UserContext);
   const thereIsNoUserLoggedIn =

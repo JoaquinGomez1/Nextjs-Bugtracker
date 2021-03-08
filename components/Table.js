@@ -220,6 +220,7 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
                         page * rowsPerPage + rowsPerPage
                       )
                       .map((row, index) => {
+                        console.log(row);
                         const labelId = `enhanced-table-checkbox-${index}`;
                         return (
                           <FramerTableRow
@@ -238,9 +239,7 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
                             <TableCell component="th" id={labelId} scope="row">
                               {row.name || row.project_name}
                             </TableCell>
-                            <TableCell align="right">
-                              {row.issues || 0}
-                            </TableCell>
+
                             <TableCell align="right">
                               {row.project_members?.length || 0}
                             </TableCell>
@@ -270,7 +269,7 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[5, 10]}
             component="div"
             count={rows.length}
             rowsPerPage={rowsPerPage}

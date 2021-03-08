@@ -86,10 +86,10 @@ export default function Login() {
     const res = await req.json();
 
     if (req.status === 200) {
-      setCurrentUser(userdata);
+      setCurrentUser(res);
       setTimeout(() => router.push("/"), 3000);
     }
-    setResponseMessage(res);
+    setResponseMessage(res.data);
     setShowMessage(true);
   };
 
