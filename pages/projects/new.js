@@ -85,7 +85,10 @@ export default function NewProject() {
 
     clearTimeout(timeout);
     timeout = setTimeout(async () => {
-      const URL = process.env.BACKEND_URL + "/user?name=" + fieldsValue.member;
+      const URL =
+        process.env.NEXT_PUBLIC_BACKEND_URL +
+        "/user?name=" +
+        fieldsValue.member;
 
       const req = await fetch(URL);
       const res = await req.json();

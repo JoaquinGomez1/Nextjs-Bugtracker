@@ -55,7 +55,7 @@ export default function UpdateMembersModal({
   const handleConfirmDelete = async () => {
     if (!memberToDeleteID) return; // Making sure the user has to be deleted
 
-    const URL = process.env.BACKEND_URL + "/projects/users/delete";
+    const URL = process.env.NEXT_PUBLIC_BACKEND_URL + "/projects/users/delete";
     const reqHeaders = headers;
     reqHeaders.method = "DELETE";
     reqHeaders.body = JSON.stringify({
