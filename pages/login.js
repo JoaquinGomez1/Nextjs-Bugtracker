@@ -76,6 +76,8 @@ export default function Login() {
     setUserData({ ...userdata, [name]: value });
   };
 
+  console.log(process.env.NEXT_PUBLIC_BACKEND_URL);
+
   const handleSubmit = async () => {
     setIsLoading(true);
     const reqHeaders = headers;
