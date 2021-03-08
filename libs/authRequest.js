@@ -6,7 +6,7 @@ export default async function authRequest(ctx, url) {
   if (ctx.req) {
     // Server side rendering
     const cookie = ctx.req.headers.cookie; // append cookie on SSR
-    const URL = process.env.NEXT_PUBLIC_BACKEND_URL + url;
+    const URL = process.env.BACKEND_URL + url;
     const req = await fetch(URL, { ...headers, headers: { cookie: cookie } });
     const res = await req.json();
 
