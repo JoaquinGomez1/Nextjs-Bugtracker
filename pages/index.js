@@ -29,7 +29,7 @@ export default function Index({ resultProjects }) {
     reqHeaders.body = JSON.stringify({ id });
 
     const req = await fetch(
-      process.env.BACKEND_URL + "/projects/delete",
+      process.env.NEXT_PUBLIC_BACKEND_URL + "/projects/delete",
       reqHeaders
     );
 

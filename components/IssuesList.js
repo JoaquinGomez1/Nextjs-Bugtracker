@@ -22,7 +22,7 @@ export default function IssuesList({ projectIssues, project }) {
     reqHeaders.method = "PUT";
     reqHeaders.body = JSON.stringify({ ...data, projectId: project["id"] });
     const req = await fetch(
-      process.env.BACKEND_URL + "/projects/issues/new",
+      process.env.NEXT_PUBLIC_BACKEND_URL + "/projects/issues/new",
       reqHeaders
     );
     const res = await req.json();

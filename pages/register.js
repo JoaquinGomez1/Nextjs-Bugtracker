@@ -77,7 +77,7 @@ export default function Login() {
   };
 
   const handleSubmit = async () => {
-    const URL = process.env.BACKEND_URL + "/user/register";
+    const URL = process.env.NEXT_PUBLIC_BACKEND_URL + "/user/register";
     const reqHeaders = headers;
     reqHeaders.method = "POST";
     reqHeaders.body = JSON.stringify(userdata);

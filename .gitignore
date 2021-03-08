@@ -40,3 +40,5 @@ yarn-error.log*
 
 queries.js
 todo.md
+
+.vercel

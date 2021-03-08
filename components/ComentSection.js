@@ -36,7 +36,7 @@ export default function CommentSection({ comments: allComments, issueId }) {
 
   const handleSubmit = async () => {
     if (!commentContent) return;
-    const URL = process.env.BACKEND_URL + "/comments/new";
+    const URL = process.env.NEXT_PUBLIC_BACKEND_URL + "/comments/new";
 
     const reqHeaders = headers;
     reqHeaders.method = "POST";
@@ -54,7 +54,7 @@ export default function CommentSection({ comments: allComments, issueId }) {
   };
 
   const handleDelete = async (id) => {
-    const URL = process.env.BACKEND_URL + "/comments/delete";
+    const URL = process.env.NEXT_PUBLIC_BACKEND_URL + "/comments/delete";
 
     const reqHeaders = headers;
     reqHeaders.method = "DELETE";

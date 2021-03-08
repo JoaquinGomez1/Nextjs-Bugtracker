@@ -162,8 +162,6 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
     setPage(0);
   };
 
-  if (noRows) console.log(rows);
-
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
@@ -220,7 +218,6 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
                         page * rowsPerPage + rowsPerPage
                       )
                       .map((row, index) => {
-                        console.log(row);
                         const labelId = `enhanced-table-checkbox-${index}`;
                         return (
                           <FramerTableRow

@@ -88,7 +88,7 @@ export default function ViewIssue({ issueData, issueComments }) {
   const router = useRouter();
 
   const handleSubmit = async () => {
-    const URL = process.env.BACKEND_URL + "/projects/issues/update";
+    const URL = process.env.NEXT_PUBLIC_BACKEND_URL + "/projects/issues/update";
     const reqHeaders = headers;
     reqHeaders.method = "POST";
     reqHeaders.body = JSON.stringify({
@@ -104,7 +104,7 @@ export default function ViewIssue({ issueData, issueComments }) {
   };
 
   const handleDeleteIssue = async () => {
-    const URL = process.env.BACKEND_URL + "/projects/issues/delete";
+    const URL = process.env.NEXT_PUBLIC_BACKEND_URL + "/projects/issues/delete";
     const reqHeaders = headers;
     reqHeaders.method = "DELETE";
     reqHeaders.body = JSON.stringify({

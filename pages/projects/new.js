@@ -44,7 +44,7 @@ export default function NewProject() {
   };
 
   const handleSubmit = async () => {
-    const URL = process.env.BACKEND_URL + "/projects";
+    const URL = process.env.NEXT_PUBLIC_BACKEND_URL + "/projects";
     const thereAreNoUndefinedValues = Object.values({
       projectName: fieldsValue.projectName,
       projectDescription: fieldsValue.projectDescription,
