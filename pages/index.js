@@ -64,6 +64,6 @@ export async function getServerSideProps(ctx) {
 
   const resultProjects = await authenticatedRequest(ctx, "/projects");
 
-  if (!result.auth && !resultProjects) return result;
+  if (!result.auth || !resultProjects) return result;
   return { props: { resultProjects } };
 }
