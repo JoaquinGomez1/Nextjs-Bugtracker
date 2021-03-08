@@ -81,7 +81,7 @@ export default function Login() {
     const reqHeaders = headers;
     reqHeaders.method = "POST";
     reqHeaders.body = JSON.stringify(userdata);
-    const URL = process.env.BACKEND_URL + "/user/login";
+    const URL = process.env.NEXT_PUBLIC_BACKEND_URL + "/user/login";
     const req = await fetch(URL, reqHeaders);
     const res = await req.json();
     setIsLoading(false);
