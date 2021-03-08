@@ -4,7 +4,7 @@ import useFetch from "../hooks/useFetch";
 export const UserContext = createContext();
 
 export default function UserProvider(props) {
-  const { data } = useFetch(process.env.BACKEND_URL + "/user");
+  const { data } = useFetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/user");
   const [currentUser, setCurrentUser] = useState(data || {});
 
   useEffect(() => {
