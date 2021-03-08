@@ -6,8 +6,9 @@ export default async function authRequest(ctx, url) {
   if (ctx.req) {
     // Server side rendering
     const cookie = ctx.req.headers.cookie; // append cookie on SSR
-    const URL = process.env.BACKEND_URL + url;
+    const URL = process.env.BACKEND_URL + url + "1";
     const req = await fetch(URL, { ...headers, headers: { cookie: cookie } });
+    if (req.status !== 200) return { message: "Invalid request" };
     const res = await req.json();
 
     return res;
@@ -17,6 +18,7 @@ export default async function authRequest(ctx, url) {
     // Client side rendering
     const URL = process.env.NEXT_PUBLIC_BACKEND_URL + url;
     const req = await fetch(URL);
+    if (req.status !== 200) return { message: "Invalid request" };
     const res = await req.json();
 
     return res;
