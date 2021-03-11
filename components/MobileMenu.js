@@ -13,6 +13,7 @@ const styles = makeStyles((theme) => ({
   },
   liContainer: {
     padding: `0 ${theme.spacing(2)}px`,
+    fontSize: "2rem",
   },
 }));
 
@@ -34,24 +35,23 @@ export default function MobileMenu({
       >
         <List>
           {links.map(({ text, url, auth }) =>
-            userLoggedIn ? (
-              auth !== false && (
-                <ListItem key={url} className={classes.liContainer}>
-                  <Link href={url}>
-                    <a>{text}</a>
-                  </Link>
-                </ListItem>
-              )
-            ) : (
-              <li key={url} className={classes.liContainer}>
-                <Link href={url}>
-                  <a className={classes.link}>
-                    {" "}
-                    <ListItemText>{text}</ListItemText>{" "}
-                  </a>
-                </Link>
-              </li>
-            )
+            userLoggedIn
+              ? auth !== false && (
+                  <ListItem key={url} className={classes.liContainer}>
+                    <Link href={url}>
+                      <a>{text}</a>
+                    </Link>
+                  </ListItem>
+                )
+              : auth !== true && (
+                  <li key={url} className={classes.liContainer}>
+                    <Link href={url}>
+                      <a className={classes.link}>
+                        <ListItemText>{text}</ListItemText>
+                      </a>
+                    </Link>
+                  </li>
+                )
           )}
         </List>
       </div>

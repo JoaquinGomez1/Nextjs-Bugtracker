@@ -243,7 +243,6 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
                             <TableCell align="right">
                               <Button
                                 color="primary"
-                                style={{ zIndex: 9999 }}
                                 onClick={() =>
                                   handleDeleteProject(row.id, index)
                                 }

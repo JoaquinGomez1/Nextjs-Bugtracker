@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Typography, Button } from "@material-ui/core";
+import { Box, Typography, Button, Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import UpdateMembersModal from "./UpdateMembersModal";
 import PersonIcon from "@material-ui/icons/Person";
@@ -18,6 +18,9 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
     color: theme.palette?.subtitles?.high,
   },
+  projectTitle: {
+    marginBottom: theme.spacing(2),
+  },
 }));
 
 export default function ProjectHeader({ project }) {
@@ -26,13 +29,18 @@ export default function ProjectHeader({ project }) {
 
   return (
     <Box>
-      <Box
+      <Grid
+        container
         display="flex"
         alignItems="center"
         className={classes.title}
-        justifyContent="space-between"
+        justify="space-between"
       >
-        <Typography variant="h3" color="secondary">
+        <Typography
+          variant="h3"
+          color="secondary"
+          className={classes.projectTitle}
+        >
           {project.project_name}
         </Typography>
 
@@ -55,7 +63,7 @@ export default function ProjectHeader({ project }) {
             />
           </Box>
         </Box>
-      </Box>
+      </Grid>
 
       <Box>
         <Typography variant="h6">Description: </Typography>

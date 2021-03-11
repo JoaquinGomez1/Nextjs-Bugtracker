@@ -10,6 +10,7 @@ import protectedRequest from "../libs/protectedRequest";
 import headers from "../headers";
 import { motion } from "framer-motion";
 import { fadeIn } from "../libs/animations";
+import { useRouter } from "next/router";
 
 const MotionContainer = motion(Container);
 
@@ -18,6 +19,7 @@ export default function Index({ resultProjects }) {
   const { currentUser } = useContext(UserContext);
   const thereIsNoUserLoggedIn =
     currentUser && Object.keys(currentUser).length <= 0;
+  const router = useRouter();
 
   useEffect(() => {
     if (resultProjects) setProjects(resultProjects);
@@ -39,6 +41,13 @@ export default function Index({ resultProjects }) {
       setProjects(projectsCopy);
     }
   };
+
+  useEffect(() => {
+    // Makes sure that the homepage is not visible in case ssr redirection fails
+    if (!currentUser || !resultProjects) {
+      router.push("/login");
+    }
+  }, []);
 
   return (
     <MotionContainer

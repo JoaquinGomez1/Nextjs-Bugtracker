@@ -28,7 +28,13 @@ import { fadeIn, growY } from "../../libs/animations";
 
 const useStyles = makeStyles((theme) => ({
   root: { padding: theme.spacing(3), margin: `${theme.spacing(4)}px 0` },
-  title: { marginRight: theme.spacing(2) },
+  title: {
+    marginRight: theme.spacing(2),
+    maxWidth: "650px",
+    [theme.breakpoints.down("xs")]: {
+      fontSize: "2.2rem",
+    },
+  },
   descriptionSection: { margin: `${theme.spacing(4)}px 0` },
   descriptionText: { color: theme?.palette?.subtitles?.main },
   issueInfo: {
@@ -126,16 +132,14 @@ export default function ViewIssue({ issueData, issueComments }) {
     >
       <Paper className={classes.root}>
         <Grid container>
-          <Grid item xs={8}>
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Box display="flex" alignItems="center">
-                <Typography variant="h2" className={classes.title}>
+          <Grid container>
+            <Grid item xs={12}>
+              <Grid item xs={12} md={8} display="flex" alignItems="center">
+                <Typography variant="h3" className={classes.title}>
                   {issue_name}
                 </Typography>
+              </Grid>
+              <Grid item xs={12} md={4}>
                 <Chip
                   label={issue_severity}
                   style={{
@@ -143,16 +147,14 @@ export default function ViewIssue({ issueData, issueComments }) {
                     textTransform: "capitalize",
                   }}
                 />
-              </Box>
-              <Box>
                 <IconButton
                   className={classes.deleteIssue}
                   onClick={() => dispatch({ type: "TOGGLE_CONFIRM_MODAL" })}
                 >
                   <DeleteForeverIcon />
                 </IconButton>
-              </Box>
-            </Box>
+              </Grid>
+            </Grid>
           </Grid>
 
           <Grid item xs={8}>

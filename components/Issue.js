@@ -32,6 +32,12 @@ const useStyles = makeStyles((theme) => ({
     textTransform: "capitalize",
   },
   date: { color: theme.palette?.subtitles?.high },
+  issueTitle: {
+    whiteSpace: "wrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    maxWidth: "60vw",
+  },
 }));
 
 export default function Issue({ issue }) {
@@ -44,7 +50,7 @@ export default function Issue({ issue }) {
     <div className={classes.row}>
       <div>
         <Box display="flex" alignItems="center">
-          <Typography variant="h6">
+          <Typography variant="h6" className={classes.issueTitle}>
             {issue.issue_name || issue.title}
           </Typography>
           <Chip
