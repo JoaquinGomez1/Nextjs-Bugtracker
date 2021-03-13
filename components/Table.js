@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { lighten, makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -9,9 +9,6 @@ import TableRow from "@material-ui/core/TableRow";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import FilterListIcon from "@material-ui/icons/FilterList";
 import { Button } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -22,6 +19,7 @@ import EnhancedTableHead from "./TableHead";
 
 import { fadeIn, growFromLeft } from "../libs/animations";
 import { AnimatePresence, motion } from "framer-motion";
+import { UserContext } from "../context/user";
 
 const FramerTableRow = motion(TableRow);
 
@@ -41,8 +39,10 @@ const useToolbarStyles = makeStyles((theme) => ({
           backgroundColor: theme.palette.secondary.dark,
         },
   title: {
+    width: "100%",
     display: "flex",
-    flex: "1 1 100%",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   button: {
     marginLeft: theme.spacing(4),
@@ -76,12 +76,6 @@ const EnhancedTableToolbar = (props) => {
           </Button>
         </Link>
       </div>
-
-      <Tooltip title="Filter list">
-        <IconButton aria-label="filter list">
-          <FilterListIcon />
-        </IconButton>
-      </Tooltip>
     </Toolbar>
   );
 };
@@ -118,6 +112,9 @@ const useStyles = makeStyles((theme) => ({
     width: "50px",
     margin: "0 auto",
   },
+  rowMembers: {
+    color: theme.palette.grey[400],
+  },
 }));
 
 export default function EnhancedTable({ rows, handleDeleteProject }) {
@@ -129,6 +126,9 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
   const [dense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [noRows, setNoRows] = useState(rows.length <= 0);
+  const { currentUser } = useContext(UserContext);
+  const userIsAllowedToDelete = (row) =>
+    currentUser.role === "admin" || currentUser.id === row.project_owner;
 
   const router = useRouter();
 
@@ -237,18 +237,23 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
                               {row.name || row.project_name}
                             </TableCell>
 
-                            <TableCell align="right">
+                            <TableCell
+                              align="right"
+                              className={classes.rowMembers}
+                            >
                               {row.project_members?.length || 0}
                             </TableCell>
                             <TableCell align="right">
-                              <Button
-                                color="primary"
-                                onClick={() =>
-                                  handleDeleteProject(row.id, index)
-                                }
-                              >
-                                <DeleteIcon />
-                              </Button>
+                              {userIsAllowedToDelete(row) && (
+                                <Button
+                                  color="primary"
+                                  onClick={() =>
+                                    handleDeleteProject(row.id, index)
+                                  }
+                                >
+                                  <DeleteIcon />
+                                </Button>
+                              )}
                             </TableCell>
                           </FramerTableRow>
                         );

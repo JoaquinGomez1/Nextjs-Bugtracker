@@ -2,7 +2,6 @@ import {
   Container,
   Typography,
   Grid,
-  Box,
   Paper,
   Button,
   Link,
@@ -11,6 +10,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import Image from "next/image";
 import { useContext } from "react";
 import { UserContext } from "../context/user";
+
+import { motion } from "framer-motion";
+import { growY } from "../libs/animations";
+
+const MotionPaper = motion(Paper);
 
 const useStyles = makeStyles((theme) => ({
   paper: { margin: "24px 0" },
@@ -38,8 +42,14 @@ export default function About() {
   const { currentUser } = useContext(UserContext);
 
   return (
-    <Container maxWidth="lg">
-      <Paper className={classes.paper}>
+    <Container maxWidth="lg" style={{ overflow: "hidden" }}>
+      <MotionPaper
+        variants={growY}
+        animate="show"
+        initial="hidden"
+        exit="exit"
+        className={classes.paper}
+      >
         <Grid className={classes.root}>
           <Typography variant="h3">About Bug Tracker</Typography>
           <Grid
@@ -73,7 +83,7 @@ export default function About() {
             </Grid>
           </Grid>
         </Grid>
-      </Paper>
+      </MotionPaper>
     </Container>
   );
 }

@@ -1,11 +1,11 @@
-import { useContext, useEffect, useState } from "react";
-import { AppBar, Toolbar, Container, IconButton } from "@material-ui/core";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { useContext, useState } from "react";
+import { AppBar, Toolbar, Container, IconButton, Box } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import BugReportIcon from "@material-ui/icons/BugReport";
 import Link from "next/link";
 import { UserContext } from "../context/user";
 import MobileMenu from "./MobileMenu";
-import MenuIcon from "@material-ui/icons/Menu";
+import DesktopMenu from "./DesktopMenu";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,12 +14,6 @@ const useStyles = makeStyles((theme) => ({
   container: {
     display: "flex",
     justifyContent: "space-between",
-  },
-  liContainer: {
-    display: "flex",
-    justifyContent: "space-between",
-    maxWidth: "40%",
-    listStyle: "none",
   },
 
   title: {
@@ -36,9 +30,6 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     marginRight: theme.spacing(2),
   },
-  menuIcon: {
-    color: "black",
-  },
 }));
 
 const linkList = [
@@ -52,8 +43,6 @@ export default function Navbar() {
   const classes = useStyles();
   const { currentUser } = useContext(UserContext);
   const userLoggedIn = currentUser && Object.keys(currentUser).length >= 1;
-  const theme = useTheme();
-  const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
     <AppBar position="sticky">
@@ -68,16 +57,9 @@ export default function Navbar() {
             </h2>
           </Link>
 
-          <IconButton onClick={() => setDrawerOpen(!drawerOpen)}>
-            <MenuIcon className={classes.menuIcon} />
-          </IconButton>
-          <MobileMenu
-            links={linkList}
-            left={drawerOpen}
-            userLoggedIn={userLoggedIn}
-            toggleDrawerHandler={() => setDrawerOpen(!drawerOpen)}
-            currentUser={currentUser}
-          />
+          <DesktopMenu userLoggedIn={userLoggedIn} links={linkList} />
+
+          <MobileMenu userLoggedIn={userLoggedIn} links={linkList} />
         </Toolbar>
       </Container>
     </AppBar>

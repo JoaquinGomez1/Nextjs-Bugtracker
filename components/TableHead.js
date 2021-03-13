@@ -1,6 +1,18 @@
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    backgroundColor: theme?.palette?.primary?.main,
+  },
+  headName: {
+    color: "rgba(0,0,0,.6)",
+    fontWeight: "bold",
+    fontSize: "1.1rem",
+  },
+}));
 
 const headCells = [
   {
@@ -15,12 +27,14 @@ const headCells = [
 
 export default function EnhancedTableHead(props) {
   const { order, orderBy } = props;
+  const classes = useStyles();
 
   return (
-    <TableHead>
+    <TableHead className={classes.root}>
       <TableRow>
         {headCells.map((headCell) => (
           <TableCell
+            className={classes.headName}
             key={headCell.id}
             align={headCell.numeric ? "right" : "left"}
             padding={headCell.disablePadding ? "none" : "default"}
