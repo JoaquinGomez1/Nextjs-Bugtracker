@@ -1,6 +1,7 @@
 import { Box, List, ListItemText } from "@material-ui/core";
 import Link from "next/link";
 import { makeStyles } from "@material-ui/core/styles";
+import { motion } from "framer-motion";
 
 const useStyles = makeStyles((theme) => ({
   desktopMenu: {
@@ -19,12 +20,13 @@ const useStyles = makeStyles((theme) => ({
     padding: `0 ${theme.spacing(1)}px`,
     margin: `0 ${theme.spacing(1)}px`,
     border: "2px solid transparent",
-    "&:hover": {
-      borderBottom: `2px solid ${theme.palette.primary.dark}`,
-      backgroundColor: "unset",
-    },
   },
 }));
+
+const customBorder = {
+  borderBottom: [`2px solid rgba(0,0,0,0)`, `2px solid rgba(0,0,0,.4)`],
+  transition: { duration: 0.3 },
+};
 
 export default function DesktopMenu({ links, userLoggedIn, ...rest }) {
   const classes = useStyles();
@@ -34,20 +36,28 @@ export default function DesktopMenu({ links, userLoggedIn, ...rest }) {
         {links.map(({ text, url, auth }) =>
           userLoggedIn
             ? auth !== false && (
-                <li key={url} className={classes.listItem}>
+                <motion.li
+                  key={url}
+                  whileHover={customBorder}
+                  className={classes.listItem}
+                >
                   <Link href={url}>
                     <a>{text}</a>
                   </Link>
-                </li>
+                </motion.li>
               )
             : auth !== true && (
-                <li key={url} className={classes.listItem}>
+                <motion.li
+                  key={url}
+                  whileHover={customBorder}
+                  className={classes.listItem}
+                >
                   <Link href={url}>
                     <a className={classes.link}>
                       <ListItemText>{text}</ListItemText>
                     </a>
                   </Link>
-                </li>
+                </motion.li>
               )
         )}
       </List>

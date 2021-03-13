@@ -31,6 +31,10 @@ export const scaleY = {
 
 export const growY = {
   hidden: { height: 0, opacity: 0 },
-  show: { height: "auto", opacity: 1, transition: { duration: 0.4 } },
+  show: (custom) => ({
+    height: "auto",
+    opacity: 1,
+    transition: { duration: 0.4, delay: 0.02 * custom },
+  }),
   exit: { height: 0, opacity: 0 },
 };

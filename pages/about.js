@@ -1,20 +1,28 @@
-import {
-  Container,
-  Typography,
-  Grid,
-  Paper,
-  Button,
-  Link,
-} from "@material-ui/core";
+import { Container, Typography, Grid, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Image from "next/image";
 import { useContext } from "react";
 import { UserContext } from "../context/user";
 
 import { motion } from "framer-motion";
-import { growY } from "../libs/animations";
+import { fadeIn, growY } from "../libs/animations";
+import Link from "next/link";
 
-const MotionPaper = motion(Paper);
+const MotionButton = motion(Button);
+
+const customFadeIn = {
+  hidden: { opacity: 0 },
+  show: (i) => ({
+    opacity: 1,
+    transition: { duration: 0.6, delay: 0.09 * i + 0.2 },
+  }),
+  exit: { opacity: 0, x: 100 },
+};
+
+const customGrow = {
+  scale: [1, 1.08, 1],
+  transition: { duration: 1 },
+};
 
 const useStyles = makeStyles((theme) => ({
   paper: { margin: "24px 0" },
@@ -37,13 +45,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const pageTitle = "Keep track of every problem";
+
 export default function About() {
   const classes = useStyles();
   const { currentUser } = useContext(UserContext);
 
   return (
     <Container maxWidth="lg" style={{ overflow: "hidden" }}>
-      <MotionPaper
+      <motion.div
         variants={growY}
         animate="show"
         initial="hidden"
@@ -60,22 +70,57 @@ export default function About() {
           >
             <Grid item md={6} sm={12} className={classes.mainText}>
               <Typography variant="h4" className={classes.header}>
-                Keep track of <span className={classes.highlight}>every</span>{" "}
-                problem
+                {pageTitle.split(" ").map((word, index) =>
+                  word === "every" ? (
+                    <motion.span
+                      key={word + index}
+                      variants={customFadeIn}
+                      initial="hidden"
+                      animate="show"
+                      custom={index * 2}
+                      className={classes.highlight}
+                    >
+                      {" " + word}
+                    </motion.span>
+                  ) : (
+                    <motion.span
+                      key={word + index}
+                      variants={customFadeIn}
+                      initial="hidden"
+                      animate="show"
+                      custom={index}
+                    >
+                      {" " + word}
+                    </motion.span>
+                  )
+                )}
               </Typography>
+
               <Typography variant="h6" className={classes.subheader}>
-                Whether we want to admit it or not, the truth is that more often
-                than not, we need to keep track of our mistakes
+                <motion.span variants={fadeIn} initial="hidden" animate="show">
+                  Whether we want to admit it or not, the truth is that more
+                  often than not, we need to keep track of our mistakes
+                </motion.span>
               </Typography>
-              <Button color="primary">
+
+              <MotionButton
+                variants={growY}
+                initial="hidden"
+                animate="show"
+                variant="outlined"
+                style={{ marginTop: 20 }}
+                whileHover={customGrow}
+                color="primary"
+              >
                 <Link href={currentUser.id ? "/" : "/register"}>
-                  <a>Get's Started</a>
+                  <a>
+                    <Typography variant="subtitle1"> Get's Started </Typography>
+                  </a>
                 </Link>
-              </Button>
+              </MotionButton>
             </Grid>
             <Grid item md={6} sm={12} className={classes.image}>
               <Image
-                fixed
                 src={`/illustrations/about.svg`}
                 width="800"
                 height="800"
@@ -83,7 +128,7 @@ export default function About() {
             </Grid>
           </Grid>
         </Grid>
-      </MotionPaper>
+      </motion.div>
     </Container>
   );
 }
