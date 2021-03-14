@@ -5,7 +5,7 @@ import Issue from "./Issue";
 import NewIssueModal from "./NewIssueModal";
 import headers from "../headers";
 import Link from "next/link";
-import { Router, useRouter } from "next/router";
+import { useRouter } from "next/router";
 
 export default function IssuesList({ projectIssues, project }) {
   const router = useRouter();
@@ -56,7 +56,10 @@ export default function IssuesList({ projectIssues, project }) {
 
       <div>
         {issues?.length <= 0 ? (
-          <Typography style={{ textAlign: "center" }} variant="h6">
+          <Typography
+            style={{ textAlign: "center", color: "rgba(255,255,255,.6)" }}
+            variant="h6"
+          >
             There are no Issues!
           </Typography>
         ) : (

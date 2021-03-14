@@ -1,9 +1,9 @@
 import { useState, useContext, useEffect } from "react";
-import { Paper, Button, TextField, Typography, Box } from "@material-ui/core";
+import { Paper, Button, TextField, Typography } from "@material-ui/core";
 import styles from "../styles/Login.module.css";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Link from "next/link";
-import MeetingRoomIcon from "@material-ui/icons/MeetingRoom";
+import BugReportIcon from "@material-ui/icons/BugReport";
 import headers from "../headers";
 import { useRouter } from "next/router";
 import { UserContext } from "../context/user";
@@ -21,10 +21,14 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     fontSize: "2rem",
     borderRadius: "50%",
-    backgroundColor: "rgba(0,0,0,.04)",
+    backgroundColor: "rgba(0,0,0,.2)",
     margin: "0 auto",
     width: "50px",
+    height: "50px",
     boxShadow: "3px 3px 4px rgba(0,0,0,.1)",
+    display: "grid",
+    justifyContent: "center",
+    alignItems: "center",
   },
   paper: {
     overflowY: "hidden",
@@ -67,8 +71,6 @@ export default function Login() {
     user_name: "",
   });
   const classes = useStyles();
-  const theme = useTheme();
-  const isLightMode = theme.palette.type === "light" ? true : false;
   const router = useRouter();
 
   const handleFormChange = (e) => {
@@ -114,13 +116,9 @@ export default function Login() {
           exit="exit"
           className={classes.paper}
         >
-          <Typography
-            variant="h6"
-            className={classes.headline}
-            color={isLightMode ? "black" : "white"}
-          >
+          <Typography variant="h6" className={classes.headline}>
             <div className={classes.icon}>
-              <MeetingRoomIcon />
+              <BugReportIcon color="primary" />
             </div>
             <br />
             Sign up and start organizing your projects

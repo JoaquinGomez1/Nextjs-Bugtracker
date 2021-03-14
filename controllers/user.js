@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import client from "../postgresql-client";
+import { v4 as uuidV4 } from "uuid";
 
 export default class User {
   constructor(req) {
@@ -57,11 +58,12 @@ export default class User {
     const encryptedPassword = await bcrypt.hash(user.password, 10);
 
     const registerQuery =
-      "INSERT INTO Users(username, user_password, user_name, user_role) VALUES($1,$2,$3, 'member') RETURNING *";
+      "INSERT INTO Users(username, user_password, user_name, user_role, id) VALUES($1,$2,$3, 'member', $4) RETURNING *";
     const registerQueryValues = [
       user.username,
       encryptedPassword,
       user.user_name,
+      uuidV4(),
     ];
 
     try {

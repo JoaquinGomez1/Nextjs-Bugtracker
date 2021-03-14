@@ -88,7 +88,7 @@ export default function UpdateMembersModal({
               </Box>
               <Typography variant="subtitle2" className={classes.author}>
                 <PersonIcon color="primary" />
-                {member.user_id}
+                ID: {member.user_id}
               </Typography>
             </div>
             {userIsAllowedToDelete && (

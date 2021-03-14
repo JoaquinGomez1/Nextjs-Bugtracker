@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     fontSize: "2rem",
     borderRadius: "50%",
-    backgroundColor: "rgba(0,0,0,.4)",
+    backgroundColor: "rgba(0,0,0,.2)",
     margin: "0 auto",
     width: "50px",
     height: "50px",
