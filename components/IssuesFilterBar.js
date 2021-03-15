@@ -5,8 +5,6 @@ import {
   Radio,
   RadioGroup,
   FormControlLabel,
-  FormControl,
-  FormLabel,
   InputAdornment,
   Typography,
 } from "@material-ui/core";
@@ -15,11 +13,24 @@ import FilterListIcon from "@material-ui/icons/FilterList";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
-  root: { margin: `${theme.spacing(2)}px 0` },
+  root: {
+    margin: `${theme.spacing(2)}px 0`,
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column",
+    },
+  },
   formControl: { display: "flex", alignItems: "center", flexDirection: "row" },
   filterLabel: {
     margin: `0 ${theme.spacing(3)}px`,
     color: theme.palette.grey[300],
+    [theme.breakpoints.down("sm")]: {
+      margin: `${theme.spacing(3)}px 0`,
+    },
+  },
+  filterContainer: {
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column",
+    },
   },
 }));
 
@@ -88,7 +99,11 @@ export default function IssuesFilterBar({ issues, setIssues }) {
           }}
         />
       </Box>
-      <Box display="flex" alignItems="center">
+      <Box
+        display="flex"
+        alignItems="center"
+        className={classes.filterContainer}
+      >
         <Box display="flex" alignItems="center" className={classes.filterLabel}>
           <FilterListIcon style={{ margin: "0 8px" }} />
           <Typography variant="subtitle1">Sort by priority</Typography>
