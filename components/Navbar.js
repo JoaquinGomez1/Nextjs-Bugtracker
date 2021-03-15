@@ -1,5 +1,5 @@
-import { useContext, useState } from "react";
-import { AppBar, Toolbar, Container, IconButton, Box } from "@material-ui/core";
+import { useContext } from "react";
+import { AppBar, Toolbar, Container } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import BugReportIcon from "@material-ui/icons/BugReport";
 import Link from "next/link";

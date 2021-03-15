@@ -6,6 +6,7 @@ import NewIssueModal from "./NewIssueModal";
 import headers from "../headers";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import IssuesFilterBar from "./IssuesFilterBar";
 
 export default function IssuesList({ projectIssues, project }) {
   const router = useRouter();
@@ -33,6 +34,10 @@ export default function IssuesList({ projectIssues, project }) {
     }
   };
 
+  const onReset = () => {
+    setIssues(projectIssues);
+  };
+
   return (
     <Box display="grid">
       <Box
@@ -47,6 +52,11 @@ export default function IssuesList({ projectIssues, project }) {
           Add Issue
         </Button>
       </Box>
+      <IssuesFilterBar
+        issues={projectIssues}
+        setIssues={setIssues}
+        onReset={onReset}
+      />
       <Divider style={{ marginBottom: "16px" }} />
       <NewIssueModal
         open={modalOpen}

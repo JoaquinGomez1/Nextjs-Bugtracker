@@ -10,11 +10,21 @@ import Link from "next/link";
 
 const MotionButton = motion(Button);
 
+const customGrowY = {
+  hidden: { height: 0, opacity: 0 },
+  show: (custom) => ({
+    height: "auto",
+    opacity: 1,
+    transition: { duration: 1.2, delay: 0.02 * custom },
+  }),
+  exit: { height: 0, opacity: 0 },
+};
+
 const customFadeIn = {
   hidden: { opacity: 0 },
   show: (i) => ({
     opacity: 1,
-    transition: { duration: 0.6, delay: 0.09 * i + 0.2 },
+    transition: { duration: 0.6, delay: 0.13 * i + 0.6 },
   }),
   exit: { opacity: 0, x: 100 },
 };
@@ -54,7 +64,7 @@ export default function About() {
   return (
     <Container maxWidth="lg" style={{ overflow: "hidden" }}>
       <motion.div
-        variants={growY}
+        variants={customGrowY}
         animate="show"
         initial="hidden"
         exit="exit"
