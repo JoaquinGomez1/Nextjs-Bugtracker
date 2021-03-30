@@ -89,9 +89,10 @@ export default function Login() {
 
     if (req.status === 200) {
       setCurrentUser(res);
-      setTimeout(() => router.push("/"), 3000);
+      setTimeout(() => router.push("/"), 1500);
     }
-    setResponseMessage(res.data);
+    console.log(res);
+    setResponseMessage(res);
     setShowMessage(true);
   };
 
