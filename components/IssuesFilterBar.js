@@ -15,8 +15,12 @@ import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => ({
   root: {
     margin: `${theme.spacing(2)}px 0`,
+    alignItems: "center",
+    justifyContent: "space-between",
     [theme.breakpoints.down("sm")]: {
       flexDirection: "column",
+      alignItems: "left",
+      justifyContent: "left",
     },
   },
   formControl: { display: "flex", alignItems: "center", flexDirection: "row" },
@@ -77,12 +81,7 @@ export default function IssuesFilterBar({ issues, setIssues }) {
   };
 
   return (
-    <Box
-      display="flex"
-      alignItems="center"
-      justifyContent="space-between"
-      className={classes.root}
-    >
+    <Box display="flex" className={classes.root}>
       <Box>
         <TextField
           className={classes.textField}

@@ -21,6 +21,20 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(1),
   },
   divider: { margin: `${theme.spacing(3)}px 0` },
+  commentBox: {
+    overflow: "hidden",
+    padding: theme.spacing(2),
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column",
+    },
+  },
+  createCommentButton: {
+    marginLeft: "24px",
+    padding: "16px",
+    [theme.breakpoints.down("sm")]: {
+      margin: "10px 0",
+    },
+  },
 }));
 
 export default function CommentSection({ comments: allComments, issueId }) {
@@ -58,7 +72,7 @@ export default function CommentSection({ comments: allComments, issueId }) {
 
     const reqHeaders = headers;
     reqHeaders.method = "DELETE";
-    reqHeaders.body = JSON.stringify({ id: id });
+    reqHeaders.body = JSON.stringify({ id });
     setDeleteButtonDisabled(true);
     const req = await fetch(URL, reqHeaders);
 
@@ -131,11 +145,12 @@ function CreateComment({
   createComment,
   handleSubmit,
 }) {
+  const classes = useStyles();
   return (
     <MotionBox
       variants={growY}
       animate={createComment ? "show" : "hidden"}
-      style={{ padding: "16px", overflow: "hidden" }}
+      className={classes.commentBox}
       display="flex"
     >
       <TextField
@@ -150,7 +165,7 @@ function CreateComment({
       <Button
         onClick={handleSubmit}
         color="primary"
-        style={{ padding: "16px", marginLeft: "24px" }}
+        className={classes.createCommentButton}
         disabled={!commentContent}
       >
         Add comment

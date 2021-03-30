@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 import { fadeIn as animations } from "../../libs/animations";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  paper: {
     padding: theme.spacing(4),
     marginTop: theme.spacing(4),
   },
@@ -29,7 +29,7 @@ export default function ProjectPage({ projectData }) {
       exit="exit"
     >
       <Container maxWidth="lg">
-        <Paper className={classes.root}>
+        <Paper className={classes.paper}>
           <ProjectHeader project={project} />
           <IssuesList
             projectIssues={project.project_issues}
