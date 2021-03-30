@@ -192,7 +192,7 @@ export default function Login() {
               style={{ top: 180 }}
               success={responseMessage?.status === "success"}
             >
-              {responseMessage.message}
+              {responseMessage?.message}
               <HighlightOffIcon
                 style={{ cursor: "pointer" }}
                 onClick={() => setShowMessage(false)}

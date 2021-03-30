@@ -57,7 +57,7 @@ export default class User {
     const encryptedPassword = await bcrypt.hash(user.password, 10);
 
     const registerQuery =
-      "INSERT INTO Users(username, user_password, user_name, user_role) VALUES($1,$2,$3, 'member', $4) RETURNING *";
+      "INSERT INTO Users(username, user_password, user_name, user_role) VALUES($1,$2,$3, 'member') RETURNING *";
     const registerQueryValues = [
       user.username,
       encryptedPassword,
