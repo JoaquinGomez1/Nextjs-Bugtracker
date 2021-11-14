@@ -1,12 +1,12 @@
+import { NextApiRequest } from "next";
+import IProject from "../interfaces/project";
 import client from "../postgresql-client";
 
 export default class Projects {
-  constructor(req) {
-    this.req = req;
-  }
+  constructor(private req: NextApiRequest) {}
 
   // Returns all projects of a particular user
-  async view(id) {
+  async view(id: number | string) {
     // Create a query for the database
     const queryUserIsAuthor =
       "SELECT Projects.id, project_name, project_owner, project_members, username, user_role FROM Projects JOIN Users ON project_owner = Users.id WHERE Users.id = $1";
@@ -22,7 +22,7 @@ export default class Projects {
 
     const projectsOwned = await client.query(queryUserIsAuthor, [id]);
     const projectsMember = await client.query(queryUserIsMember, [
-      this.req.user.id,
+      this.req.user?.id,
     ]);
 
     const result = projectsMember.rows?.concat(projectsOwned.rows);
@@ -31,7 +31,7 @@ export default class Projects {
   }
 
   async viewById() {
-    const id = this.req.query?.id;
+    const id: any = this.req.query?.id;
     const query = `
       SELECT Projects.id, project_name,project_description, project_owner, username AS project_owner_name 
       FROM Projects 
@@ -52,14 +52,14 @@ export default class Projects {
     return project;
   }
 
-  async getIssues(id) {
+  async getIssues(id: number) {
     const query = `SELECT * FROM Issues WHERE issue_project = $1`;
     const queryResult = await client.query(query, [id]);
     return queryResult.rows;
   }
 
   // Returns a list of members of a particular project
-  async getMembers(id) {
+  async getMembers(id: number | string) {
     const query = `
       SELECT user_id, username, Users.user_role FROM Project_Users
       LEFT JOIN Users
@@ -124,10 +124,10 @@ export default class Projects {
   }
 
   //
-  async createNewIssue(data) {
+  async createNewIssue(data: IProject) {
     let { title, description, severity, author, projectId } = data;
     if (!author) {
-      author = this.req.user.id;
+      author = this.req.user?.id!;
     }
     const query = `
       INSERT INTO Issues(issue_name, issue_description, issue_severity, issue_author, issue_project)

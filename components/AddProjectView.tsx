@@ -15,10 +15,119 @@ import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import PersonIcon from "@material-ui/icons/Person";
 import { motion } from "framer-motion";
 import { growY } from "../libs/animations";
+import { ITheme } from "../theme";
 
 const MotionList = motion(List);
 
-const useStyles = makeStyles((theme) => ({
+export default function AddProjectView({ actions }: any) {
+  const {
+    handleChange,
+    fieldsValue,
+    handleSubmit,
+    members,
+    removeMemberFromList,
+    possibleMembers,
+    onMemberClicked,
+    lostOfFocus,
+  } = actions;
+  const classes = useStyles();
+
+  return (
+    <Container maxWidth="lg">
+      <Paper elevation={1} className={classes.root}>
+        <Typography variant="h4" className={classes.title}>
+          <AddIcon color="primary" /> Add Project
+        </Typography>
+        <Divider />
+        <div className={classes.container}>
+          <form onChange={handleChange} className={classes.right}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              name="projectName"
+              autoComplete="false"
+              placeholder="Project's Name"
+              className={classes.texfield}
+              value={fieldsValue.projectName}
+              required
+            />
+            <TextField
+              variant="outlined"
+              name="projectDescription"
+              fullWidth
+              autoComplete="false"
+              placeholder="Project's Description"
+              className={classes.texfield}
+              multiline
+              rows={4}
+              value={fieldsValue.projectDescription}
+              required
+            />
+            <div className={classes.addMembersArea + " " + classes.texfield}>
+              <TextField
+                variant="outlined"
+                name="member"
+                fullWidth
+                autoComplete="false"
+                placeholder="Member username"
+                value={fieldsValue.member}
+                required
+                onBlur={lostOfFocus}
+              />
+
+              <StyledList
+                items={possibleMembers}
+                onMemberClicked={onMemberClicked}
+              />
+            </div>
+          </form>
+          <div className={classes.right + " " + classes.alignRight}>
+            <Paper elevation={2} className={classes.membersList}>
+              <Typography variant="h5"> Member's List</Typography>
+              <Divider />
+              {members.map(
+                ({ username }: { username: string }, index: number) => {
+                  return (
+                    <Box
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      className={classes.memberBox}
+                      key={Math.random()}
+                    >
+                      <Typography variant="h6" className={classes.subtitle}>
+                        {username}
+                      </Typography>
+                      <HighlightOffIcon
+                        className={classes.deleteIcon}
+                        color="primary"
+                        onClick={() => removeMemberFromList(index)}
+                      />
+                    </Box>
+                  );
+                }
+              )}
+            </Paper>
+          </div>
+        </div>
+
+        <Container maxWidth="sm">
+          <Button
+            className={classes.submitButton}
+            fullWidth
+            variant="contained"
+            color="primary"
+            onClick={handleSubmit}
+          >
+            Add project
+          </Button>
+        </Container>
+      </Paper>
+    </Container>
+  );
+}
+
+const useStyles = makeStyles((theme: ITheme) => ({
   root: {
     padding: theme.spacing(4),
     width: "100%",
@@ -81,113 +190,6 @@ const useStyles = makeStyles((theme) => ({
   subtitle: { color: theme?.palette?.subtitles?.high },
 }));
 
-export default function AddProjectView({ actions }) {
-  const {
-    handleChange,
-    fieldsValue,
-    handleSubmit,
-    members,
-    removeMemberFromList,
-    possibleMembers,
-    onMemberClicked,
-    lostOfFocus,
-  } = actions;
-  const classes = useStyles();
-
-  return (
-    <Container maxWidth="lg">
-      <Paper elevation={1} className={classes.root}>
-        <Typography variant="h4" className={classes.title}>
-          <AddIcon color="primary" /> Add Project
-        </Typography>
-        <Divider />
-        <div className={classes.container}>
-          <form onChange={handleChange} className={classes.right}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              name="projectName"
-              autoComplete="false"
-              placeholder="Project's Name"
-              className={classes.texfield}
-              value={fieldsValue.projectName}
-              required
-            />
-            <TextField
-              variant="outlined"
-              name="projectDescription"
-              fullWidth
-              autoComplete="false"
-              placeholder="Project's Description"
-              className={classes.texfield}
-              multiline
-              rows={4}
-              value={fieldsValue.projectDescription}
-              required
-            />
-            <div className={classes.addMembersArea + " " + classes.texfield}>
-              <TextField
-                variant="outlined"
-                name="member"
-                fullWidth
-                autoComplete="false"
-                placeholder="Member username"
-                value={fieldsValue.member}
-                required
-                autoComplete="off"
-                onBlur={lostOfFocus}
-              />
-
-              <StyledList
-                items={possibleMembers}
-                onMemberClicked={onMemberClicked}
-              />
-            </div>
-          </form>
-          <div className={classes.right + " " + classes.alignRight}>
-            <Paper elevation={2} className={classes.membersList}>
-              <Typography variant="h5"> Member's List</Typography>
-              <Divider />
-              {members.map((member, index) => {
-                return (
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    className={classes.memberBox}
-                    key={Math.random()}
-                  >
-                    <Typography variant="h6" className={classes.subtitle}>
-                      {member.username}
-                    </Typography>
-                    <HighlightOffIcon
-                      className={classes.deleteIcon}
-                      color="primary"
-                      onClick={() => removeMemberFromList(index)}
-                    />
-                  </Box>
-                );
-              })}
-            </Paper>
-          </div>
-        </div>
-
-        <Container maxWidth="sm">
-          <Button
-            className={classes.submitButton}
-            fullWidth
-            variant="contained"
-            color="primary"
-            onClick={handleSubmit}
-          >
-            Add project
-          </Button>
-        </Container>
-      </Paper>
-    </Container>
-  );
-}
-
 const useListStyle = makeStyles((theme) => ({
   resultList: {
     overflowY: "hidden",
@@ -210,7 +212,8 @@ const useListStyle = makeStyles((theme) => ({
   },
 }));
 
-function StyledList({ items, onMemberClicked }) {
+// TODO: Assign proper types
+function StyledList({ items, onMemberClicked }: any) {
   const classes = useListStyle();
   return (
     <MotionList
@@ -219,7 +222,7 @@ function StyledList({ items, onMemberClicked }) {
       exit="exit"
       className={classes.resultList}
     >
-      {items.map((item) => (
+      {items.map((item: any) => (
         <ListItem
           onClick={() => onMemberClicked(item)}
           className={classes.listItem}

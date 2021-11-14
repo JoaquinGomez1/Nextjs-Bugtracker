@@ -2,8 +2,9 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import { makeStyles } from "@material-ui/core/styles";
+import { ITheme } from "../theme";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: ITheme) => ({
   root: {
     backgroundColor: theme?.palette?.primary?.main,
   },
@@ -25,7 +26,8 @@ const headCells = [
   { id: "actions", numeric: true, disablePadding: false, label: "Actions" },
 ];
 
-export default function EnhancedTableHead(props) {
+// TODO: Asign proper props type
+export default function EnhancedTableHead(props: any) {
   const { order, orderBy } = props;
   const classes = useStyles();
 

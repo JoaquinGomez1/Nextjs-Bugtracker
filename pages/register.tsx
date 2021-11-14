@@ -1,4 +1,11 @@
-import { useState, useContext, useEffect } from "react";
+import {
+  useState,
+  useContext,
+  useEffect,
+  FormEvent,
+  KeyboardEvent,
+  SyntheticEvent,
+} from "react";
 import { Paper, Button, TextField, Typography } from "@material-ui/core";
 import styles from "../styles/Login.module.css";
 import { makeStyles } from "@material-ui/core/styles";
@@ -11,59 +18,14 @@ import Alert from "../components/Alert";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import { AnimatePresence, motion } from "framer-motion";
 import { growY } from "../libs/animations";
+import AppResponse from "../interfaces/appResponse";
 
 const FramerPaper = motion(Paper);
-
-const useStyles = makeStyles((theme) => ({
-  container: {
-    position: "relative",
-  },
-  icon: {
-    fontSize: "2rem",
-    borderRadius: "50%",
-    backgroundColor: "rgba(0,0,0,.2)",
-    margin: "0 auto",
-    width: "50px",
-    height: "50px",
-    boxShadow: "3px 3px 4px rgba(0,0,0,.1)",
-    display: "grid",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  paper: {
-    overflowY: "hidden",
-    maxWidth: "400px",
-    display: "grid",
-    boxShadow: "3px 3px 5px rgba(0,0,0,.2)",
-    padding: theme.spacing(4),
-    "& > *": {
-      marginTop: theme.spacing(4),
-    },
-  },
-  headline: {
-    textAlign: "center",
-    fontWeight: "bold",
-  },
-  form: {
-    "& > *": {
-      marginTop: theme.spacing(2),
-    },
-  },
-  link: {
-    cursor: "pointer",
-  },
-  bottomText: {
-    textAlign: "center",
-  },
-  alert: {
-    top: 280,
-  },
-}));
 
 export default function Login() {
   const { setCurrentUser } = useContext(UserContext);
   const [showMessage, setShowMessage] = useState(false);
-  const [responseMessage, setResponseMessage] = useState();
+  const [responseMessage, setResponseMessage] = useState<AppResponse>();
   const [userdata, setUserData] = useState({
     username: "",
     password: "",
@@ -73,8 +35,8 @@ export default function Login() {
   const classes = useStyles();
   const router = useRouter();
 
-  const handleFormChange = (e) => {
-    const { name, value } = e.target;
+  const handleFormChange = (e: SyntheticEvent) => {
+    const { name, value } = e.target as HTMLInputElement;
     setUserData({ ...userdata, [name]: value });
   };
 
@@ -84,19 +46,18 @@ export default function Login() {
     reqHeaders.method = "POST";
     reqHeaders.body = JSON.stringify(userdata);
 
-    const req = await fetch(URL, reqHeaders);
+    const req = await fetch(URL, reqHeaders as RequestInit);
     const res = await req.json();
 
     if (req.status === 200) {
       setCurrentUser(res);
       setTimeout(() => router.push("/"), 1500);
     }
-    console.log(res);
     setResponseMessage(res);
     setShowMessage(true);
   };
 
-  const handleKeyPress = ({ key }) => {
+  const handleKeyPress = ({ key }: KeyboardEvent) => {
     if (key === "Enter") handleSubmit();
   };
 
@@ -141,7 +102,7 @@ export default function Login() {
               variant="outlined"
               type="text"
               name="user_name"
-              value={userdata.name}
+              value={userdata.user_name}
               onKeyPress={handleKeyPress}
               required
             />
@@ -205,3 +166,49 @@ export default function Login() {
     </div>
   );
 }
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    position: "relative",
+  },
+  icon: {
+    fontSize: "2rem",
+    borderRadius: "50%",
+    backgroundColor: "rgba(0,0,0,.2)",
+    margin: "0 auto",
+    width: "50px",
+    height: "50px",
+    boxShadow: "3px 3px 4px rgba(0,0,0,.1)",
+    display: "grid",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  paper: {
+    overflowY: "hidden",
+    maxWidth: "400px",
+    display: "grid",
+    boxShadow: "3px 3px 5px rgba(0,0,0,.2)",
+    padding: theme.spacing(4),
+    "& > *": {
+      marginTop: theme.spacing(4),
+    },
+  },
+  headline: {
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  form: {
+    "& > *": {
+      marginTop: theme.spacing(2),
+    },
+  },
+  link: {
+    cursor: "pointer",
+  },
+  bottomText: {
+    textAlign: "center",
+  },
+  alert: {
+    top: 280,
+  },
+}));

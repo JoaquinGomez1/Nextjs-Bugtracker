@@ -1,8 +1,8 @@
 import { useContext, useEffect } from "react";
 import { Container, Typography } from "@material-ui/core";
 import Table from "../components/Table";
-import { ProjectsContext } from "../context/projects";
-import { UserContext } from "../context/user";
+import { ProjectsContext, useProjectProvider } from "../context/projects";
+import { UserContext, useUserProvider } from "../context/user";
 
 import authenticatedRequest from "../libs/authRequest";
 import protectedRequest from "../libs/protectedRequest";
@@ -11,12 +11,15 @@ import headers from "../headers";
 import { motion } from "framer-motion";
 import { fadeIn } from "../libs/animations";
 import { useRouter } from "next/router";
+import { NextPageContext } from "next";
+import IProject from "../interfaces/project";
+import AppResponse from "../interfaces/appResponse";
 
 const MotionContainer = motion(Container);
 
-export default function Index({ resultProjects }) {
-  const { projects, setProjects } = useContext(ProjectsContext);
-  const { currentUser } = useContext(UserContext);
+export default function Index({ resultProjects }: any) {
+  const { projects, setProjects } = useProjectProvider();
+  const { currentUser } = useUserProvider();
   const thereIsNoUserLoggedIn =
     currentUser && Object.keys(currentUser).length <= 0;
   const router = useRouter();
@@ -25,18 +28,18 @@ export default function Index({ resultProjects }) {
     if (resultProjects) setProjects(resultProjects);
   }, [resultProjects]);
 
-  const handleDeleteProject = async (id, index) => {
+  const handleDeleteProject = async (id: number, index: number) => {
     const reqHeaders = headers;
     reqHeaders.method = "DELETE";
     reqHeaders.body = JSON.stringify({ id });
 
     const req = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_URL + "/projects/delete",
-      reqHeaders
+      process.env.NEXT_PUBLIC_BACKEND_URL! + "/projects/delete",
+      reqHeaders as RequestInit
     );
 
     if (req.status === 200) {
-      const projectsCopy = [...projects];
+      const projectsCopy = [...projects!];
       projectsCopy.splice(index, 1);
       setProjects(projectsCopy);
     }
@@ -58,7 +61,7 @@ export default function Index({ resultProjects }) {
       maxWidth="lg"
     >
       <Typography variant="h2" style={{ margin: "24px 0" }}>
-        Welcome {currentUser.username}
+        Welcome {currentUser?.username}
       </Typography>
 
       {!thereIsNoUserLoggedIn && (
@@ -68,10 +71,13 @@ export default function Index({ resultProjects }) {
   );
 }
 
-export async function getServerSideProps(ctx) {
+export async function getServerSideProps(ctx: NextPageContext) {
   const result = await protectedRequest(ctx, "/login");
 
-  const resultProjects = await authenticatedRequest(ctx, "/projects");
+  const resultProjects = await authenticatedRequest<IProject[]>(
+    ctx,
+    "/projects"
+  );
 
   if (!result.auth || !resultProjects) return result;
   return { props: { resultProjects } };

@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, SyntheticEvent } from "react";
 import { lighten, makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -19,7 +19,9 @@ import EnhancedTableHead from "./TableHead";
 
 import { fadeIn, growFromLeft } from "../libs/animations";
 import { AnimatePresence, motion } from "framer-motion";
-import { UserContext } from "../context/user";
+import { useUserProvider } from "../context/user";
+import { ITheme } from "../theme";
+import IProject from "../interfaces/project";
 
 const FramerTableRow = motion(TableRow);
 
@@ -49,7 +51,8 @@ const useToolbarStyles = makeStyles((theme) => ({
   },
 }));
 
-const EnhancedTableToolbar = (props) => {
+// TODO: Asign proper types
+const EnhancedTableToolbar = (props: any) => {
   const classes = useToolbarStyles();
   const { numSelected } = props;
 
@@ -80,7 +83,7 @@ const EnhancedTableToolbar = (props) => {
   );
 };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: ITheme) => ({
   root: {
     width: "100%",
   },
@@ -117,39 +120,48 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EnhancedTable({ rows, handleDeleteProject }) {
+interface EnhancedTableProps {
+  rows: IProject[] | undefined;
+  handleDeleteProject: (id: number, index: number) => any;
+}
+
+export default function EnhancedTable({
+  rows,
+  handleDeleteProject,
+}: EnhancedTableProps) {
   const classes = useStyles();
   const [order] = useState("asc");
   const [orderBy] = useState("name");
-  const [selected, setSelected] = useState([]);
+  const [selected, setSelected] = useState<any[]>([]);
   const [page, setPage] = useState(0);
   const [dense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [noRows, setNoRows] = useState(rows.length <= 0);
-  const { currentUser } = useContext(UserContext);
-  const userIsAllowedToDelete = (row) =>
-    currentUser.role === "admin" || currentUser.id === row.project_owner;
+  const [noRows, setNoRows] = useState(rows?.length! <= 0 ?? true);
+  const { currentUser } = useUserProvider();
+  const userIsAllowedToDelete = (row: any) =>
+    currentUser?.user_role === "admin" || currentUser?.id === row.project_owner;
 
   const router = useRouter();
 
   useEffect(() => {
-    setNoRows(rows.length <= 0);
+    setNoRows(rows?.length! <= 0 ?? true);
   }, [rows]);
 
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
-      setSelected(newSelecteds);
+  const handleSelectAllClick = (event: SyntheticEvent<HTMLInputElement>) => {
+    const target = event.target as HTMLInputElement;
+    if (target.checked) {
+      const newSelecteds = rows?.map((n: any) => n.name);
+      setSelected(newSelecteds!);
       return;
     }
     setSelected([]);
   };
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (event: any, newPage: number) => {
     setPage(newPage);
   };
 
-  const handleReRoute = ({ target }, id) => {
+  const handleReRoute = ({ target }: any, id: number) => {
     // Only redirect if the element that was clicked
     // is not included in conditions array
     const conditions = ["button", "span", "path"];
@@ -157,13 +169,14 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
       router.push(`/projects/${id}`);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value));
+  const handleChangeRowsPerPage = (event: SyntheticEvent) => {
+    const target = event.target as HTMLInputElement;
+    setRowsPerPage(parseInt(target.value));
     setPage(0);
   };
 
   const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+    rowsPerPage - Math.min(rowsPerPage, rows?.length ?? 0 - page * rowsPerPage);
 
   return (
     <motion.div
@@ -192,7 +205,7 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
                 order={order}
                 orderBy={orderBy}
                 onSelectAllClick={handleSelectAllClick}
-                rowCount={rows.length}
+                rowCount={rows?.length}
               />
               <TableBody style={{ position: "relative" }}>
                 {noRows ? (
@@ -213,11 +226,11 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
                 ) : (
                   <AnimatePresence exitBeforeEnter>
                     {rows
-                      .slice(
+                      ?.slice(
                         page * rowsPerPage,
                         page * rowsPerPage + rowsPerPage
                       )
-                      .map((row, index) => {
+                      .map((row: IProject, index: number) => {
                         const labelId = `enhanced-table-checkbox-${index}`;
                         return (
                           <FramerTableRow
@@ -234,7 +247,7 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
                             style={{ transformOrigin: "left" }}
                           >
                             <TableCell component="th" id={labelId} scope="row">
-                              {row.name || row.project_name}
+                              {row.title || row.project_name}
                             </TableCell>
 
                             <TableCell
@@ -272,7 +285,7 @@ export default function EnhancedTable({ rows, handleDeleteProject }) {
           <TablePagination
             rowsPerPageOptions={[5, 10]}
             component="div"
-            count={rows.length}
+            count={rows?.length ?? 0}
             rowsPerPage={rowsPerPage}
             page={page}
             onChangePage={handleChangePage}

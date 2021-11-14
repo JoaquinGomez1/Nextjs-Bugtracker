@@ -1,11 +1,11 @@
+import { NextApiRequest } from "next";
+import IUser from "../interfaces/user";
 import client from "../postgresql-client";
 
 export default class Issues {
-  constructor(req) {
-    this.req = req;
-  }
+  constructor(private req: NextApiRequest) {}
 
-  async getIssue(id) {
+  async getIssue(id: number) {
     const query = `
         SELECT Issues.id, issue_name, issue_author as issue_author_id, issue_date, issue_project, issue_description, issue_severity, username as issue_author
         FROM Issues
@@ -20,7 +20,7 @@ export default class Issues {
     return queryResult?.rows[0];
   }
 
-  async addNewComment(user) {
+  async addNewComment(user: IUser) {
     const data = this.req.body;
     const query = `
     INSERT INTO Comments(comment_content, comment_issue, comment_author)
@@ -60,14 +60,14 @@ export default class Issues {
     }
   }
 
-  async deleteComment(id) {
+  async deleteComment(id: number) {
     const query = `DELETE FROM Comments WHERE id = $1 AND (comment_author = $2 OR $3 = 'admin')`;
 
     try {
       const result = await client.query(query, [
         id,
-        this.req.user.id,
-        this.req.user.user_role,
+        this.req.user?.id,
+        this.req.user?.user_role,
       ]);
       if (result.fields)
         return { status: "success", message: "Comment deleted successfully" };
@@ -77,7 +77,8 @@ export default class Issues {
     }
   }
 
-  async updateDescription(data) {
+  // TODO: Assign proper data type
+  async updateDescription(data: any) {
     if (!data) return { status: "failed", message: "No data" };
     if (!data.issueId) return { status: "failed", message: "No id provided" };
 
@@ -93,15 +94,15 @@ export default class Issues {
     return result.rows;
   }
 
-  async delete(id) {
+  async delete(id: number) {
     const query = `DELETE FROM Issues WHERE id = $1 AND (issue_author = $2 OR $3 = 'admin')`;
     const queryComments = `DELETE FROM Comments WHERE comment_issue = $1`;
     try {
       await client.query(queryComments, [id]);
       const result = await client.query(query, [
         id,
-        this.req.user.id,
-        this.req.user.user_role,
+        this.req.user?.id,
+        this.req.user?.user_role,
       ]);
       if (result.fields)
         return { status: "success", message: "Issue deleted successfully" };

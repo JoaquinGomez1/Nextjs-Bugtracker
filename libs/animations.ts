@@ -13,7 +13,7 @@ export const fadeIn = {
 
 export const growFromLeft = {
   hidden: { x: -100, opacity: 0 },
-  show: (i) => ({
+  show: (i: number) => ({
     x: 0,
     opacity: 1,
     transition: { delay: 0.04 * i, duration: 0.4 }, // This creates a stagger effect
@@ -31,7 +31,7 @@ export const scaleY = {
 
 export const growY = {
   hidden: { height: 0, opacity: 0 },
-  show: (custom) => ({
+  show: (custom: number) => ({
     height: "auto",
     opacity: 1,
     transition: { duration: 0.4, delay: 0.02 * custom },

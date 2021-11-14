@@ -1,4 +1,4 @@
-\*Every end point will be relative to the /api route
+\*Every end point is relative to the /api route
 
 |             Route | method |       parameters       | returns |
 | ----------------: | :----: | :--------------------: | ------: |

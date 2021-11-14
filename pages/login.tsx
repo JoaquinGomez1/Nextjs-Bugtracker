@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { KeyboardEvent, SyntheticEvent, useContext } from "react";
 import {
   Paper,
   Button,
@@ -13,13 +13,14 @@ import Link from "next/link";
 import headers from "../headers";
 import fetch from "isomorphic-unfetch";
 import { useRouter } from "next/router";
-import { UserContext } from "../context/user";
+import { UserContext, useUserProvider } from "../context/user";
 import { AnimatePresence, motion } from "framer-motion";
 import { growY } from "../libs/animations";
 import Alert from "../components/Alert";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 
 import BugReportIcon from "@material-ui/icons/BugReport";
+import AppResponse from "../interfaces/appResponse";
 
 const FramerPaper = motion(Paper);
 
@@ -66,19 +67,19 @@ const useStyles = makeStyles((theme) => ({
 export default function Login() {
   const [userdata, setUserData] = useState({ username: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
-  const [showMessage, setShowMessage] = useState("");
-  const { setCurrentUser } = useContext(UserContext);
+  const [showMessage, setShowMessage] = useState<AppResponse | null>(null);
+  const { setCurrentUser } = useUserProvider();
   const classes = useStyles();
   const router = useRouter();
 
-  const handleFormChange = (e) => {
-    const { name, value } = e.target;
+  const handleFormChange = (e: SyntheticEvent) => {
+    const { name, value } = e.target as HTMLInputElement;
     setUserData({ ...userdata, [name]: value });
   };
 
   const handleSubmit = async () => {
     setIsLoading(true);
-    const reqHeaders = headers;
+    const reqHeaders = headers as RequestInit;
     reqHeaders.method = "POST";
     reqHeaders.body = JSON.stringify(userdata);
     const URL = process.env.NEXT_PUBLIC_BACKEND_URL + "/user/login";
@@ -86,15 +87,17 @@ export default function Login() {
     const res = await req.json();
     setIsLoading(false);
 
+    console.log({ res, req });
+
     if (req.status === 200) {
-      setCurrentUser(res?.data);
+      setCurrentUser(res?.data!);
       router.push("/");
     } else {
       setShowMessage(res);
     }
   };
 
-  const handleKeyPress = ({ key }) => {
+  const handleKeyPress = ({ key }: KeyboardEvent) => {
     if (key === "Enter") handleSubmit();
   };
 
@@ -159,12 +162,12 @@ export default function Login() {
               </Typography>
             </Link>
           </Typography>
-          {showMessage.message && (
+          {showMessage?.message && (
             <Alert success={showMessage?.status === "success"}>
-              <Typography variant="h5">{showMessage.message}</Typography>
+              <Typography variant="h5">{showMessage?.message}</Typography>
               <HighlightOffIcon
                 style={{ cursor: "pointer" }}
-                onClick={() => setShowMessage(false)}
+                onClick={() => setShowMessage(null)}
               />
             </Alert>
           )}

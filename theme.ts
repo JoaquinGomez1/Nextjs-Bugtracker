@@ -1,4 +1,18 @@
 import { createMuiTheme } from "@material-ui/core/styles";
+import { Theme, ThemeOptions } from "@material-ui/core/styles/createMuiTheme";
+import { Palette } from "@material-ui/core/styles/createPalette";
+
+interface IPalette extends Palette {
+  subtitles: {
+    main: string;
+    high: string;
+    low: string;
+  };
+}
+
+interface IThemeOptions extends ThemeOptions {
+  palette: IPalette;
+}
 
 const theme = createMuiTheme({
   palette: {
@@ -8,12 +22,6 @@ const theme = createMuiTheme({
     },
     primary: {
       main: "#03fc77",
-    },
-    white: {
-      main: "white",
-    },
-    black: {
-      main: "black",
     },
     subtitles: {
       main: "rgba(255,255,255,0.5)",
@@ -36,6 +44,11 @@ const theme = createMuiTheme({
       '"Segoe UI Symbol"',
     ].join(","),
   },
-});
+} as IThemeOptions);
+
+// Allows to make use of the extended theme when using the makeStyles function
+export interface ITheme extends Theme {
+  palette: IPalette;
+}
 
 export default theme;
