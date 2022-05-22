@@ -1,9 +1,8 @@
 import { Container, Typography, Grid, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Image from "next/image";
-import { useContext } from "react";
-import { UserContext } from "../context/user";
 
+import { useUserProvider } from "../context/user";
 import { motion } from "framer-motion";
 import { fadeIn, growY } from "../libs/animations";
 import Link from "next/link";
@@ -12,7 +11,7 @@ const MotionButton = motion(Button);
 
 const customGrowY = {
   hidden: { height: 0, opacity: 0 },
-  show: (custom) => ({
+  show: (custom: number) => ({
     height: "auto",
     opacity: 1,
     transition: { duration: 1.2, delay: 0.02 * custom },
@@ -22,7 +21,7 @@ const customGrowY = {
 
 const customFadeIn = {
   hidden: { opacity: 0 },
-  show: (i) => ({
+  show: (i: number) => ({
     opacity: 1,
     transition: { duration: 0.6, delay: 0.13 * i + 0.6 },
   }),
@@ -59,7 +58,7 @@ const pageTitle = "Keep track of every problem";
 
 export default function About() {
   const classes = useStyles();
-  const { currentUser } = useContext(UserContext);
+  const { currentUser } = useUserProvider();
 
   return (
     <Container maxWidth="lg" style={{ overflow: "hidden" }}>
@@ -122,14 +121,14 @@ export default function About() {
                 whileHover={customGrow}
                 color="primary"
               >
-                <Link href={currentUser.id ? "/" : "/register"}>
+                <Link href={currentUser?.id ? "/" : "/register"}>
                   <a>
                     <Typography variant="subtitle1"> Get's Started </Typography>
                   </a>
                 </Link>
               </MotionButton>
             </Grid>
-            <Grid item md={6} sm={12} className={classes.image}>
+            <Grid item md={6} sm={12}>
               <Image
                 src={`/illustrations/about.svg`}
                 width="800"

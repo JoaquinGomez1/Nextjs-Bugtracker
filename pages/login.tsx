@@ -1,4 +1,4 @@
-import { KeyboardEvent, SyntheticEvent, useContext } from "react";
+import { KeyboardEvent, SyntheticEvent } from "react";
 import {
   Paper,
   Button,
@@ -24,46 +24,6 @@ import AppResponse from "../interfaces/appResponse";
 
 const FramerPaper = motion(Paper);
 
-const useStyles = makeStyles((theme) => ({
-  icon: {
-    fontSize: "2rem",
-    borderRadius: "50%",
-    backgroundColor: "rgba(0,0,0,.2)",
-    margin: "0 auto",
-    width: "50px",
-    height: "50px",
-    boxShadow: "3px 3px 4px rgba(0,0,0,.1)",
-    display: "grid",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  paper: {
-    overflow: "hidden",
-    maxWidth: "400px",
-    display: "grid",
-    boxShadow: "3px 3px 5px rgba(0,0,0,.2)",
-    padding: theme.spacing(4),
-    "& > *": {
-      marginTop: theme.spacing(4),
-    },
-  },
-  headline: {
-    textAlign: "center",
-    fontWeight: "bold",
-  },
-  form: {
-    "& > *": {
-      marginTop: theme.spacing(2),
-    },
-  },
-  link: {
-    cursor: "pointer",
-  },
-  bottomText: {
-    textAlign: "center",
-  },
-}));
-
 export default function Login() {
   const [userdata, setUserData] = useState({ username: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
@@ -86,8 +46,6 @@ export default function Login() {
     const req = await fetch(URL, reqHeaders);
     const res = await req.json();
     setIsLoading(false);
-
-    console.log({ res, req });
 
     if (req.status === 200) {
       setCurrentUser(res?.data!);
@@ -176,3 +134,43 @@ export default function Login() {
     </div>
   );
 }
+
+const useStyles = makeStyles((theme) => ({
+  icon: {
+    fontSize: "2rem",
+    borderRadius: "50%",
+    backgroundColor: "rgba(0,0,0,.2)",
+    margin: "0 auto",
+    width: "50px",
+    height: "50px",
+    boxShadow: "3px 3px 4px rgba(0,0,0,.1)",
+    display: "grid",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  paper: {
+    overflow: "hidden",
+    maxWidth: "400px",
+    display: "grid",
+    boxShadow: "3px 3px 5px rgba(0,0,0,.2)",
+    padding: theme.spacing(4),
+    "& > *": {
+      marginTop: theme.spacing(4),
+    },
+  },
+  headline: {
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  form: {
+    "& > *": {
+      marginTop: theme.spacing(2),
+    },
+  },
+  link: {
+    cursor: "pointer",
+  },
+  bottomText: {
+    textAlign: "center",
+  },
+}));

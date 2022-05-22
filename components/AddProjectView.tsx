@@ -95,7 +95,11 @@ export default function AddProjectView({ actions }: any) {
                       className={classes.memberBox}
                       key={Math.random()}
                     >
-                      <Typography variant="h6" className={classes.subtitle}>
+                      <Typography
+                        variant="h6"
+                        className={classes.subtitle}
+                        noWrap
+                      >
                         {username}
                       </Typography>
                       <HighlightOffIcon
@@ -187,7 +191,7 @@ const useStyles = makeStyles((theme: ITheme) => ({
   deleteIcon: {
     "&:hover": { color: theme.palette.primary.light },
   },
-  subtitle: { color: theme?.palette?.subtitles?.high },
+  subtitle: { color: theme?.palette?.subtitles?.high, width: "5rem" },
 }));
 
 const useListStyle = makeStyles((theme) => ({
