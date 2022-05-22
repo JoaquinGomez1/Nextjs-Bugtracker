@@ -10,5 +10,7 @@ export default async (req, res) => {
         return res.json({ ...newComment, comment_author: user.username });
       } else return res.status(400).json(newComment);
     }
+
+    return res.status(401);
   }
 };

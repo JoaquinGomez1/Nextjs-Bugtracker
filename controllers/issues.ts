@@ -21,7 +21,7 @@ export default class Issues {
   }
 
   async addNewComment(user: IUser) {
-    const data = this.req.body;
+    const data = JSON.parse(this.req.body);
     const query = `
     INSERT INTO Comments(comment_content, comment_issue, comment_author)
     VALUES ($1, $2, $3) 
@@ -69,7 +69,8 @@ export default class Issues {
         this.req.user?.id,
         this.req.user?.user_role,
       ]);
-      if (result.fields)
+
+      if (result.rowCount >= 1)
         return { status: "success", message: "Comment deleted successfully" };
       else return { status: "failed", message: "Failed to delete the comment" };
     } catch (err) {

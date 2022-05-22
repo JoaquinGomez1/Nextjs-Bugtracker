@@ -1,32 +1,46 @@
 import { useEffect, useState } from "react";
-import headers, { IHeaders } from "../headers";
+import defaultHeaders from "../headers";
 
-const DEFAULT_URL = process.env.BACKEND_URL + "/user";
+const DEFAULT_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "";
+interface FetchOptions {
+  headers?: typeof defaultHeaders;
+  useInitialFetch?: boolean;
+}
+
+const defaultOptions: FetchOptions = {
+  headers: defaultHeaders,
+  useInitialFetch: true,
+};
 
 export default function useFetch<T>(
   URL: string = DEFAULT_URL,
-  HEADERS = headers
+  { headers, useInitialFetch }: FetchOptions = defaultOptions
 ) {
   const [data, setData] = useState<T>();
   const [dataLoading, setDataLoading] = useState<boolean>(true);
+  const FINAL_URL = process.env.NEXT_PUBLIC_BACKEND_URL + URL;
 
-  const fetchData = async () => {
-    const req = HEADERS
-      ? await fetch(URL, HEADERS as RequestInit)
-      : await fetch(URL);
-    const res = await req.json();
-    setDataLoading(false);
+  const fetchData = async (localHeaders?: RequestInit) => {
+    const req = await fetch(FINAL_URL, localHeaders || headers || {});
+
+    const res: T = await req.json();
+    return { req, res };
+  };
+
+  const setDataHandler = async () => {
+    const { res } = await fetchData();
     setData(res);
+    setDataLoading(false);
   };
 
   useEffect(() => {
     let isComponentMounted = true;
-    isComponentMounted && fetchData();
+    isComponentMounted && useInitialFetch && setDataHandler();
 
     return () => {
       isComponentMounted = false;
     };
   }, []);
 
-  return { data, setData, dataLoading, setDataLoading };
+  return { data, setData, dataLoading, fetchData, setDataHandler };
 }

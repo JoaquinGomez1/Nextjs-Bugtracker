@@ -1,11 +1,4 @@
-export interface IHeaders {
-  headers: HeadersInit;
-  credentials: string;
-  body?: any;
-  method?: "GET" | "POST" | "PUT" | "DELETE";
-}
-
-const headers: IHeaders = {
+const headers: RequestInit = {
   headers: {
     "Content-Type": "application/json",
   },

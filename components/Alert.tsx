@@ -2,11 +2,20 @@ import { Box } from "@material-ui/core";
 
 import green from "@material-ui/core/colors/green";
 import pink from "@material-ui/core/colors/pink";
+import { CSSProperties, PropsWithChildren } from "react";
 
-export default function Alert({ success, children, ...rest }) {
+interface Props {
+  success?: boolean;
+}
+
+export default function Alert({
+  success,
+  children,
+  ...rest
+}: PropsWithChildren<Props>) {
   const backgroundColor = success ? green[600] : pink[600];
 
-  const boxStyle = {
+  const boxStyle: CSSProperties = {
     position: "absolute",
     maxWidth: "30rem",
     width: "90vw",

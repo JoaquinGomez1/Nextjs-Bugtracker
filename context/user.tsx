@@ -13,26 +13,23 @@ import IUser from "../interfaces/user";
 interface UserProviderProps {
   currentUser?: IUser;
   setCurrentUser: Dispatch<SetStateAction<IUser | undefined | {}>>;
+  isUserLoading: boolean;
 }
 
 export const UserContext = createContext<UserProviderProps | null>(null);
 
 export default function UserProvider(props: any) {
-  const { data } = useFetch<IUser & AppResponse>(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/user"
-  );
-  const [currentUser, setCurrentUser] = useState(data || {});
-
-  useEffect(() => {
-    if (data) {
-      if (data?.id || data?.message) {
-        setCurrentUser(data);
-      }
-    }
-  }, [data]);
+  const {
+    data: currentUser,
+    setData: setCurrentUser,
+    dataLoading,
+  } = useFetch<IUser>("/user");
 
   return (
-    <UserContext.Provider {...props} value={{ currentUser, setCurrentUser }} />
+    <UserContext.Provider
+      {...props}
+      value={{ currentUser, setCurrentUser, isUserLoading: dataLoading }}
+    />
   );
 }
 
