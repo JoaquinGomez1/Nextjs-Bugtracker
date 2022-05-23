@@ -1,4 +1,10 @@
-import { useState } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  MouseEvent,
+  SetStateAction,
+  useState,
+} from "react";
 import {
   TextField,
   Box,
@@ -11,32 +17,12 @@ import {
 import SearchIcon from "@material-ui/icons/Search";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import { makeStyles } from "@material-ui/core/styles";
+import { IIssue } from "../interfaces/issue";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    margin: `${theme.spacing(2)}px 0`,
-    alignItems: "center",
-    justifyContent: "space-between",
-    [theme.breakpoints.down("sm")]: {
-      flexDirection: "column",
-      alignItems: "left",
-      justifyContent: "left",
-    },
-  },
-  formControl: { display: "flex", alignItems: "center", flexDirection: "row" },
-  filterLabel: {
-    margin: `0 ${theme.spacing(3)}px`,
-    color: theme.palette.grey[300],
-    [theme.breakpoints.down("sm")]: {
-      margin: `${theme.spacing(3)}px 0`,
-    },
-  },
-  filterContainer: {
-    [theme.breakpoints.down("sm")]: {
-      flexDirection: "column",
-    },
-  },
-}));
+interface Props {
+  issues: IIssue[];
+  setIssues: Dispatch<SetStateAction<IIssue[]>>;
+}
 
 const priorityNumbers = {
   low: 1,
@@ -44,12 +30,12 @@ const priorityNumbers = {
   high: 3,
 };
 
-export default function IssuesFilterBar({ issues, setIssues }) {
+export default function IssuesFilterBar({ issues, setIssues }: Props) {
   const classes = useStyles();
   const [radioValue, setRadioValue] = useState("");
   const [inputFieldValue, setInputFieldValue] = useState("");
 
-  const handleChange = (event) => {
+  const handleChange = (event: any) => {
     setRadioValue(event.target.value);
     if (radioValue === event.target.value) {
       setIssues(issues);
@@ -59,10 +45,10 @@ export default function IssuesFilterBar({ issues, setIssues }) {
     const issuesCopy = [...issues];
     let sorterFunction;
     if (event.target.value === "high")
-      sorterFunction = (a, b) =>
+      sorterFunction = (a: IIssue, b: IIssue) =>
         priorityNumbers[b.issue_severity] - priorityNumbers[a.issue_severity];
     if (event.target.value === "low")
-      sorterFunction = (a, b) =>
+      sorterFunction = (a: IIssue, b: IIssue) =>
         priorityNumbers[a.issue_severity] - priorityNumbers[b.issue_severity];
     if (event.target.value === "medium") sorterFunction = () => 0;
 
@@ -70,7 +56,7 @@ export default function IssuesFilterBar({ issues, setIssues }) {
     setIssues(issuesCopy);
   };
 
-  const handleInputFieldChange = (event) => {
+  const handleInputFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setInputFieldValue(value);
     setIssues(
@@ -84,7 +70,6 @@ export default function IssuesFilterBar({ issues, setIssues }) {
     <Box display="flex" className={classes.root}>
       <Box>
         <TextField
-          className={classes.textField}
           onChange={handleInputFieldChange}
           variant="outlined"
           value={inputFieldValue}
@@ -131,3 +116,29 @@ export default function IssuesFilterBar({ issues, setIssues }) {
     </Box>
   );
 }
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    margin: `${theme.spacing(2)}px 0`,
+    alignItems: "center",
+    justifyContent: "space-between",
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column",
+      alignItems: "left",
+      justifyContent: "left",
+    },
+  },
+  formControl: { display: "flex", alignItems: "center", flexDirection: "row" },
+  filterLabel: {
+    margin: `0 ${theme.spacing(3)}px`,
+    color: theme.palette.grey[300],
+    [theme.breakpoints.down("sm")]: {
+      margin: `${theme.spacing(3)}px 0`,
+    },
+  },
+  filterContainer: {
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column",
+    },
+  },
+}));

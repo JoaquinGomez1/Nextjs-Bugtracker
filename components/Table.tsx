@@ -52,7 +52,11 @@ const useToolbarStyles = makeStyles((theme) => ({
 }));
 
 // TODO: Asign proper types
-const EnhancedTableToolbar = (props: any) => {
+
+interface EnhancedTableToolbarProps {
+  numSelected: number;
+}
+const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
   const { numSelected } = props;
 

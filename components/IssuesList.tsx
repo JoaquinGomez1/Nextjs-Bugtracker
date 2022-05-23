@@ -7,8 +7,15 @@ import headers from "../headers";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import IssuesFilterBar from "./IssuesFilterBar";
+import IProject from "../interfaces/project";
+import { IIssue } from "../interfaces/issue";
 
-export default function IssuesList({ projectIssues, project }) {
+interface Props {
+  projectIssues: IIssue[];
+  project: IProject;
+}
+
+export default function IssuesList({ projectIssues, project }: Props) {
   const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
   const [issues, setIssues] = useState(projectIssues);
@@ -16,7 +23,7 @@ export default function IssuesList({ projectIssues, project }) {
   const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
 
-  const handleSubmit = async (data) => {
+  const handleSubmit = async (data: any) => {
     setModalOpen(false);
 
     const reqHeaders = headers;
@@ -34,10 +41,6 @@ export default function IssuesList({ projectIssues, project }) {
     }
   };
 
-  const onReset = () => {
-    setIssues(projectIssues);
-  };
-
   return (
     <Box display="grid">
       <Box
@@ -52,11 +55,7 @@ export default function IssuesList({ projectIssues, project }) {
           Add Issue
         </Button>
       </Box>
-      <IssuesFilterBar
-        issues={projectIssues}
-        setIssues={setIssues}
-        onReset={onReset}
-      />
+      <IssuesFilterBar issues={projectIssues} setIssues={setIssues} />
       <Divider style={{ marginBottom: "16px" }} />
       <NewIssueModal
         open={modalOpen}

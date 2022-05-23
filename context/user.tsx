@@ -1,13 +1,5 @@
-import {
-  createContext,
-  useState,
-  useEffect,
-  SetStateAction,
-  Dispatch,
-  useContext,
-} from "react";
+import { createContext, SetStateAction, Dispatch, useContext } from "react";
 import useFetch from "../hooks/useFetch";
-import AppResponse from "../interfaces/appResponse";
 import IUser from "../interfaces/user";
 
 interface UserProviderProps {

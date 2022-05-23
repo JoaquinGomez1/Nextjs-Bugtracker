@@ -3,24 +3,22 @@ import { Button, Box, Typography } from "@material-ui/core";
 // import pink from "@material-ui/core/colors/pink";
 import { makeStyles } from "@material-ui/core/styles";
 
-const useStyles = makeStyles((theme) => ({
-  confirm: {},
-  cancel: {
-    backgroundColor: theme.palette.grey[700],
-    color: "white",
-    "&:hover": { backgroundColor: theme.palette.grey[900] },
-  },
-  btnContainer: {
-    width: "70vw",
-    maxWidth: "350px",
-  },
-}));
+interface Props {
+  onConfirm: () => void;
+  onCancel: () => void;
+  prompt: string;
+}
 
-export default function ConfirmModal({ onConfirm, onCancel, prompt, ...rest }) {
+export default function ConfirmModal({
+  onConfirm,
+  onCancel,
+  prompt,
+  ...rest
+}: Props) {
   const classes = useStyles();
 
   return (
-    <BaseModal {...rest}>
+    <BaseModal {...(rest as any)}>
       <Typography
         variant="h5"
         style={{ textAlign: "center", margin: "32px 0" }}
@@ -55,3 +53,16 @@ export default function ConfirmModal({ onConfirm, onCancel, prompt, ...rest }) {
     </BaseModal>
   );
 }
+
+const useStyles = makeStyles((theme) => ({
+  confirm: {},
+  cancel: {
+    backgroundColor: theme.palette.grey[700],
+    color: "white",
+    "&:hover": { backgroundColor: theme.palette.grey[900] },
+  },
+  btnContainer: {
+    width: "70vw",
+    maxWidth: "350px",
+  },
+}));

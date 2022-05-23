@@ -1,6 +1,28 @@
 import Link from "next/link";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
+import { PropsWithChildren } from "react";
+
+interface Props {
+  href: string;
+}
+export default function CustomLink(props: PropsWithChildren<Props>) {
+  const classes = useStyles();
+  const router = useRouter();
+
+  const isActiveLink = router.pathname === props.href;
+  const componentClassName = isActiveLink
+    ? `${classes.activeLink} ${classes.listItem} `
+    : classes.listItem;
+  return (
+    <li className={componentClassName}>
+      <Link href={props.href}>
+        <a>{props.children}</a>
+      </Link>
+      <div className={classes.bottomLine} />
+    </li>
+  );
+}
 
 const useStyles = makeStyles((theme) => ({
   listItem: {
@@ -29,21 +51,3 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-
-export default function CustomLink(props) {
-  const classes = useStyles();
-  const router = useRouter();
-
-  const isActiveLink = router.pathname === props.href;
-  const componentClassName = isActiveLink
-    ? `${classes.activeLink} ${classes.listItem} `
-    : classes.listItem;
-  return (
-    <li className={componentClassName}>
-      <Link href={props.href}>
-        <a>{props.children}</a>
-      </Link>
-      <div className={classes.bottomLine} />
-    </li>
-  );
-}
