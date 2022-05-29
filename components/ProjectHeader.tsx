@@ -34,7 +34,7 @@ export default function ProjectHeader({ project }: Props) {
         <Box alignItems="center">
           <Typography variant="h4">
             <PersonIcon color="secondary" style={{ marginRight: "24px" }} />
-            {project.author}
+            {project.project_owner_name}
           </Typography>
 
           <Box display="grid" alignItems="center">
@@ -46,7 +46,7 @@ export default function ProjectHeader({ project }: Props) {
               modalOpen={viewMembersModal}
               onClose={() => setviewMembersModal(false)}
               members={project.project_members}
-              projectOwner={project.author}
+              projectOwner={project.project_owner}
             />
           </Box>
         </Box>

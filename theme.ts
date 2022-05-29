@@ -17,11 +17,15 @@ interface IThemeOptions extends ThemeOptions {
 const theme = createMuiTheme({
   palette: {
     type: "dark",
+    background: {
+      default: "#1F1C30",
+      paper: "#343144",
+    },
     secondary: {
       main: "#20fac0",
     },
     primary: {
-      main: "#03fc77",
+      main: "#4ED172",
     },
     subtitles: {
       main: "rgba(255,255,255,0.5)",

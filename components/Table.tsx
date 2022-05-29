@@ -264,9 +264,10 @@ export default function EnhancedTable({
                               {userIsAllowedToDelete(row) && (
                                 <Button
                                   color="primary"
-                                  onClick={() =>
-                                    handleDeleteProject(row.id, index)
-                                  }
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    return handleDeleteProject(row.id, index);
+                                  }}
                                 >
                                   <DeleteIcon />
                                 </Button>

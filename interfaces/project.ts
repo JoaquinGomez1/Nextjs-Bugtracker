@@ -9,4 +9,6 @@ export default interface IProject {
   projectId: number;
   project_name?: string;
   project_members?: IUser[];
+  project_owner_name?: string;
+  project_owner: number;
 }
