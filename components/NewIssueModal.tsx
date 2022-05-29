@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Typography,
@@ -11,34 +11,32 @@ import {
   FormControl,
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import { UserContext } from "../context/user";
+import { useUserProvider } from "../context/user";
 import BaseModal from "./BaseModal";
 import Alert from "./Alert";
 
 import InfoIcon from "@material-ui/icons/Info";
 
-const useStyles = makeStyles((theme) => ({
-  title: {
-    width: "100%",
-    marginRight: theme.spacing(2),
-  },
-  box: {
-    "& > *": {
-      margin: `${theme.spacing(2)}px 0`,
-    },
-  },
-  selectContainer: {
-    minWidth: "150px",
-  },
-}));
+interface Props {
+  open: boolean;
+  onClose: () => void;
+  onSubmit: (values: any) => void;
+}
 
-export default function NewIssueModal({ open, onClose, onSubmit }) {
-  const { currentUser } = useContext(UserContext);
-  const [data, setData] = useState({
+interface NewIssueDto {
+  title: string;
+  description: string;
+  severity: string;
+  author?: number;
+}
+
+export default function NewIssueModal({ open, onClose, onSubmit }: Props) {
+  const { currentUser } = useUserProvider();
+  const [data, setData] = useState<NewIssueDto>({
     title: "",
     description: "",
     severity: "",
-    author: currentUser.id,
+    author: currentUser?.id,
   });
   const classes = useStyles();
   const [errorMessage, setErrorMessage] = useState("");
@@ -46,11 +44,7 @@ export default function NewIssueModal({ open, onClose, onSubmit }) {
   // Controls the alert pop up
   const timeout = 3000;
 
-  const titleRef = useRef();
-  const severityRef = useRef();
-  const descriptionRef = useRef();
-
-  const handleChange = ({ target }) => {
+  const handleChange = ({ target }: any) => {
     const { name, value } = target;
     setData({ ...data, [name]: value });
   };
@@ -67,7 +61,7 @@ export default function NewIssueModal({ open, onClose, onSubmit }) {
 
   // Set the author of the new issue once the user object loads
   useEffect(() => {
-    setData({ ...data, author: currentUser.id });
+    setData({ ...data, author: currentUser?.id });
   }, [currentUser]);
 
   return (
@@ -82,7 +76,6 @@ export default function NewIssueModal({ open, onClose, onSubmit }) {
             placeholder="Title"
             variant="outlined"
             className={classes.title}
-            ref={titleRef}
           />
           <FormControl className={classes.selectContainer}>
             <InputLabel id="demo-simple-select-disabled-label">
@@ -94,7 +87,6 @@ export default function NewIssueModal({ open, onClose, onSubmit }) {
               value={data.severity}
               onChange={handleChange}
               name="severity"
-              ref={severityRef}
             >
               <MenuItem value="">
                 <em> - </em>
@@ -113,7 +105,6 @@ export default function NewIssueModal({ open, onClose, onSubmit }) {
           rows={6}
           placeholder="What is the issue about?"
           variant="outlined"
-          ref={descriptionRef}
         />
 
         <Button onClick={handleSubmit} variant="contained" color="primary">
@@ -137,3 +128,18 @@ export default function NewIssueModal({ open, onClose, onSubmit }) {
     </BaseModal>
   );
 }
+
+const useStyles = makeStyles((theme) => ({
+  title: {
+    width: "100%",
+    marginRight: theme.spacing(2),
+  },
+  box: {
+    "& > *": {
+      margin: `${theme.spacing(2)}px 0`,
+    },
+  },
+  selectContainer: {
+    minWidth: "150px",
+  },
+}));

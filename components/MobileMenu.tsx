@@ -10,30 +10,14 @@ import {
 } from "@material-ui/core";
 import Link from "next/link";
 import MenuIcon from "@material-ui/icons/Menu";
+import { ILink } from "../interfaces/link";
 
-const styles = makeStyles((theme) => ({
-  mobileMenu: {
-    display: "initial",
-    [theme.breakpoints.up("md")]: {
-      display: "none",
-    },
-  },
-  list: {
-    width: 250,
-  },
-  fullList: {
-    width: "auto",
-  },
-  liContainer: {
-    padding: `0 ${theme.spacing(2)}px`,
-    fontSize: "2rem",
-  },
-  menuIcon: {
-    color: theme.palette.grey[800],
-  },
-}));
+interface Props {
+  links: ILink[];
+  userLoggedIn: boolean;
+}
 
-export default function MobileMenu({ links, userLoggedIn, ...rest }) {
+export default function MobileMenu({ links, userLoggedIn, ...rest }: Props) {
   const classes = styles();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -67,7 +51,7 @@ export default function MobileMenu({ links, userLoggedIn, ...rest }) {
                 : auth !== true && (
                     <li key={url} className={classes.liContainer}>
                       <Link href={url}>
-                        <a className={classes.link}>
+                        <a>
                           <ListItemText>{text}</ListItemText>
                         </a>
                       </Link>
@@ -80,3 +64,25 @@ export default function MobileMenu({ links, userLoggedIn, ...rest }) {
     </Box>
   );
 }
+
+const styles = makeStyles((theme) => ({
+  mobileMenu: {
+    display: "initial",
+    [theme.breakpoints.up("md")]: {
+      display: "none",
+    },
+  },
+  list: {
+    width: 250,
+  },
+  fullList: {
+    width: "auto",
+  },
+  liContainer: {
+    padding: `0 ${theme.spacing(2)}px`,
+    fontSize: "2rem",
+  },
+  menuIcon: {
+    color: theme.palette.grey[800],
+  },
+}));

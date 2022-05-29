@@ -6,7 +6,9 @@ import { makeStyles } from "@material-ui/core/styles";
 interface Props {
   onConfirm: () => void;
   onCancel: () => void;
+  onClose: () => void;
   prompt: string;
+  open?: boolean;
 }
 
 export default function ConfirmModal({

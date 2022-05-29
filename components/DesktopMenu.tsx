@@ -1,12 +1,7 @@
 import { Box, List } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { ILink } from "../interfaces/link";
 import Link from "./CustomLink";
-
-interface ILink {
-  text: string;
-  url: string;
-  auth: boolean;
-}
 
 interface Props {
   links: ILink[];
