@@ -8,20 +8,20 @@ interface FetchOptions {
 }
 
 const defaultOptions: FetchOptions = {
-  headers: defaultHeaders,
   useInitialFetch: true,
 };
 
 export default function useFetch<T>(
   URL: string = DEFAULT_URL,
-  { headers, useInitialFetch }: FetchOptions = defaultOptions
+  { useInitialFetch }: FetchOptions = defaultOptions
 ) {
   const [data, setData] = useState<T>();
   const [dataLoading, setDataLoading] = useState<boolean>(true);
   const FINAL_URL = process.env.NEXT_PUBLIC_BACKEND_URL + URL;
 
-  const fetchData = async (localHeaders?: RequestInit) => {
-    const req = await fetch(FINAL_URL, localHeaders || headers || {});
+  const fetchData = async (options?: RequestInit) => {
+    const reqHeaders = { ...options, ...defaultHeaders }; // Takes the request options and appends the default headers
+    const req = await fetch(FINAL_URL, reqHeaders);
 
     const res: T = await req.json();
     return { req, res };

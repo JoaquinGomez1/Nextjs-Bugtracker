@@ -13,7 +13,6 @@ import authenticatedRequest from "../../libs/authRequest";
 import { makeStyles } from "@material-ui/core";
 import CommentSection from "../../components/ComentSection";
 import chipColor from "../../libs/severityColors";
-import pink from "@material-ui/core/colors/pink";
 import ConfirmModal from "../../components/ConfirmModal";
 
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
@@ -43,7 +42,10 @@ const useStyles = makeStyles((theme) => ({
   date: { color: theme.palette.grey[500] },
   authorIcon: { marginRight: theme.spacing(2) },
   actionIcons: { marginLeft: theme.spacing(3) },
-  deleteIssue: { color: pink[500] },
+  deleteIssue: { color: theme.palette.primary.main },
+  chip: {
+    textTransform: "capitalize",
+  },
 }));
 
 const MotionBox = motion(Box);
@@ -122,7 +124,7 @@ export default function ViewIssue({ issueData, issueComments }) {
       router.back();
     }
   };
-
+  console.log({ issue_severity });
   return (
     <MotionContainer
       variants={fadeIn}
@@ -142,9 +144,10 @@ export default function ViewIssue({ issueData, issueComments }) {
               <Grid item xs={12} md={4}>
                 <Chip
                   label={issue_severity}
+                  className={classes.chip}
                   style={{
                     backgroundColor: chipColor[issue_severity],
-                    textTransform: "capitalize",
+                    color: issue_severity === "medium" ? "#000" : "",
                   }}
                 />
                 <IconButton

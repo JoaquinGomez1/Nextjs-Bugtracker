@@ -13,7 +13,6 @@ export default class User {
       return { message: "No body", status: "failed" };
 
     const { username, password }: LoginUserDto = this.req.body;
-    console.log({ username, password });
 
     if (!username || !password)
       return { message: "No username/password", status: "failed" };

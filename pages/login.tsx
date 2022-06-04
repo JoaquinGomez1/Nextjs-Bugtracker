@@ -1,10 +1,11 @@
-import { KeyboardEvent, SyntheticEvent } from "react";
+import { KeyboardEvent, SyntheticEvent, useEffect } from "react";
 import {
   Paper,
   Button,
   TextField,
   Typography,
   CircularProgress,
+  Box,
 } from "@material-ui/core";
 import styles from "../styles/Login.module.css";
 import { makeStyles } from "@material-ui/core/styles";
@@ -13,7 +14,7 @@ import Link from "next/link";
 import headers from "../headers";
 import fetch from "isomorphic-unfetch";
 import { useRouter } from "next/router";
-import { UserContext, useUserProvider } from "../context/user";
+import { useUserProvider } from "../context/user";
 import { AnimatePresence, motion } from "framer-motion";
 import { growY } from "../libs/animations";
 import Alert from "../components/Alert";
@@ -21,16 +22,22 @@ import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 
 import BugReportIcon from "@material-ui/icons/BugReport";
 import AppResponse from "../interfaces/appResponse";
+import useFetch from "../hooks/useFetch";
+import IUser from "../interfaces/user";
 
 const FramerPaper = motion(Paper);
+
+type LoginResponse = AppResponse<IUser> | undefined;
 
 export default function Login() {
   const [userdata, setUserData] = useState({ username: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
-  const [showMessage, setShowMessage] = useState<AppResponse | null>(null);
-  const { setCurrentUser } = useUserProvider();
+  const [showMessage, setShowMessage] = useState<LoginResponse>();
+  const { setCurrentUser, logTestAccount, currentUser } = useUserProvider();
   const classes = useStyles();
   const router = useRouter();
+  const { fetchData: makeLoginRequest } =
+    useFetch<LoginResponse>("/user/login");
 
   const handleFormChange = (e: SyntheticEvent) => {
     const { name, value } = e.target as HTMLInputElement;
@@ -39,25 +46,28 @@ export default function Login() {
 
   const handleSubmit = async () => {
     setIsLoading(true);
-    const reqHeaders = headers as RequestInit;
-    reqHeaders.method = "POST";
-    reqHeaders.body = JSON.stringify(userdata);
-    const URL = process.env.NEXT_PUBLIC_BACKEND_URL + "/user/login";
-    const req = await fetch(URL, reqHeaders);
-    const res = await req.json();
-    setIsLoading(false);
+    const { req, res } = await makeLoginRequest({
+      method: "POST",
+      body: JSON.stringify(userdata),
+    });
 
     if (req.status === 200) {
-      setCurrentUser(res?.data!);
-      router.push("/");
+      setCurrentUser(res?.data);
     } else {
       setShowMessage(res);
     }
+    setIsLoading(false);
   };
 
   const handleKeyPress = ({ key }: KeyboardEvent) => {
     if (key === "Enter") handleSubmit();
   };
+
+  useEffect(() => {
+    if (!!currentUser?.id) {
+      router.push("/");
+    }
+  }, [currentUser]);
 
   return (
     <div className={styles.container}>
@@ -125,10 +135,16 @@ export default function Login() {
               <Typography variant="h5">{showMessage?.message}</Typography>
               <HighlightOffIcon
                 style={{ cursor: "pointer" }}
-                onClick={() => setShowMessage(null)}
+                onClick={() => setShowMessage(undefined)}
               />
             </Alert>
           )}
+          <Typography variant="subtitle2" className={classes.bottomText}>
+            Or
+          </Typography>
+          <Button onClick={() => logTestAccount()}>
+            Login With Test Account
+          </Button>
         </FramerPaper>
       </AnimatePresence>
     </div>

@@ -20,10 +20,10 @@ const MotionContainer = motion(Container);
 export default function Index({ resultProjects }: any) {
   const { projects, setProjects } = useProjectProvider();
   const { currentUser, isUserLoading } = useUserProvider();
+  const router = useRouter();
 
   const thereIsNoUserLoggedIn =
     !isUserLoading && currentUser && Object.keys(currentUser).length <= 0;
-  const router = useRouter();
 
   useEffect(() => {
     if (resultProjects) setProjects(resultProjects);
@@ -47,11 +47,12 @@ export default function Index({ resultProjects }: any) {
   };
 
   useEffect(() => {
+    console.log({ currentUser });
     // Makes sure that the homepage is not visible in case ssr redirection fails
     if (thereIsNoUserLoggedIn) {
       router.push("/login");
     }
-  }, []);
+  }, [currentUser]);
 
   return (
     <MotionContainer
