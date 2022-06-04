@@ -11,8 +11,6 @@ import styles from "../styles/Login.module.css";
 import { makeStyles } from "@material-ui/core/styles";
 import { useState } from "react";
 import Link from "next/link";
-import headers from "../headers";
-import fetch from "isomorphic-unfetch";
 import { useRouter } from "next/router";
 import { useUserProvider } from "../context/user";
 import { AnimatePresence, motion } from "framer-motion";
@@ -22,8 +20,8 @@ import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 
 import BugReportIcon from "@material-ui/icons/BugReport";
 import AppResponse from "../interfaces/appResponse";
-import useFetch from "../hooks/useFetch";
 import IUser from "../interfaces/user";
+import { logInUser } from "../services/userService";
 
 const FramerPaper = motion(Paper);
 
@@ -36,8 +34,6 @@ export default function Login() {
   const { setCurrentUser, logTestAccount, currentUser } = useUserProvider();
   const classes = useStyles();
   const router = useRouter();
-  const { fetchData: makeLoginRequest } =
-    useFetch<LoginResponse>("/user/login");
 
   const handleFormChange = (e: SyntheticEvent) => {
     const { name, value } = e.target as HTMLInputElement;
@@ -46,10 +42,7 @@ export default function Login() {
 
   const handleSubmit = async () => {
     setIsLoading(true);
-    const { req, res } = await makeLoginRequest({
-      method: "POST",
-      body: JSON.stringify(userdata),
-    });
+    const { req, res } = await logInUser(userdata);
 
     if (req.status === 200) {
       setCurrentUser(res?.data);

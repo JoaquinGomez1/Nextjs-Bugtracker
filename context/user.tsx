@@ -7,8 +7,8 @@ import {
   useEffect,
 } from "react";
 import useFetch from "../hooks/useFetch";
-import AppResponse from "../interfaces/appResponse";
 import IUser from "../interfaces/user";
+import { logInUser, logOutUser } from "../services/userService";
 
 interface UserProviderProps {
   currentUser?: IUser;
@@ -28,28 +28,14 @@ export default function UserProvider(props: any) {
     dataLoading,
   } = useFetch<IUser>("/user");
 
-  const { fetchData } = useFetch("/user/logout", { useInitialFetch: false });
-  const { fetchData: makeTestAccLogin } = useFetch<AppResponse<IUser>>(
-    "/user/login",
-    {
-      useInitialFetch: false,
-    }
-  );
-
   const logUserOut = async () => {
     setCurrentUser(undefined);
-    await fetchData({ method: "get" });
+    await logOutUser();
     router.push("/login");
   };
 
   const logTestAccount = async () => {
-    const { res } = await makeTestAccLogin({
-      method: "POST",
-      body: JSON.stringify({
-        username: "admin",
-        password: "admin",
-      }),
-    });
+    const { res } = await logInUser({ username: "admin", password: "admin" });
     setCurrentUser(res?.data);
   };
 

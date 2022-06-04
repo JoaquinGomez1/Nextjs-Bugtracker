@@ -1,12 +1,12 @@
 import { httpService } from ".";
 import IUser from "../interfaces/user";
 import AppResponse from "../interfaces/appResponse";
-import { useServiceState } from "../hooks/useService";
 
-type AppUserResponse = IUser | AppResponse<string>;
+type AppUserResponse = AppResponse<IUser>;
+type UserLogin = { username: string; password: string };
 
 /**Makes post request to log user in*/
-export const logUser = (user: IUser) =>
+export const logInUser = (user: UserLogin) =>
   httpService<AppUserResponse>("/user/login", {
     body: JSON.stringify(user),
     method: "POST",
