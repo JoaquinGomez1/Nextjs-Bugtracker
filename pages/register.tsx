@@ -1,11 +1,4 @@
-import {
-  useState,
-  useContext,
-  useEffect,
-  FormEvent,
-  KeyboardEvent,
-  SyntheticEvent,
-} from "react";
+import { useState, useEffect, KeyboardEvent, SyntheticEvent } from "react";
 import { Paper, Button, TextField, Typography } from "@material-ui/core";
 import styles from "../styles/Login.module.css";
 import { makeStyles } from "@material-ui/core/styles";
@@ -13,7 +6,7 @@ import Link from "next/link";
 import BugReportIcon from "@material-ui/icons/BugReport";
 import headers from "../headers";
 import { useRouter } from "next/router";
-import { UserContext } from "../context/user";
+import { UserContext, useUserProvider } from "../context/user";
 import Alert from "../components/Alert";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import { AnimatePresence, motion } from "framer-motion";
@@ -23,7 +16,7 @@ import AppResponse from "../interfaces/appResponse";
 const FramerPaper = motion(Paper);
 
 export default function Login() {
-  const { setCurrentUser } = useContext(UserContext);
+  const { setCurrentUser } = useUserProvider();
   const [showMessage, setShowMessage] = useState(false);
   const [responseMessage, setResponseMessage] = useState<AppResponse>();
   const [userdata, setUserData] = useState({
@@ -150,10 +143,7 @@ export default function Login() {
           </Typography>
 
           {showMessage && (
-            <Alert
-              style={{ top: 180 }}
-              success={responseMessage?.status === "success"}
-            >
+            <Alert success={responseMessage?.status === "success"}>
               {responseMessage?.message}
               <HighlightOffIcon
                 style={{ cursor: "pointer" }}
